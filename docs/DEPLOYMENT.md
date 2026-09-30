@@ -81,6 +81,12 @@ JWT_EXPIRES_IN=1d
 CLIENT_URL=https://your-frontend.vercel.app
 ```
 
+> **`CLIENT_URL` rules:**
+> - Must be the **exact origin** your browser sends — no trailing slash.
+> - Multiple origins: comma-separate them, e.g. `https://app.vercel.app,https://www.myshop.com`
+> - After deploying the frontend copy the Vercel URL and set it here, then redeploy the backend.
+> - Check Render logs on startup — the server prints `CORS allowed origins [...]` so you can confirm immediately.
+
 > **Generate a JWT secret:**
 > ```bash
 > node -e "console.log(require('crypto').randomBytes(64).toString('hex'))"
