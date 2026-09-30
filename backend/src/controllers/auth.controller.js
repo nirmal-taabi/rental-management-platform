@@ -32,6 +32,7 @@ export const login = async (req, res, next) => {
     return sendSuccess(res, 'Login successful.', {
       user: result.user,
       shop: result.shop,
+      shops: result.shops,
     }, OK);
   } catch (error) {
     return next(error);
@@ -40,7 +41,7 @@ export const login = async (req, res, next) => {
 
 export const me = async (req, res, next) => {
   try {
-    const result = await getAuthenticatedUserProfile(req.user.id);
+    const result = await getAuthenticatedUserProfile(req.user.id, req.user.shopId);
     return sendSuccess(res, 'User profile loaded.', result, OK);
   } catch (error) {
     return next(error);

@@ -22,6 +22,8 @@ import PickupWorkspacePage from '../features/returns/pages/PickupWorkspacePage.j
 import ReturnWorkspacePage from '../features/returns/pages/ReturnWorkspacePage.jsx';
 import ReturnListPage from '../features/returns/pages/ReturnListPage.jsx';
 import ReturnDetailsPage from '../features/returns/pages/ReturnDetailsPage.jsx';
+import ShopManagementPage from '../features/shops/pages/ShopManagementPage';
+import SettingsLayout from '../components/layout/SettingsLayout';
 import ProtectedRoute from './ProtectedRoute';
 import NotFoundPage from '../pages/NotFoundPage';
 import AppLayout from '../components/layout/AppLayout';
@@ -43,7 +45,11 @@ function AppRoutes() {
         <Route path="/products/new" element={<ProductFormPage />} />
         <Route path="/products/:id" element={<ProductDetailsPage />} />
         <Route path="/products/:id/edit" element={<ProductFormPage />} />
-        <Route path="/settings/categories" element={<CategoryManagementPage />} />
+        <Route path="/settings" element={<SettingsLayout />}>
+          <Route index element={<Navigate to="categories" replace />} />
+          <Route path="categories" element={<CategoryManagementPage />} />
+          <Route path="shops" element={<ShopManagementPage />} />
+        </Route>
         <Route path="/inventory" element={<InventoryListPage />} />
         <Route path="/inventory/new" element={<InventoryFormPage />} />
         <Route path="/inventory/:id" element={<InventoryDetailsPage />} />

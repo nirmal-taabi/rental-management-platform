@@ -1,14 +1,17 @@
+import { useEffect, useRef, useState } from 'react';
 import { Link, NavLink, Outlet, useNavigate } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import {
   BarChart3,
   Boxes,
   CalendarDays,
+  Check,
   ChevronDown,
   CreditCard,
   LayoutDashboard,
   LogOut,
   Package,
+  Plus,
   RotateCcw,
   Settings,
   Users,
@@ -40,17 +43,52 @@ const navigationGroups = [
   },
   {
     label: 'System',
-    items: [{ label: 'Settings', to: '/settings/categories', icon: Settings }],
+    items: [{ label: 'Settings', to: '/settings', icon: Settings }],
   },
 ];
 
 function AppLayout({ children }) {
   const navigate = useNavigate();
-  const { user, shop, roles, clearSession } = useAuth();
+  const { user, shop, roles, availableShops, switchShop, clearSession } = useAuth();
+  const [isShopMenuOpen, setIsShopMenuOpen] = useState(false);
+  const shopSwitcherRef = useRef(null);
+  const [switchingShopId, setSwitchingShopId] = useState(null);
+  const [shopSwitchError, setShopSwitchError] = useState('');
   const userName = user?.name || 'Owner';
   const initials = userName.split(/\s+/).filter(Boolean).slice(0, 2).map((part) => part[0]).join('').toUpperCase();
   const shopLocation = [shop?.city, shop?.state].filter(Boolean).join(', ') || 'Shop location';
   const shopInitial = shop?.name?.trim()?.charAt(0)?.toUpperCase() || 'R';
+
+  useEffect(() => {
+    if (!isShopMenuOpen) return undefined;
+
+    const handlePointerDown = (event) => {
+      if (!shopSwitcherRef.current?.contains(event.target)) setIsShopMenuOpen(false);
+    };
+    const handleKeyDown = (event) => {
+      if (event.key === 'Escape') setIsShopMenuOpen(false);
+    };
+
+    document.addEventListener('pointerdown', handlePointerDown);
+    document.addEventListener('keydown', handleKeyDown);
+    return () => {
+      document.removeEventListener('pointerdown', handlePointerDown);
+      document.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [isShopMenuOpen]);
+
+  const handleShopSwitch = async (nextShop) => {
+    if (!nextShop || String(nextShop.id) === String(shop?.id) || nextShop.status !== 'ACTIVE') return;
+    setSwitchingShopId(nextShop.id);
+    setShopSwitchError('');
+    try {
+      await switchShop(nextShop.id);
+      window.location.reload();
+    } catch (error) {
+      setShopSwitchError(error.response?.data?.message || 'Unable to switch shops.');
+      setSwitchingShopId(null);
+    }
+  };
 
   const handleLogout = async () => {
     try {
@@ -75,13 +113,61 @@ function AppLayout({ children }) {
         </Link>
 
         <div className="px-2 py-4 md:px-4">
-          <div className="flex min-h-[56px] items-center justify-center gap-2 rounded-md border border-[#e6e8e4] bg-[#f8f9f6] p-1.5 md:justify-start md:px-2">
-            <span className="grid size-8 shrink-0 place-items-center rounded-sm bg-[#68404b] text-xs font-bold text-white">{shopInitial}</span>
-            <span className="hidden min-w-0 flex-1 md:block">
-              <span className="block truncate text-[11px] font-semibold text-[#252a29]">{shop?.name || 'Your shop'}</span>
-              <span className="mt-0.5 block truncate text-[10px] text-[#747b78]">{shopLocation}</span>
-            </span>
-            <ChevronDown size={14} className="hidden shrink-0 text-[#747b78] md:block" aria-hidden="true" />
+          <div className="relative" ref={shopSwitcherRef}>
+            <button
+              type="button"
+              aria-label={`Current shop: ${shop?.name || 'Your shop'}, ${shopLocation}, ${shop?.role || roles[0] || 'OWNER'}. Switch shops`}
+              aria-expanded={isShopMenuOpen}
+              onClick={() => {
+                setIsShopMenuOpen((open) => !open);
+                setShopSwitchError('');
+              }}
+              className="flex min-h-[56px] w-full items-center justify-center gap-2 rounded-md border border-[#e6e8e4] bg-[#f8f9f6] p-1.5 text-left transition hover:border-[#cbb9bd] focus:outline-none focus:ring-2 focus:ring-[#68404b]/20 md:justify-start md:px-2"
+            >
+              <span className="grid size-8 shrink-0 place-items-center rounded-sm bg-[#68404b] text-xs font-bold text-white">{shopInitial}</span>
+              <span className="hidden min-w-0 flex-1 md:block">
+                <span className="block truncate text-[11px] font-semibold text-[#252a29]">{shop?.name || 'Your shop'}</span>
+                <span className="mt-0.5 block truncate text-[10px] text-[#747b78]">{shopLocation} · {shop?.role || roles[0] || 'OWNER'}</span>
+              </span>
+              <ChevronDown size={14} className="hidden shrink-0 text-[#747b78] md:block" aria-hidden="true" />
+            </button>
+            {isShopMenuOpen && (
+              <div className="absolute left-full top-0 z-[60] ml-2 w-[min(280px,calc(100vw-5.5rem))] border border-[#e6e8e4] bg-white shadow-lg md:left-0 md:top-[calc(100%+8px)] md:ml-0">
+                <div className="border-b border-[#e8eae7] px-4 py-3">
+                  <p className="text-xs font-semibold text-[#252a29]">Your shops</p>
+                  <p className="mt-0.5 text-[10px] text-[#747b78]">Choose an active workspace</p>
+                </div>
+                <div className="max-h-64 overflow-y-auto p-1.5">
+                  {availableShops.map((availableShop) => {
+                    const isCurrentShop = String(availableShop.id) === String(shop?.id);
+                    const isActive = availableShop.status === 'ACTIVE';
+                    return (
+                      <button
+                        key={availableShop.id}
+                        type="button"
+                        disabled={!isActive || switchingShopId !== null}
+                        aria-current={isCurrentShop ? 'true' : undefined}
+                        onClick={() => handleShopSwitch(availableShop)}
+                        className="flex min-h-14 w-full items-center gap-3 rounded-sm px-2.5 py-2 text-left transition hover:bg-[#f8f9f6] disabled:cursor-not-allowed disabled:opacity-55"
+                      >
+                        <span className="grid size-8 shrink-0 place-items-center rounded-sm bg-[#f1f2ef] text-xs font-semibold text-[#68404b]">{availableShop.name?.trim()?.charAt(0)?.toUpperCase() || 'S'}</span>
+                        <span className="min-w-0 flex-1">
+                          <span className="block truncate text-xs font-semibold text-[#252a29]">{availableShop.name}</span>
+                          <span className="mt-0.5 block truncate text-[10px] text-[#747b78]">{[availableShop.city, availableShop.state].filter(Boolean).join(', ') || 'Location not set'} · {availableShop.role}</span>
+                        </span>
+                        {isCurrentShop && <span className="inline-flex items-center gap-1 text-[10px] font-semibold text-[#68404b]"><Check size={14} /> Current</span>}
+                        {!isActive && <span className="text-[10px] text-[#747b78]">Inactive</span>}
+                      </button>
+                    );
+                  })}
+                </div>
+                {shopSwitchError && <p role="alert" className="mx-3 mb-2 border border-rose-200 bg-rose-50 px-2 py-1.5 text-[10px] text-rose-800">{shopSwitchError}</p>}
+                <div className="grid grid-cols-2 gap-1 border-t border-[#e8eae7] p-2">
+                  <Link to="/settings/shops" onClick={() => setIsShopMenuOpen(false)} className="inline-flex min-h-9 items-center justify-center gap-1 rounded-sm px-2 text-[10px] font-semibold text-[#414846] transition hover:bg-[#f8f9f6]"><Settings size={13} /> Manage shops</Link>
+                  <Link to="/settings/shops" onClick={() => setIsShopMenuOpen(false)} className="inline-flex min-h-9 items-center justify-center gap-1 rounded-sm bg-[#68404b] px-2 text-[10px] font-semibold text-white transition hover:bg-[#54333d]"><Plus size={13} /> Create shop</Link>
+                </div>
+              </div>
+            )}
           </div>
         </div>
 

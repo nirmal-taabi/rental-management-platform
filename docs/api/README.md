@@ -3,6 +3,7 @@
 This folder contains API contracts, route summaries, request examples, and payload standards.
 
 - [Authentication](authentication.md)
+- [Shops and memberships](shops.md)
 - [Locations](locations.md)
 - [Categories](categories.md)
 - [Customers](customers.md)

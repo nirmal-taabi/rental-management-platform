@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
-import { ArrowLeft, Plus, Search } from 'lucide-react';
+import { Plus, Search } from 'lucide-react';
 import { useAuth } from '../../auth/context/AuthContext';
 import { categoryService } from '../services/category.service';
 
@@ -82,9 +81,7 @@ function CategoryManagementPage() {
       <div className="mx-auto max-w-[1200px]">
         <header className="mb-6 flex flex-wrap items-end justify-between gap-4 border-b border-[#e8eae7] pb-5">
           <div>
-            <Link to="/products" className="mb-3 inline-flex items-center gap-2 text-sm font-semibold text-[#68404b] transition hover:text-[#54333d]"><ArrowLeft size={16} /> Products</Link>
-            <p className="text-xs font-bold uppercase tracking-[0.16em] text-[#8a5360]">Catalog settings</p>
-            <h1 className="mt-1 text-3xl font-semibold text-[#252a29]">Categories</h1>
+            <h1 className="text-2xl font-semibold text-[#252a29]">Category management</h1>
             <p className="mt-2 text-sm text-[#59615e]">Organize products into shop-specific categories.</p>
           </div>
           {canManage && <p className="text-sm text-[#59615e]">Categories are private to this shop.</p>}

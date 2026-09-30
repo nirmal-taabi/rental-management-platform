@@ -28,7 +28,7 @@ function LoginPage() {
     try {
       const response = await authService.login(form);
       const payload = response?.data?.data || {};
-      setSession(payload.user || null, payload.shop || null);
+      setSession(payload.user || null, payload.shop || null, payload.shops || []);
       navigate('/dashboard');
     } catch (error) {
       const message = error.response?.data?.message || 'Unable to login. Please try again.';

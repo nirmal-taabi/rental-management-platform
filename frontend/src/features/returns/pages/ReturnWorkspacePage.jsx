@@ -255,10 +255,7 @@ function ReturnWorkspacePage() {
             >
               <ArrowLeft size={16} /> Booking details
             </Link>
-            <p className="text-xs font-bold uppercase tracking-[0.16em] text-[#8a5360]">
-              Rental lifecycle
-            </p>
-            <h1 className="mt-1 text-3xl font-semibold text-[#252a29]">Process return</h1>
+            <h1 className="text-3xl font-semibold text-[#252a29]">Process return</h1>
           </div>
           <span className="font-mono text-sm font-semibold text-[#414846]">
             {booking.bookingNumber}
@@ -440,7 +437,12 @@ function ReturnWorkspacePage() {
           </aside>
         </div>
         {confirming && (
-          <div className="fixed inset-0 z-50 grid place-items-end bg-black/45 p-0 sm:place-items-center sm:p-5">
+          <div
+            className="fixed inset-0 z-50 grid place-items-end bg-black/45 p-0 sm:place-items-center sm:p-5"
+            onMouseDown={(event) => {
+              if (event.target === event.currentTarget && !saving) setConfirming(false);
+            }}
+          >
             <section
               role="dialog"
               aria-modal="true"

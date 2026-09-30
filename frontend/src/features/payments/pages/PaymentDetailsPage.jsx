@@ -288,7 +288,12 @@ function PaymentDetailsPage() {
       </div>
 
       {cancelOpen && (
-        <div className="fixed inset-0 z-50 grid place-items-end bg-black/45 p-0 sm:place-items-center sm:p-5 print:hidden">
+        <div
+          className="fixed inset-0 z-50 grid place-items-end bg-black/45 p-0 sm:place-items-center sm:p-5 print:hidden"
+          onMouseDown={(event) => {
+            if (event.target === event.currentTarget && !saving) setCancelOpen(false);
+          }}
+        >
           <form
             onSubmit={cancelPayment}
             className="w-full rounded-sm border border-[#e6e8e4] bg-white p-5 sm:max-w-lg"

@@ -32,8 +32,7 @@ function DashboardPage() {
     <div className="mx-auto max-w-[1440px] px-4 py-7 text-[#252a29] sm:px-6 sm:py-9 lg:px-10">
           <div className="mb-7 flex flex-wrap items-end justify-between gap-4">
             <div>
-              <p className="text-xs font-bold uppercase tracking-[0.18em] text-[#8a5360]">Workspace overview</p>
-              <h1 className="mt-2 text-3xl font-semibold tracking-normal text-[#252a29]">Dashboard</h1>
+              <h1 className="text-3xl font-semibold tracking-normal text-[#252a29]">Dashboard</h1>
               <p className="mt-2 text-sm text-[#747b78]">A clear view of your rental shop and account.</p>
             </div>
             <div className="inline-flex items-center gap-2 border border-[#e6e8e4] bg-white px-3 py-2 text-xs font-medium text-[#59615e]">

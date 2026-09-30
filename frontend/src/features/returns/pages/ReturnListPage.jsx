@@ -172,10 +172,7 @@ function ReturnListPage() {
       <div className="mx-auto max-w-[1440px]">
         <header className="mb-6 flex flex-wrap items-end justify-between gap-4 border-b border-[#e8eae7] pb-5">
           <div>
-            <p className="text-xs font-bold uppercase tracking-[0.16em] text-[#8a5360]">
-              Rental lifecycle
-            </p>
-            <h1 className="mt-1 text-3xl font-semibold text-[#252a29]">Returns</h1>
+            <h1 className="text-3xl font-semibold text-[#252a29]">Returns</h1>
             <p className="mt-1 text-sm text-[#59615e]">
               Return history and item condition records.
             </p>

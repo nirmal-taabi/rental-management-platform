@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { ArrowLeft, CalendarDays, ChevronDown, Clock3, Pencil, Phone, UserRound } from 'lucide-react';
 import { useAuth } from '../../auth/context/AuthContext.jsx';
+import ConfirmationDialog from '../../../components/common/ConfirmationDialog';
 import { paymentService } from '../../payments/services/payment.service';
 import PaymentStatusBadge from '../../payments/components/PaymentStatusBadge.jsx';
 import RecordPaymentModal from '../../payments/components/RecordPaymentModal.jsx';
@@ -56,6 +57,7 @@ function BookingDetailsPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [updating, setUpdating] = useState(false);
+  const [cancelConfirmationOpen, setCancelConfirmationOpen] = useState(false);
   const [paymentHistory, setPaymentHistory] = useState([]);
   const [paymentSummary, setPaymentSummary] = useState(null);
   const [paymentError, setPaymentError] = useState('');
@@ -127,7 +129,6 @@ function BookingDetailsPage() {
   };
 
   const cancelBooking = async () => {
-    if (!window.confirm(`Cancel ${booking.bookingNumber}? This will release its physical items for other dates.`)) return;
     setUpdating(true);
     setError('');
     try {
@@ -137,6 +138,7 @@ function BookingDetailsPage() {
       setError(requestError.response?.data?.message || 'Unable to cancel this booking.');
     } finally {
       setUpdating(false);
+      setCancelConfirmationOpen(false);
     }
   };
 
@@ -168,7 +170,7 @@ function BookingDetailsPage() {
               {booking.status === 'READY' && <Link to={`/bookings/${booking.id}/pickup`} className="inline-flex min-h-10 items-center gap-2 rounded-md bg-[#68404b] px-3 text-sm font-semibold text-white hover:bg-[#54333d]">Confirm pickup</Link>}
               {booking.status === 'ACTIVE' && <Link to={`/bookings/${booking.id}/return`} className="inline-flex min-h-10 items-center gap-2 rounded-md bg-[#68404b] px-3 text-sm font-semibold text-white hover:bg-[#54333d]">Process return</Link>}
               {availableTransitions.length > 0 && <label className="relative"><span className="sr-only">Change booking status</span><select disabled={updating} value="" onChange={(event) => { if (event.target.value) updateStatus(event.target.value); }} className="min-h-10 appearance-none rounded-md border border-[#dfe3df] bg-white py-2 pl-3 pr-9 text-sm font-semibold text-[#414846] outline-none focus:border-[#805361] focus:ring-4 focus:ring-[#805361]/10"><option value="">Change status</option>{availableTransitions.map((status) => <option key={status} value={status}>{status}</option>)}</select><ChevronDown size={15} className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-[#59615e]" /></label>}
-              {canCancel && <button type="button" disabled={updating} onClick={cancelBooking} className="min-h-10 rounded-md border border-rose-200 bg-white px-3 text-sm font-semibold text-rose-800 hover:bg-rose-50 disabled:opacity-50">Cancel booking</button>}
+              {canCancel && <button type="button" disabled={updating} onClick={() => setCancelConfirmationOpen(true)} className="min-h-10 rounded-md border border-rose-200 bg-white px-3 text-sm font-semibold text-rose-800 hover:bg-rose-50 disabled:opacity-50">Cancel booking</button>}
           </div>
         </header>
 
@@ -193,7 +195,7 @@ function BookingDetailsPage() {
             <section className="border-y border-stone-300 bg-white"><div className="flex flex-wrap items-center justify-between gap-3 border-b border-stone-200 px-5 py-4 sm:px-6"><div><p className="text-xs font-bold uppercase tracking-wide text-[#7d4c54]">Return history</p><h2 className="mt-1 text-lg font-semibold">Items received</h2></div><Link to="/returns" className="text-sm font-semibold text-[#642d3b] underline underline-offset-4">All returns</Link></div>{returnHistoryError && <p role="alert" className="m-4 border border-rose-300 bg-rose-50 px-3 py-2 text-sm text-rose-800">{returnHistoryError}</p>}{returnHistoryLoading ? <p className="px-5 py-5 text-sm text-stone-500 sm:px-6">Loading return history...</p> : returnHistory.length ? <div className="divide-y divide-stone-200">{returnHistory.map((entry) => <Link key={entry.id} to={`/returns/${entry.id}`} className="flex flex-wrap items-center justify-between gap-3 px-5 py-3 hover:bg-[#fbf8f6] sm:px-6"><div><p className="font-mono text-sm font-semibold text-[#642d3b]">RT-{String(entry.id).padStart(5, '0')}</p><p className="mt-1 text-xs text-stone-500">{formatDateTime(entry.returnedAt)} · {entry.itemCount || entry.items?.length || 0} item(s)</p></div><div className="flex items-center gap-2"><ReturnStatusBadge status={entry.returnStatus} />{entry.daysLate > 0 && <span className="text-xs text-amber-900">{entry.daysLate}d late</span>}</div></Link>)}</div> : <p className="px-5 py-5 text-sm text-stone-500 sm:px-6">No items have been returned yet.</p>}{booking.status === 'ACTIVE' && <div className="border-t border-stone-200 px-5 py-4 sm:px-6"><Link to={`/bookings/${booking.id}/return`} className="inline-flex min-h-10 items-center bg-[#642d3b] px-4 text-sm font-semibold text-white">Process return</Link></div>}</section>
 
             <section className="border-y border-stone-300 bg-white">
-              <div className="flex flex-wrap items-center justify-between gap-3 border-b border-stone-200 px-5 py-4 sm:px-6"><div><p className="text-xs font-bold uppercase tracking-wide text-[#7d4c54]">Payment ledger</p><h2 className="mt-1 text-lg font-semibold">Payments and balance</h2></div>{paymentSummary && <PaymentStatusBadge status={paymentSummary.paymentStatus} />}</div>
+              <div className="flex flex-wrap items-center justify-between gap-3 border-b border-stone-200 px-5 py-4 sm:px-6"><div><h2 className="text-lg font-semibold">Payments and balance</h2></div>{paymentSummary && <PaymentStatusBadge status={paymentSummary.paymentStatus} />}</div>
               {paymentError && <div role="alert" className="m-4 border border-rose-300 bg-rose-50 px-3 py-2 text-sm text-rose-800">{paymentError}</div>}
               <div className="grid gap-px border-b border-stone-200 bg-stone-200 sm:grid-cols-5">{[
                 ['Rental', paymentSummary?.rentalAmount ?? booking.totalAmount],
@@ -212,6 +214,16 @@ function BookingDetailsPage() {
           <aside className="border-y border-stone-300 bg-white p-5 sm:p-6 lg:sticky lg:top-5"><p className="text-xs font-bold uppercase tracking-wide text-[#7d4c54]">Price summary</p><h2 className="mt-1 text-lg font-semibold">Rental charges</h2><dl className="mt-5 space-y-3 text-sm"><div className="flex justify-between gap-3"><dt className="text-stone-600">Subtotal</dt><dd className="font-medium tabular-nums">{formatMoney(booking.subtotal)}</dd></div><div className="flex justify-between gap-3"><dt className="text-stone-600">Discount</dt><dd className="font-medium tabular-nums">−{formatMoney(booking.discountAmount)}</dd></div><div className="flex justify-between gap-3"><dt className="text-stone-600">Tax</dt><dd className="font-medium tabular-nums">{formatMoney(booking.taxAmount)}</dd></div><div className="flex justify-between gap-3 border-t border-stone-200 pt-3 text-base font-semibold"><dt>Rental total</dt><dd className="tabular-nums">{formatMoney(booking.totalAmount)}</dd></div><div className="flex justify-between gap-3"><dt className="text-stone-600">Deposit</dt><dd className="font-medium tabular-nums">{formatMoney(booking.depositAmount)}</dd></div><div className="flex justify-between gap-3 border-t border-stone-300 pt-3 text-base font-semibold"><dt>Paid</dt><dd className="tabular-nums">{formatMoney(booking.paidAmount)}</dd></div><div className="flex justify-between gap-3 text-base font-semibold text-[#642d3b]"><dt>Balance due</dt><dd className="tabular-nums">{formatMoney(booking.balanceAmount)}</dd></div></dl><p className="mt-5 border-t border-stone-200 pt-4 text-xs leading-5 text-stone-500">Deposit remains held through return inspection; returns do not issue refunds.</p></aside>
         </div>
       </div>
+      <ConfirmationDialog
+        isOpen={cancelConfirmationOpen}
+        title="Cancel booking?"
+        message={`Cancel ${booking.bookingNumber}? This will release its physical items for other dates.`}
+        confirmLabel="Cancel booking"
+        isConfirming={updating}
+        destructive
+        onCancel={() => setCancelConfirmationOpen(false)}
+        onConfirm={cancelBooking}
+      />
       {recordingPayment && paymentSummary && <RecordPaymentModal booking={booking} summary={paymentSummary} onClose={() => setRecordingPayment(false)} onSuccess={handlePaymentRecorded} />}
     </main>
   );

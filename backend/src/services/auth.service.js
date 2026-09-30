@@ -2,25 +2,13 @@ import AppError from '../utils/AppError.js';
 import { pool } from '../config/database.js';
 import { hashPassword, comparePassword } from '../utils/password.js';
 import { signToken, buildAuthCookie } from '../utils/jwt.js';
-import { createShop, generateShopSlug, findShopById } from '../repositories/shop.repository.js';
+import { createShop, generateShopSlug } from '../repositories/shop.repository.js';
 import { createUser, findUserByEmail, findUserById, getSafeUserSummary } from '../repositories/user.repository.js';
-import { createRole, findRoleByShopAndSlug, assignRoleToUser, findRolesForUser } from '../repositories/role.repository.js';
+import { createRole, findRoleByShopAndSlug, assignRoleToUser } from '../repositories/role.repository.js';
+import { createShopMembership } from '../repositories/userShopMembership.repository.js';
+import { getActiveShopForUser, getShopMembershipsForUser } from './shop.service.js';
 import { CONFLICT, UNAUTHORIZED } from '../constants/httpStatus.js';
 import { EMAIL_ALREADY_EXISTS, INVALID_CREDENTIALS, INACTIVE_USER } from '../constants/errorCodes.js';
-
-const getPublicShop = (shop) => ({
-  id: shop.id,
-  name: shop.name,
-  businessName: shop.legal_name || shop.name,
-  email: shop.email,
-  phone: shop.phone,
-  address: shop.address_line1,
-  city: shop.city,
-  state: shop.state,
-  pincode: shop.postal_code,
-  gstNumber: shop.gst_number,
-  status: shop.status,
-});
 
 export const registerOwner = async ({ owner, shop }) => {
   const email = String(owner.email || '').trim().toLowerCase();
@@ -79,6 +67,13 @@ export const registerOwner = async ({ owner, shop }) => {
     );
 
     await assignRoleToUser(shopRecord.id, newUser.id, ownerRole.id, connection);
+    await createShopMembership({
+      userId: newUser.id,
+      shopId: shopRecord.id,
+      role: 'OWNER',
+      status: 'active',
+      isDefault: true,
+    }, connection);
 
     await connection.commit();
 
@@ -90,7 +85,22 @@ export const registerOwner = async ({ owner, shop }) => {
         phone: newUser.phone,
         roles: ['OWNER'],
       },
-      shop: getPublicShop(shopRecord),
+      shop: {
+        id: shopRecord.id,
+        name: shopRecord.name,
+        code: shopRecord.slug,
+        businessName: shopRecord.legal_name || shopRecord.name,
+        email: shopRecord.email,
+        phone: shopRecord.phone,
+        address: shopRecord.address_line1,
+        city: shopRecord.city,
+        state: shopRecord.state,
+        pincode: shopRecord.postal_code,
+        gstNumber: shopRecord.gst_number,
+        role: 'OWNER',
+        status: String(shopRecord.status).toUpperCase(),
+        isDefault: true,
+      },
     };
   } catch (error) {
     await connection.rollback();
@@ -117,26 +127,31 @@ export const loginUser = async ({ email, password }) => {
     throw new AppError('Account is inactive. Please contact support.', UNAUTHORIZED, INACTIVE_USER);
   }
 
-  const shop = await findShopById(user.shop_id);
+  const shops = await getShopMembershipsForUser(user.id);
+  const shop = shops.find((entry) => entry.status === 'ACTIVE' && entry.isDefault)
+    || shops.find((entry) => entry.status === 'ACTIVE');
   if (!shop) {
-    throw new AppError('Shop not found for this account.', UNAUTHORIZED, INVALID_CREDENTIALS);
+    throw new AppError('No active shop is available for this account.', UNAUTHORIZED, INVALID_CREDENTIALS);
   }
 
-  const roles = await findRolesForUser(user.id, user.shop_id);
-  const token = signToken({ id: user.id, shopId: user.shop_id, roles });
+  const roles = [shop.role];
+  const token = signToken({ id: user.id });
 
   return {
     token,
     cookie: buildAuthCookie(token),
     user: {
       ...getSafeUserSummary(user),
+      shopId: shop.id,
+      isOwner: roles.includes('OWNER'),
       roles,
     },
-    shop: getPublicShop(shop),
+    shop,
+    shops,
   };
 };
 
-export const getAuthenticatedUserProfile = async (userId) => {
+export const getAuthenticatedUserProfile = async (userId, shopId) => {
   if (userId === undefined || userId === null) {
     throw new AppError('Authentication required.', UNAUTHORIZED, 'AUTHENTICATION_ERROR');
   }
@@ -146,14 +161,21 @@ export const getAuthenticatedUserProfile = async (userId) => {
     throw new AppError('User not found.', UNAUTHORIZED, 'AUTHENTICATION_ERROR');
   }
 
-  const shop = await findShopById(existingUser.shop_id);
-  const roles = await findRolesForUser(existingUser.id, existingUser.shop_id);
+  const [shop, shops] = await Promise.all([
+    getActiveShopForUser(existingUser.id, shopId),
+    getShopMembershipsForUser(existingUser.id),
+  ]);
+  const roles = [shop.role];
 
   return {
     user: {
       ...getSafeUserSummary(existingUser),
+      shopId: shop.id,
+      isOwner: roles.includes('OWNER'),
       roles,
     },
-    shop: shop ? getPublicShop(shop) : null,
+    shop,
+    currentShop: shop,
+    shops,
   };
 };

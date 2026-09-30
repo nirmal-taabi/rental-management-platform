@@ -58,6 +58,11 @@ export const updateShop = async (shopId, payload, connection = pool) => {
   return findShopById(shopId, connection);
 };
 
+export const updateShopStatus = async (shopId, status, connection = pool) => {
+  await connection.query('UPDATE shops SET status = ? WHERE id = ? AND is_deleted = 0', [status, shopId]);
+  return findShopById(shopId, connection);
+};
+
 export const generateShopSlug = (name) => {
   return String(name || '')
     .trim()
