@@ -10,6 +10,7 @@ import errorHandler from './middlewares/errorHandler.js';
 import apiRoutes from './routes/index.js';
 
 const app = express();
+//sdsd
 
 // Build the allowed-origins Set from CLIENT_URL (supports comma-separated values).
 // e.g. CLIENT_URL=https://app.vercel.app,https://www.myshop.com
