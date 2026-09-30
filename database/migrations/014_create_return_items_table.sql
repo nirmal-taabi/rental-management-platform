@@ -1,0 +1,23 @@
+CREATE TABLE IF NOT EXISTS return_items (
+    id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+    shop_id BIGINT UNSIGNED NOT NULL,
+    return_id BIGINT UNSIGNED NOT NULL,
+    booking_item_id BIGINT UNSIGNED NOT NULL,
+    inventory_item_id BIGINT UNSIGNED NOT NULL,
+    condition_status ENUM('good', 'minor_damage', 'major_damage', 'lost') NOT NULL DEFAULT 'good',
+    damage_fee DECIMAL(12,2) NOT NULL DEFAULT 0.00,
+    late_fee DECIMAL(12,2) NOT NULL DEFAULT 0.00,
+    actual_returned_at TIMESTAMP NULL DEFAULT NULL,
+    notes TEXT NULL,
+    is_deleted TINYINT(1) NOT NULL DEFAULT 0,
+    deleted_at TIMESTAMP NULL DEFAULT NULL,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    PRIMARY KEY (id),
+    CONSTRAINT fk_return_items_shop FOREIGN KEY (shop_id) REFERENCES shops(id) ON DELETE CASCADE ON UPDATE CASCADE,
+    CONSTRAINT fk_return_items_return FOREIGN KEY (return_id) REFERENCES returns(id) ON DELETE CASCADE ON UPDATE CASCADE,
+    CONSTRAINT fk_return_items_booking_item FOREIGN KEY (booking_item_id) REFERENCES booking_items(id) ON DELETE RESTRICT ON UPDATE CASCADE,
+    CONSTRAINT fk_return_items_inventory FOREIGN KEY (inventory_item_id) REFERENCES inventory_items(id) ON DELETE RESTRICT ON UPDATE CASCADE,
+    KEY idx_return_items_return (return_id),
+    KEY idx_return_items_inventory (inventory_item_id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

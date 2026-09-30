@@ -1,0 +1,21 @@
+CREATE TABLE IF NOT EXISTS users (
+    id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+    shop_id BIGINT UNSIGNED NOT NULL,
+    first_name VARCHAR(100) NOT NULL,
+    last_name VARCHAR(100) NULL,
+    email VARCHAR(150) NOT NULL,
+    phone VARCHAR(30) NULL,
+    password_hash VARCHAR(255) NOT NULL,
+    status ENUM('active', 'inactive', 'pending', 'locked') NOT NULL DEFAULT 'pending',
+    is_owner TINYINT(1) NOT NULL DEFAULT 0,
+    last_login_at TIMESTAMP NULL DEFAULT NULL,
+    is_deleted TINYINT(1) NOT NULL DEFAULT 0,
+    deleted_at TIMESTAMP NULL DEFAULT NULL,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    PRIMARY KEY (id),
+    CONSTRAINT fk_users_shop FOREIGN KEY (shop_id) REFERENCES shops(id) ON DELETE CASCADE ON UPDATE CASCADE,
+    UNIQUE KEY uq_users_shop_email (shop_id, email),
+    KEY idx_users_shop_status (shop_id, status),
+    KEY idx_users_email (email)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

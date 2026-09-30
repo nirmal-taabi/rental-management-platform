@@ -1,0 +1,7 @@
+export const RETURN_CONDITIONS = ['EXCELLENT', 'GOOD', 'FAIR', 'DAMAGED'];
+
+export const RETURN_DAMAGE_STATUSES = ['NONE', 'MINOR', 'MAJOR', 'LOST'];
+
+export const RETURN_DATE_STATUSES = ['ON_TIME', 'LATE'];
+
+export const PICKUP_ELIGIBLE_BOOKING_STATUSES = ['READY'];
