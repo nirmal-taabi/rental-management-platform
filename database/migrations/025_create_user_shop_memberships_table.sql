@@ -1,26 +1,39 @@
-CREATE TABLE IF NOT EXISTS user_shop_memberships (
-    id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
-    user_id BIGINT UNSIGNED NOT NULL,
-    shop_id BIGINT UNSIGNED NOT NULL,
-    role VARCHAR(100) NOT NULL DEFAULT 'STAFF',
-    status ENUM('active', 'invited', 'suspended', 'removed') NOT NULL DEFAULT 'active',
-    is_default TINYINT(1) NOT NULL DEFAULT 0,
-    deleted_at TIMESTAMP NULL DEFAULT NULL,
-    default_membership_user_id BIGINT UNSIGNED GENERATED ALWAYS AS (
-        CASE WHEN is_default = 1 AND status = 'active' AND deleted_at IS NULL THEN user_id ELSE NULL END
-    ) STORED,
-    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    PRIMARY KEY (id),
-    CONSTRAINT fk_user_shop_memberships_user FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE ON UPDATE CASCADE,
-    CONSTRAINT fk_user_shop_memberships_shop FOREIGN KEY (shop_id) REFERENCES shops(id) ON DELETE CASCADE ON UPDATE CASCADE,
-    UNIQUE KEY uq_user_shop_memberships_user_shop (user_id, shop_id),
-    UNIQUE KEY uq_user_shop_memberships_default_user (default_membership_user_id),
-    KEY idx_user_shop_memberships_user_status (user_id, status),
-    KEY idx_user_shop_memberships_shop_status (shop_id, status)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+-- PostgreSQL migration: Create user_shop_memberships table
+-- Note: MySQL's GENERATED ALWAYS AS (STORED) for the unique-default constraint
+-- is replaced with a partial unique index in PostgreSQL.
 
-INSERT IGNORE INTO user_shop_memberships (user_id, shop_id, role, status, is_default)
+CREATE TABLE IF NOT EXISTS user_shop_memberships (
+    id BIGSERIAL PRIMARY KEY,
+    user_id BIGINT NOT NULL,
+    shop_id BIGINT NOT NULL,
+    role VARCHAR(100) NOT NULL DEFAULT 'STAFF',
+    status VARCHAR(20) NOT NULL DEFAULT 'active'
+        CHECK (status IN ('active', 'invited', 'suspended', 'removed')),
+    is_default SMALLINT NOT NULL DEFAULT 0,
+    deleted_at TIMESTAMPTZ NULL DEFAULT NULL,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT fk_user_shop_memberships_user FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+    CONSTRAINT fk_user_shop_memberships_shop FOREIGN KEY (shop_id) REFERENCES shops(id) ON DELETE CASCADE
+);
+
+CREATE UNIQUE INDEX IF NOT EXISTS uq_user_shop_memberships_user_shop
+    ON user_shop_memberships (user_id, shop_id);
+
+-- Enforce that each user can have at most one default active membership
+-- (replaces the MySQL generated column + unique key approach)
+CREATE UNIQUE INDEX IF NOT EXISTS uq_user_shop_memberships_default_user
+    ON user_shop_memberships (user_id)
+    WHERE is_default = 1 AND status = 'active' AND deleted_at IS NULL;
+
+CREATE INDEX IF NOT EXISTS idx_user_shop_memberships_user_status
+    ON user_shop_memberships (user_id, status);
+
+CREATE INDEX IF NOT EXISTS idx_user_shop_memberships_shop_status
+    ON user_shop_memberships (shop_id, status);
+
+-- Back-fill memberships from the users table
+INSERT INTO user_shop_memberships (user_id, shop_id, role, status, is_default)
 SELECT
     u.id,
     u.shop_id,
@@ -30,17 +43,19 @@ SELECT
             FROM user_roles ur
             INNER JOIN roles r ON r.id = ur.role_id AND r.shop_id = ur.shop_id
             WHERE ur.user_id = u.id AND ur.shop_id = u.shop_id AND r.is_deleted = 0
-            ORDER BY CASE UPPER(r.name)
-                WHEN 'OWNER' THEN 1
-                WHEN 'ADMIN' THEN 2
-                WHEN 'STAFF' THEN 3
-                ELSE 4
-            END, r.id
+            ORDER BY
+                CASE UPPER(r.name)
+                    WHEN 'OWNER' THEN 1
+                    WHEN 'ADMIN' THEN 2
+                    WHEN 'STAFF' THEN 3
+                    ELSE 4
+                END, r.id
             LIMIT 1
         ),
-        IF(u.is_owner = 1, 'OWNER', 'STAFF')
+        CASE WHEN u.is_owner = 1 THEN 'OWNER' ELSE 'STAFF' END
     ),
-    IF(u.status = 'active' AND u.is_deleted = 0, 'active', 'suspended'),
+    CASE WHEN u.status = 'active' AND u.is_deleted = 0 THEN 'active' ELSE 'suspended' END,
     1
 FROM users u
-INNER JOIN shops s ON s.id = u.shop_id;
+INNER JOIN shops s ON s.id = u.shop_id
+ON CONFLICT (user_id, shop_id) DO NOTHING;

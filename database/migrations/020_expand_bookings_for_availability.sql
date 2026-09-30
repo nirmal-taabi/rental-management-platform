@@ -1,10 +1,15 @@
+-- PostgreSQL migration: Expand bookings and booking_items for availability
+
+-- Drop old status constraint and widen column
 ALTER TABLE bookings
-    MODIFY status VARCHAR(30) NOT NULL DEFAULT 'PENDING',
-    ADD COLUMN subtotal DECIMAL(12,2) NOT NULL DEFAULT 0.00 AFTER rental_amount,
-    ADD COLUMN tax_amount DECIMAL(12,2) NOT NULL DEFAULT 0.00 AFTER discount_amount,
-    ADD COLUMN total_amount DECIMAL(12,2) NOT NULL DEFAULT 0.00 AFTER tax_amount,
-    ADD COLUMN paid_amount DECIMAL(12,2) NOT NULL DEFAULT 0.00 AFTER total_amount,
-    ADD COLUMN balance_amount DECIMAL(12,2) NOT NULL DEFAULT 0.00 AFTER paid_amount;
+    DROP CONSTRAINT IF EXISTS bookings_status_check,
+    ALTER COLUMN status TYPE VARCHAR(30),
+    ALTER COLUMN status SET DEFAULT 'PENDING',
+    ADD COLUMN IF NOT EXISTS subtotal DECIMAL(12,2) NOT NULL DEFAULT 0.00,
+    ADD COLUMN IF NOT EXISTS tax_amount DECIMAL(12,2) NOT NULL DEFAULT 0.00,
+    ADD COLUMN IF NOT EXISTS total_amount DECIMAL(12,2) NOT NULL DEFAULT 0.00,
+    ADD COLUMN IF NOT EXISTS paid_amount DECIMAL(12,2) NOT NULL DEFAULT 0.00,
+    ADD COLUMN IF NOT EXISTS balance_amount DECIMAL(12,2) NOT NULL DEFAULT 0.00;
 
 UPDATE bookings
 SET status = CASE UPPER(status)
@@ -22,17 +27,20 @@ SET status = CASE UPPER(status)
     balance_amount = GREATEST(rental_amount - discount_amount, 0) + deposit_amount;
 
 ALTER TABLE bookings
-    MODIFY status ENUM('DRAFT', 'PENDING', 'CONFIRMED', 'READY', 'ACTIVE', 'COMPLETED', 'CANCELLED') NOT NULL DEFAULT 'PENDING';
+    ADD CONSTRAINT chk_bookings_status CHECK (status IN (
+        'DRAFT', 'PENDING', 'CONFIRMED', 'READY', 'ACTIVE', 'COMPLETED', 'CANCELLED'
+    ));
 
+-- Expand booking_items
 ALTER TABLE booking_items
-    ADD COLUMN rental_price DECIMAL(12,2) NOT NULL DEFAULT 0.00 AFTER unit_rental_rate,
-    ADD COLUMN discount_amount DECIMAL(12,2) NOT NULL DEFAULT 0.00 AFTER deposit_amount,
-    ADD COLUMN tax_amount DECIMAL(12,2) NOT NULL DEFAULT 0.00 AFTER discount_amount,
-    ADD COLUMN total_amount DECIMAL(12,2) NOT NULL DEFAULT 0.00 AFTER tax_amount;
+    ADD COLUMN IF NOT EXISTS rental_price DECIMAL(12,2) NOT NULL DEFAULT 0.00,
+    ADD COLUMN IF NOT EXISTS discount_amount DECIMAL(12,2) NOT NULL DEFAULT 0.00,
+    ADD COLUMN IF NOT EXISTS tax_amount DECIMAL(12,2) NOT NULL DEFAULT 0.00,
+    ADD COLUMN IF NOT EXISTS total_amount DECIMAL(12,2) NOT NULL DEFAULT 0.00;
 
 UPDATE booking_items
 SET rental_price = subtotal,
     total_amount = subtotal;
 
-CREATE INDEX idx_booking_items_shop_inventory_booking
+CREATE INDEX IF NOT EXISTS idx_booking_items_shop_inventory_booking
     ON booking_items (shop_id, inventory_item_id, booking_id, is_deleted);

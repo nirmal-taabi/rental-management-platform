@@ -43,14 +43,14 @@ const mapReturn = (row, items = []) => ({
 export const findBookingForLifecycle = async (shopId, bookingId, connection = pool, lock = true) => {
   const [rows] = await connection.query(
     `SELECT b.id, b.shop_id, b.customer_id, b.booking_number, b.status,
-      DATE_FORMAT(b.rental_start_date, '%Y-%m-%d') AS rental_start_date,
-      DATE_FORMAT(b.rental_end_date, '%Y-%m-%d') AS rental_end_date,
+      TO_CHAR(b.rental_start_date, 'YYYY-MM-DD') AS rental_start_date,
+      TO_CHAR(b.rental_end_date, 'YYYY-MM-DD') AS rental_end_date,
       b.picked_up_at, b.picked_up_by_user_id,
       b.pickup_notes, b.returned_at, b.total_amount, b.deposit_amount, b.paid_amount, b.balance_amount,
       c.first_name, c.last_name, c.phone
      FROM bookings b
      INNER JOIN customers c ON c.id = b.customer_id AND c.shop_id = b.shop_id
-    WHERE b.id = ? AND b.shop_id = ? AND b.is_deleted = 0 AND c.is_deleted = 0 LIMIT 1${lock ? ' FOR UPDATE' : ''}`,
+     WHERE b.id = ? AND b.shop_id = ? AND b.is_deleted = 0 AND c.is_deleted = 0 LIMIT 1${lock ? ' FOR UPDATE' : ''}`,
     [bookingId, shopId],
   );
   return rows[0] || null;
@@ -66,7 +66,7 @@ export const findBookingItemsForUpdate = async (shopId, bookingId, connection = 
      INNER JOIN products p ON p.id = bi.product_id AND p.shop_id = bi.shop_id
      LEFT JOIN inventory_items i ON i.id = bi.inventory_item_id AND i.shop_id = bi.shop_id
      WHERE bi.booking_id = ? AND bi.shop_id = ? AND bi.is_deleted = 0
-    ORDER BY bi.id${lock ? ' FOR UPDATE' : ''}`,
+     ORDER BY bi.id${lock ? ' FOR UPDATE' : ''}`,
     [bookingId, shopId],
   );
   return rows;
@@ -169,15 +169,16 @@ export const completeBookingReturn = async (shopId, bookingId, returnedAt, conne
   );
 };
 
+// PostgreSQL: TO_CHAR instead of MySQL DATE_FORMAT
 const returnColumns = `r.id, r.shop_id, r.booking_id, r.customer_id, r.return_date,
   r.received_by_user_id, r.status, r.damage_amount, r.total_late_fee, r.notes, r.created_at,
-  b.booking_number, DATE_FORMAT(b.rental_end_date, '%Y-%m-%d') AS expected_return_date,
+  b.booking_number, TO_CHAR(b.rental_end_date, 'YYYY-MM-DD') AS expected_return_date,
   c.first_name, c.last_name, c.phone`;
 
 export const findReturnById = async (shopId, returnId, connection = pool) => {
   const [rows] = await connection.query(
     `SELECT ${returnColumns} FROM returns r
-    INNER JOIN bookings b ON b.id = r.booking_id AND b.shop_id = r.shop_id
+     INNER JOIN bookings b ON b.id = r.booking_id AND b.shop_id = r.shop_id
      INNER JOIN customers c ON c.id = r.customer_id AND c.shop_id = r.shop_id
      WHERE r.id = ? AND r.shop_id = ? AND r.is_deleted = 0 LIMIT 1`,
     [returnId, shopId],
@@ -239,15 +240,18 @@ const returnWhere = (shopId, options) => {
   const values = [shopId];
   let where = 'r.shop_id = ? AND r.is_deleted = 0';
   if (options.status === 'ON_TIME' || options.status === 'LATE') {
-    where += options.status === 'LATE' ? ' AND DATE(r.return_date) > b.rental_end_date' : ' AND DATE(r.return_date) <= b.rental_end_date';
+    // PostgreSQL: cast timestamptz to date for comparison
+    where += options.status === 'LATE'
+      ? ' AND r.return_date::DATE > b.rental_end_date'
+      : ' AND r.return_date::DATE <= b.rental_end_date';
   } else if (options.status) {
     where += ' AND r.status = ?';
     values.push(options.status.toLowerCase());
   }
   if (options.bookingId) { where += ' AND r.booking_id = ?'; values.push(options.bookingId); }
   if (options.customerId) { where += ' AND r.customer_id = ?'; values.push(options.customerId); }
-  if (options.startDate) { where += ' AND DATE(r.return_date) >= ?'; values.push(options.startDate); }
-  if (options.endDate) { where += ' AND DATE(r.return_date) <= ?'; values.push(options.endDate); }
+  if (options.startDate) { where += ' AND r.return_date::DATE >= ?'; values.push(options.startDate); }
+  if (options.endDate) { where += ' AND r.return_date::DATE <= ?'; values.push(options.endDate); }
   if (options.damageStatus) {
     where += ` AND EXISTS (SELECT 1 FROM return_items filter_item WHERE filter_item.return_id = r.id
       AND filter_item.shop_id = r.shop_id AND filter_item.is_deleted = 0 AND filter_item.damage_status = ?)`;
@@ -255,9 +259,10 @@ const returnWhere = (shopId, options) => {
   }
   if (options.search) {
     const term = `%${options.search.toLowerCase()}%`;
+    // PostgreSQL: CAST(... AS TEXT) instead of CAST(... AS CHAR)
     where += ` AND (LOWER(b.booking_number) LIKE ? OR LOWER(c.first_name) LIKE ?
       OR LOWER(c.last_name) LIKE ? OR LOWER(CONCAT(c.first_name, ' ', COALESCE(c.last_name, ''))) LIKE ?
-      OR LOWER(c.phone) LIKE ? OR CAST(r.id AS CHAR) LIKE ?)`;
+      OR LOWER(c.phone) LIKE ? OR CAST(r.id AS TEXT) LIKE ?)`;
     values.push(term, term, term, term, term, term);
   }
   return { where, values };
@@ -267,7 +272,7 @@ export const countReturnsByShop = async (shopId, options, connection = pool) => 
   const { where, values } = returnWhere(shopId, options);
   const [rows] = await connection.query(
     `SELECT COUNT(*) AS total FROM returns r
-    INNER JOIN bookings b ON b.id = r.booking_id AND b.shop_id = r.shop_id
+     INNER JOIN bookings b ON b.id = r.booking_id AND b.shop_id = r.shop_id
      INNER JOIN customers c ON c.id = r.customer_id AND c.shop_id = r.shop_id WHERE ${where}`,
     values,
   );
@@ -286,10 +291,10 @@ export const findReturnsByShop = async (shopId, options, connection = pool) => {
        AND issue_items.shop_id = r.shop_id AND issue_items.is_deleted = 0
        AND issue_items.damage_status IN ('MINOR', 'MAJOR', 'LOST')) AS issue_count
      FROM returns r
-    INNER JOIN bookings b ON b.id = r.booking_id AND b.shop_id = r.shop_id
+     INNER JOIN bookings b ON b.id = r.booking_id AND b.shop_id = r.shop_id
      INNER JOIN customers c ON c.id = r.customer_id AND c.shop_id = r.shop_id
      WHERE ${where}
-    ORDER BY ${sortBy} ${sortOrder}, r.id DESC LIMIT ? OFFSET ?`,
+     ORDER BY ${sortBy} ${sortOrder}, r.id DESC LIMIT ? OFFSET ?`,
     [...values, options.limit, options.offset],
   );
   return rows.map((row) => ({
@@ -310,7 +315,7 @@ export const findBookingReturns = async (shopId, bookingId, options, connection 
      INNER JOIN bookings b ON b.id = r.booking_id AND b.shop_id = r.shop_id
      INNER JOIN customers c ON c.id = r.customer_id AND c.shop_id = r.shop_id
      WHERE r.shop_id = ? AND r.booking_id = ? AND r.is_deleted = 0
-    ORDER BY ${sortBy} ${sortOrder}, r.id DESC LIMIT ? OFFSET ?`,
+     ORDER BY ${sortBy} ${sortOrder}, r.id DESC LIMIT ? OFFSET ?`,
     [shopId, bookingId, options.limit, options.offset],
   );
   return rows.map((row) => ({ ...mapReturn(row), itemCount: Number(row.item_count || 0) }));
@@ -340,7 +345,7 @@ export const findInventoryReturns = async (shopId, inventoryItemId, options, con
      INNER JOIN products p ON p.id = bi.product_id AND p.shop_id = bi.shop_id
      INNER JOIN inventory_items i ON i.id = ri.inventory_item_id AND i.shop_id = ri.shop_id
      WHERE ri.shop_id = ? AND ri.inventory_item_id = ? AND ri.is_deleted = 0 AND r.is_deleted = 0
-    ORDER BY ${sortBy} ${sortOrder}, ri.id DESC LIMIT ? OFFSET ?`,
+     ORDER BY ${sortBy} ${sortOrder}, ri.id DESC LIMIT ? OFFSET ?`,
     [shopId, inventoryItemId, options.limit, options.offset],
   );
   return rows.map((row) => ({ ...mapReturn(row), item: mapItem(row) }));

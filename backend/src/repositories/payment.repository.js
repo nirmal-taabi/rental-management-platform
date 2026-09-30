@@ -190,9 +190,9 @@ export const getPaymentSummaryByShop = async (shopId, options = {}, connection =
       COALESCE(SUM(CASE WHEN status IN ('REFUNDED', 'PARTIALLY_REFUNDED') THEN refunded_amount ELSE 0 END), 0) AS total_refunded,
       COALESCE(SUM(CASE WHEN status IN ('SUCCESS', 'PARTIALLY_REFUNDED', 'REFUNDED') THEN amount ELSE 0 END), 0)
         - COALESCE(SUM(CASE WHEN status IN ('REFUNDED', 'PARTIALLY_REFUNDED') THEN refunded_amount ELSE 0 END), 0) AS net_collected,
-      SUM(status = 'SUCCESS') AS successful_count,
-      SUM(status = 'PENDING') AS pending_count,
-      SUM(status IN ('SUCCESS', 'PARTIALLY_REFUNDED', 'REFUNDED')) AS payment_count
+      COUNT(*) FILTER (WHERE status = 'SUCCESS') AS successful_count,
+      COUNT(*) FILTER (WHERE status = 'PENDING') AS pending_count,
+      COUNT(*) FILTER (WHERE status IN ('SUCCESS', 'PARTIALLY_REFUNDED', 'REFUNDED')) AS payment_count
      FROM payments WHERE ${where}`,
     [shopId, ...values],
   );

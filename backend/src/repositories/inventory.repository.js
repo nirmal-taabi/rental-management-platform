@@ -154,18 +154,18 @@ export const summarizeInventoryByShop = async (shopId, filters = {}, connection 
   }
   const [rows] = await connection.query(
     `SELECT COUNT(*) AS total,
-      SUM(i.status = 'AVAILABLE') AS available,
-      SUM(i.status = 'RESERVED') AS reserved,
-      SUM(i.status = 'RENTED') AS rented,
-      SUM(i.status = 'RETURNED') AS returned,
-      SUM(i.status = 'INSPECTION') AS inspection,
-      SUM(i.status = 'CLEANING') AS cleaning,
-      SUM(i.status = 'ALTERATION') AS alteration,
-      SUM(i.status = 'REPAIR') AS repair,
-      SUM(i.status = 'DAMAGED') AS damaged,
-      SUM(i.status = 'LOST') AS lost,
-      SUM(i.status = 'RETIRED') AS retired,
-      SUM(i.status IN ('INSPECTION', 'CLEANING', 'ALTERATION', 'REPAIR')) AS maintenance
+      COUNT(*) FILTER (WHERE i.status = 'AVAILABLE') AS available,
+      COUNT(*) FILTER (WHERE i.status = 'RESERVED') AS reserved,
+      COUNT(*) FILTER (WHERE i.status = 'RENTED') AS rented,
+      COUNT(*) FILTER (WHERE i.status = 'RETURNED') AS returned,
+      COUNT(*) FILTER (WHERE i.status = 'INSPECTION') AS inspection,
+      COUNT(*) FILTER (WHERE i.status = 'CLEANING') AS cleaning,
+      COUNT(*) FILTER (WHERE i.status = 'ALTERATION') AS alteration,
+      COUNT(*) FILTER (WHERE i.status = 'REPAIR') AS repair,
+      COUNT(*) FILTER (WHERE i.status = 'DAMAGED') AS damaged,
+      COUNT(*) FILTER (WHERE i.status = 'LOST') AS lost,
+      COUNT(*) FILTER (WHERE i.status = 'RETIRED') AS retired,
+      COUNT(*) FILTER (WHERE i.status IN ('INSPECTION', 'CLEANING', 'ALTERATION', 'REPAIR')) AS maintenance
      FROM inventory_items i
      INNER JOIN products p ON p.id = i.product_id AND p.shop_id = i.shop_id
      WHERE ${where}`,

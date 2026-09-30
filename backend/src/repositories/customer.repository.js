@@ -49,11 +49,12 @@ export const findCustomersByShop = async (shopId, options = {}, connection = poo
         AND b.is_deleted = 0 AND b.status = 'ACTIVE'
     )`;
   } else if (rentalFilter === 'UPCOMING') {
+    // PostgreSQL: CURRENT_DATE (no parentheses, unlike MySQL's CURRENT_DATE())
     whereClause += ` AND EXISTS (
       SELECT 1 FROM bookings b
       WHERE b.customer_id = customers.id AND b.shop_id = customers.shop_id
         AND b.is_deleted = 0 AND b.status IN ('PENDING', 'CONFIRMED', 'READY')
-        AND b.rental_start_date > CURRENT_DATE()
+        AND b.rental_start_date > CURRENT_DATE
     )`;
   }
 
@@ -101,7 +102,7 @@ export const countCustomersByShop = async (shopId, options = {}, connection = po
       SELECT 1 FROM bookings b
       WHERE b.customer_id = customers.id AND b.shop_id = customers.shop_id
         AND b.is_deleted = 0 AND b.status IN ('PENDING', 'CONFIRMED', 'READY')
-        AND b.rental_start_date > CURRENT_DATE()
+        AND b.rental_start_date > CURRENT_DATE
     )`;
   }
 
@@ -148,7 +149,7 @@ export const getCustomerSummaryByShop = async (shopId, options = {}, connection 
       COUNT(DISTINCT CASE WHEN bookings.status = 'ACTIVE' THEN bookings.id END) AS active_rentals,
       COUNT(DISTINCT CASE
         WHEN bookings.status IN ('PENDING', 'CONFIRMED', 'READY')
-          AND bookings.rental_start_date > CURRENT_DATE()
+          AND bookings.rental_start_date > CURRENT_DATE
         THEN bookings.id
       END) AS upcoming_rentals
      FROM customers
@@ -172,7 +173,6 @@ export const findCustomerById = async (shopId, customerId, connection = pool) =>
     'SELECT * FROM customers WHERE id = ? AND shop_id = ? AND is_deleted = 0 LIMIT 1',
     [customerId, shopId],
   );
-
   return rows[0] ? mapCustomerRow(rows[0]) : null;
 };
 
@@ -181,7 +181,6 @@ export const findCustomerByPhone = async (shopId, phone, connection = pool) => {
     'SELECT * FROM customers WHERE shop_id = ? AND phone = ? AND is_deleted = 0 LIMIT 1',
     [shopId, phone],
   );
-
   return rows[0] ? mapCustomerRow(rows[0]) : null;
 };
 
@@ -190,27 +189,15 @@ export const findCustomerByEmail = async (shopId, email, connection = pool) => {
     'SELECT * FROM customers WHERE shop_id = ? AND email = ? AND is_deleted = 0 LIMIT 1',
     [shopId, email],
   );
-
   return rows[0] ? mapCustomerRow(rows[0]) : null;
 };
 
 export const createCustomer = async (shopId, payload, connection = pool) => {
   const [result] = await connection.query(
     `INSERT INTO customers (
-      shop_id,
-      first_name,
-      last_name,
-      phone,
-      alternate_phone,
-      email,
-      address_line1,
-      address_line2,
-      city,
-      state,
-      postal_code,
-      notes,
-      status
-    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)` ,
+      shop_id, first_name, last_name, phone, alternate_phone, email,
+      address_line1, address_line2, city, state, postal_code, notes, status
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
     [
       shopId,
       payload.firstName,
@@ -227,7 +214,6 @@ export const createCustomer = async (shopId, payload, connection = pool) => {
       toLowerStatus(payload.status || 'active'),
     ],
   );
-
   return findCustomerById(shopId, result.insertId, connection);
 };
 

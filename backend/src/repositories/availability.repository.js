@@ -65,8 +65,8 @@ export const findAvailabilityConflicts = async (
   }
   const [rows] = await connection.query(
     `SELECT bi.inventory_item_id, b.id AS booking_id, b.booking_number,
-      DATE_FORMAT(b.rental_start_date, '%Y-%m-%d') AS rental_start_date,
-      DATE_FORMAT(b.rental_end_date, '%Y-%m-%d') AS rental_end_date, b.status
+      TO_CHAR(b.rental_start_date, 'YYYY-MM-DD') AS rental_start_date,
+      TO_CHAR(b.rental_end_date, 'YYYY-MM-DD') AS rental_end_date, b.status
      FROM booking_items bi
      INNER JOIN bookings b ON b.id = bi.booking_id
      WHERE ${where}

@@ -16,8 +16,11 @@ const env = {
     clientUrl: (process.env.CLIENT_URL || 'http://localhost:5173').split(',').map((value) => value.trim()).filter(Boolean),
   },
   db: {
+    connectionString: process.env.DATABASE_URL || undefined,
+    ssl: String(process.env.DB_SSL || '').toLowerCase() === 'true',
+    sslRejectUnauthorized: String(process.env.DB_SSL_REJECT_UNAUTHORIZED || 'true').toLowerCase() !== 'false',
     host: process.env.DB_HOST || 'localhost',
-    port: Number(process.env.DB_PORT || 3306),
+    port: Number(process.env.DB_PORT || 5432),
     name: process.env.DB_NAME || 'rental_management',
     user: process.env.DB_USER || 'rental_user',
     password: dbPassword || undefined,

@@ -151,9 +151,10 @@ export const findBookingInventoryIds = async (shopId, bookingId, connection = po
   return rows.map((row) => row.inventory_item_id);
 };
 
+// PostgreSQL: TO_CHAR instead of MySQL DATE_FORMAT
 const bookingColumns = `b.id, b.shop_id, b.customer_id, b.booking_number,
-  DATE_FORMAT(b.rental_start_date, '%Y-%m-%d') AS rental_start_date,
-  DATE_FORMAT(b.rental_end_date, '%Y-%m-%d') AS rental_end_date,
+  TO_CHAR(b.rental_start_date, 'YYYY-MM-DD') AS rental_start_date,
+  TO_CHAR(b.rental_end_date, 'YYYY-MM-DD') AS rental_end_date,
   b.booking_date, b.status, b.picked_up_at, b.picked_up_by_user_id, b.pickup_notes, b.returned_at,
   b.subtotal, b.discount_amount, b.tax_amount, b.deposit_amount,
   b.total_amount, b.paid_amount, b.balance_amount, b.notes, b.created_at, b.updated_at,
@@ -175,7 +176,7 @@ export const findBookingById = async (shopId, bookingId, connection = pool, lock
      FROM booking_items bi
      INNER JOIN products p ON p.id = bi.product_id AND p.shop_id = bi.shop_id
      LEFT JOIN inventory_items i ON i.id = bi.inventory_item_id AND i.shop_id = bi.shop_id
-    WHERE bi.booking_id = ? AND bi.shop_id = ? AND bi.is_deleted = 0 ORDER BY bi.id${lock ? ' FOR UPDATE' : ''}`,
+     WHERE bi.booking_id = ? AND bi.shop_id = ? AND bi.is_deleted = 0 ORDER BY bi.id${lock ? ' FOR UPDATE' : ''}`,
     [bookingId, shopId],
   );
   return mapBooking(rows[0], itemRows.map(mapBookingItem));
@@ -193,7 +194,8 @@ const listWhere = (shopId, options) => {
     values.push(options.customerId);
   }
   if (options.bookingDate) {
-    where += ' AND DATE(b.booking_date) = ?';
+    // PostgreSQL: cast timestamptz to date
+    where += ' AND b.booking_date::DATE = ?';
     values.push(options.bookingDate);
   }
   if (options.startDate) {
@@ -241,13 +243,14 @@ export const findBookingsByShop = async (shopId, options, connection = pool) => 
 };
 
 export const getBookingSummaryByShop = async (shopId, currentDate, connection = pool) => {
+  // PostgreSQL: use FILTER aggregate instead of MySQL SUM(condition)
   const [rows] = await connection.query(
     `SELECT
-      SUM(status IN ('PENDING', 'CONFIRMED', 'READY') AND rental_start_date > ?) AS upcoming,
-      SUM(status IN ('PENDING', 'CONFIRMED', 'READY', 'ACTIVE') AND rental_start_date <= ? AND rental_end_date >= ?) AS today,
-      SUM(status = 'ACTIVE') AS active,
-      SUM(status = 'PENDING') AS pending,
-      SUM(status = 'COMPLETED') AS completed
+      COUNT(*) FILTER (WHERE status IN ('PENDING', 'CONFIRMED', 'READY') AND rental_start_date > ?) AS upcoming,
+      COUNT(*) FILTER (WHERE status IN ('PENDING', 'CONFIRMED', 'READY', 'ACTIVE') AND rental_start_date <= ? AND rental_end_date >= ?) AS today,
+      COUNT(*) FILTER (WHERE status = 'ACTIVE') AS active,
+      COUNT(*) FILTER (WHERE status = 'PENDING') AS pending,
+      COUNT(*) FILTER (WHERE status = 'COMPLETED') AS completed
      FROM bookings WHERE shop_id = ? AND is_deleted = 0`,
     [currentDate, currentDate, currentDate, shopId],
   );

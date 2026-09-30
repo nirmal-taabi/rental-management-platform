@@ -1,22 +1,26 @@
+-- PostgreSQL migration: Create alterations table
+
 CREATE TABLE IF NOT EXISTS alterations (
-    id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
-    shop_id BIGINT UNSIGNED NOT NULL,
-    booking_item_id BIGINT UNSIGNED NULL,
-    inventory_item_id BIGINT UNSIGNED NULL,
-    alteration_type ENUM('tailoring', 'repair', 'cleaning', 'stitching', 'other') NOT NULL DEFAULT 'other',
-    status ENUM('requested', 'in_progress', 'completed', 'cancelled') NOT NULL DEFAULT 'requested',
+    id BIGSERIAL PRIMARY KEY,
+    shop_id BIGINT NOT NULL,
+    booking_item_id BIGINT NULL,
+    inventory_item_id BIGINT NULL,
+    alteration_type VARCHAR(20) NOT NULL DEFAULT 'other'
+        CHECK (alteration_type IN ('tailoring', 'repair', 'cleaning', 'stitching', 'other')),
+    status VARCHAR(20) NOT NULL DEFAULT 'requested'
+        CHECK (status IN ('requested', 'in_progress', 'completed', 'cancelled')),
     description TEXT NOT NULL,
     labor_cost DECIMAL(12,2) NOT NULL DEFAULT 0.00,
     material_cost DECIMAL(12,2) NOT NULL DEFAULT 0.00,
-    completed_at TIMESTAMP NULL DEFAULT NULL,
-    is_deleted TINYINT(1) NOT NULL DEFAULT 0,
-    deleted_at TIMESTAMP NULL DEFAULT NULL,
-    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    PRIMARY KEY (id),
-    CONSTRAINT fk_alterations_shop FOREIGN KEY (shop_id) REFERENCES shops(id) ON DELETE CASCADE ON UPDATE CASCADE,
-    CONSTRAINT fk_alterations_booking_item FOREIGN KEY (booking_item_id) REFERENCES booking_items(id) ON DELETE SET NULL ON UPDATE CASCADE,
-    CONSTRAINT fk_alterations_inventory_item FOREIGN KEY (inventory_item_id) REFERENCES inventory_items(id) ON DELETE SET NULL ON UPDATE CASCADE,
-    KEY idx_alterations_shop_status (shop_id, status),
-    KEY idx_alterations_type (alteration_type)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+    completed_at TIMESTAMPTZ NULL DEFAULT NULL,
+    is_deleted SMALLINT NOT NULL DEFAULT 0,
+    deleted_at TIMESTAMPTZ NULL DEFAULT NULL,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT fk_alterations_shop FOREIGN KEY (shop_id) REFERENCES shops(id) ON DELETE CASCADE,
+    CONSTRAINT fk_alterations_booking_item FOREIGN KEY (booking_item_id) REFERENCES booking_items(id) ON DELETE SET NULL,
+    CONSTRAINT fk_alterations_inventory_item FOREIGN KEY (inventory_item_id) REFERENCES inventory_items(id) ON DELETE SET NULL
+);
+
+CREATE INDEX IF NOT EXISTS idx_alterations_shop_status ON alterations (shop_id, status);
+CREATE INDEX IF NOT EXISTS idx_alterations_type ON alterations (alteration_type);

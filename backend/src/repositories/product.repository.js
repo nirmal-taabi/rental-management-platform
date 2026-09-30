@@ -6,10 +6,11 @@ let fullTextIndexAvailable;
 const hasFullTextIndex = async (connection) => {
   if (fullTextIndexAvailable !== undefined) return fullTextIndexAvailable;
   try {
+    // PostgreSQL: check pg_indexes for the GIN search index
     const [rows] = await connection.query(
-      `SELECT COUNT(*) AS total FROM information_schema.statistics
-       WHERE table_schema = DATABASE() AND table_name = ? AND index_name = ?`,
-      ['products', 'idx_products_catalog_search'],
+      `SELECT COUNT(*) AS total FROM pg_indexes
+       WHERE tablename = 'products' AND indexname = 'idx_products_catalog_search'`,
+      [],
     );
     fullTextIndexAvailable = Number(rows[0]?.total || 0) > 0;
   } catch {
@@ -64,11 +65,12 @@ const buildFilters = (shopId, options = {}, useFullText = false) => {
   if (options.search) {
     const term = `%${String(options.search).trim()}%`;
     if (useFullText) {
-      where += ` AND (MATCH(p.name, p.sku, p.description) AGAINST (? IN NATURAL LANGUAGE MODE)
-        OR p.name LIKE ? OR p.sku LIKE ? OR p.description LIKE ?)`;
+      // PostgreSQL: use tsvector/tsquery for full-text, fallback to LIKE for partial matches
+      where += ` AND (search_vector @@ plainto_tsquery('english', ?)
+        OR p.name ILIKE ? OR p.sku ILIKE ? OR p.description ILIKE ?)`;
       values.push(String(options.search).trim(), term, term, term);
     } else {
-      where += ' AND (p.name LIKE ? OR p.sku LIKE ? OR p.description LIKE ?)';
+      where += ' AND (p.name ILIKE ? OR p.sku ILIKE ? OR p.description ILIKE ?)';
       values.push(term, term, term);
     }
   }
@@ -135,9 +137,10 @@ export const findProductBySku = async (shopId, sku, excludeId) => {
 };
 
 export const findHighestProductSkuSequence = async (shopId, prefix) => {
+  // PostgreSQL: use ~ for regex and SPLIT_PART instead of SUBSTRING_INDEX
   const [rows] = await pool.query(
-    `SELECT MAX(CAST(SUBSTRING_INDEX(sku, '-', -1) AS UNSIGNED)) AS max_sequence
-     FROM products WHERE shop_id = ? AND sku REGEXP ?`,
+    `SELECT MAX(CAST(SPLIT_PART(sku, '-', -1) AS INTEGER)) AS max_sequence
+     FROM products WHERE shop_id = ? AND sku ~ ?`,
     [shopId, `^${prefix}-[0-9]+$`],
   );
   return Number(rows[0]?.max_sequence || 0);

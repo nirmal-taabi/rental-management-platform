@@ -1,3 +1,5 @@
+-- PostgreSQL migration: Add customer indexes
+
 CREATE INDEX IF NOT EXISTS idx_customers_shop_phone_active
     ON customers (shop_id, phone, status);
 

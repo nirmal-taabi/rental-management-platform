@@ -30,8 +30,10 @@ export const findRolesForUser = async (userId, shopId, connection = pool) => {
 };
 
 export const assignRoleToUser = async (shopId, userId, roleId, connection = pool) => {
+  // PostgreSQL: ON CONFLICT DO UPDATE instead of ON DUPLICATE KEY UPDATE
   await connection.query(
-    'INSERT INTO user_roles (shop_id, user_id, role_id) VALUES (?, ?, ?) ON DUPLICATE KEY UPDATE role_id = VALUES(role_id)',
+    `INSERT INTO user_roles (shop_id, user_id, role_id) VALUES (?, ?, ?)
+     ON CONFLICT (shop_id, user_id, role_id) DO UPDATE SET role_id = EXCLUDED.role_id`,
     [shopId, userId, roleId],
   );
 };

@@ -1,21 +1,33 @@
+-- PostgreSQL migration: Expand pickup and return workflow
+
 ALTER TABLE bookings
-    ADD COLUMN picked_up_at TIMESTAMP NULL DEFAULT NULL AFTER status,
-    ADD COLUMN picked_up_by_user_id BIGINT UNSIGNED NULL AFTER picked_up_at,
-    ADD COLUMN pickup_notes TEXT NULL AFTER picked_up_by_user_id,
-    ADD COLUMN returned_at TIMESTAMP NULL DEFAULT NULL AFTER pickup_notes,
-    ADD CONSTRAINT fk_bookings_picked_up_by_user FOREIGN KEY (picked_up_by_user_id) REFERENCES users(id) ON DELETE SET NULL ON UPDATE CASCADE;
+    ADD COLUMN IF NOT EXISTS picked_up_at TIMESTAMPTZ NULL DEFAULT NULL,
+    ADD COLUMN IF NOT EXISTS picked_up_by_user_id BIGINT NULL,
+    ADD COLUMN IF NOT EXISTS pickup_notes TEXT NULL,
+    ADD COLUMN IF NOT EXISTS returned_at TIMESTAMPTZ NULL DEFAULT NULL;
+
+ALTER TABLE bookings
+    ADD CONSTRAINT fk_bookings_picked_up_by_user
+        FOREIGN KEY (picked_up_by_user_id) REFERENCES users(id) ON DELETE SET NULL;
 
 ALTER TABLE booking_items
-    ADD COLUMN picked_up_at TIMESTAMP NULL DEFAULT NULL AFTER status;
+    ADD COLUMN IF NOT EXISTS picked_up_at TIMESTAMPTZ NULL DEFAULT NULL;
 
 ALTER TABLE returns
-    ADD COLUMN received_by_user_id BIGINT UNSIGNED NULL AFTER customer_id,
-    ADD COLUMN damage_amount DECIMAL(12,2) NOT NULL DEFAULT 0.00 AFTER total_late_fee,
-    ADD CONSTRAINT fk_returns_received_by_user FOREIGN KEY (received_by_user_id) REFERENCES users(id) ON DELETE SET NULL ON UPDATE CASCADE;
+    ADD COLUMN IF NOT EXISTS received_by_user_id BIGINT NULL,
+    ADD COLUMN IF NOT EXISTS damage_amount DECIMAL(12,2) NOT NULL DEFAULT 0.00;
+
+ALTER TABLE returns
+    ADD CONSTRAINT fk_returns_received_by_user
+        FOREIGN KEY (received_by_user_id) REFERENCES users(id) ON DELETE SET NULL;
 
 ALTER TABLE return_items
-    ADD COLUMN return_condition ENUM('EXCELLENT', 'GOOD', 'FAIR', 'DAMAGED') NOT NULL DEFAULT 'GOOD' AFTER condition_status,
-    ADD COLUMN damage_status ENUM('NONE', 'MINOR', 'MAJOR', 'LOST') NOT NULL DEFAULT 'NONE' AFTER return_condition;
+    ADD COLUMN IF NOT EXISTS return_condition VARCHAR(20) NOT NULL DEFAULT 'GOOD',
+    ADD COLUMN IF NOT EXISTS damage_status VARCHAR(10) NOT NULL DEFAULT 'NONE';
+
+ALTER TABLE return_items
+    ADD CONSTRAINT chk_return_items_condition CHECK (return_condition IN ('EXCELLENT', 'GOOD', 'FAIR', 'DAMAGED')),
+    ADD CONSTRAINT chk_return_items_damage_status CHECK (damage_status IN ('NONE', 'MINOR', 'MAJOR', 'LOST'));
 
 UPDATE return_items
 SET return_condition = CASE condition_status
@@ -32,6 +44,8 @@ SET return_condition = CASE condition_status
         ELSE 'NONE'
     END;
 
-CREATE INDEX idx_returns_shop_date ON returns (shop_id, return_date);
-CREATE INDEX idx_return_items_shop_booking_item ON return_items (shop_id, booking_item_id, is_deleted);
-CREATE INDEX idx_return_items_shop_inventory ON return_items (shop_id, inventory_item_id, is_deleted);
+CREATE INDEX IF NOT EXISTS idx_returns_shop_date ON returns (shop_id, return_date);
+CREATE INDEX IF NOT EXISTS idx_return_items_shop_booking_item
+    ON return_items (shop_id, booking_item_id, is_deleted);
+CREATE INDEX IF NOT EXISTS idx_return_items_shop_inventory
+    ON return_items (shop_id, inventory_item_id, is_deleted);
