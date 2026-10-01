@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="Rental Management Platform icon">
+  <defs>
+    <linearGradient id="bg" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0%" stop-color="#68404b" />
+      <stop offset="100%" stop-color="#4c3138" />
+    </linearGradient>
+  </defs>
+  <rect width="512" height="512" rx="110" fill="url(#bg)"/>
+  <rect x="92" y="208" width="328" height="168" rx="42" fill="#f8f9f6" opacity="0.96"/>
+  <path d="M152 220 L256 146 L360 220" fill="none" stroke="#68404b" stroke-width="26" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M196 340 V282 H316 V340" fill="none" stroke="#68404b" stroke-width="26" stroke-linecap="round" stroke-linejoin="round"/>
+  <rect x="232" y="282" width="48" height="58" rx="12" fill="#68404b"/>
+  <path d="M120 364 H392" stroke="#f3d9df" stroke-width="26" stroke-linecap="round" opacity="0.8"/>
+</svg>
