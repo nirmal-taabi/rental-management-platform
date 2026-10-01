@@ -4,7 +4,7 @@ import env from '../config/env.js';
 const getAuthCookieOptions = (tokenLifetime = env.jwt.expiresIn) => ({
   httpOnly: true,
   secure: env.app.nodeEnv === 'production',
-  sameSite: 'lax',
+  sameSite: env.app.nodeEnv === 'production' ? 'none' : 'lax',
   path: '/',
   maxAge: tokenLifetimeToMs(tokenLifetime),
 });

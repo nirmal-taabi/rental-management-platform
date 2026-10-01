@@ -1,4 +1,5 @@
 import AppError from '../utils/AppError.js';
+import { clearAuthCookie } from '../utils/jwt.js';
 import { sendSuccess } from '../utils/apiResponse.js';
 import { registerOwner, loginUser, getAuthenticatedUserProfile } from '../services/auth.service.js';
 import { validateRegisterInput, validateLoginInput } from '../validators/auth.validator.js';
@@ -49,12 +50,8 @@ export const me = async (req, res, next) => {
 };
 
 export const logout = (req, res) => {
-  res.clearCookie('auth_token', {
-    path: '/',
-    httpOnly: true,
-    sameSite: 'lax',
-    secure: process.env.NODE_ENV === 'production',
-  });
+  const cookie = clearAuthCookie();
+  res.clearCookie(cookie.name, cookie.options);
 
   return sendSuccess(res, 'Logged out successfully.', {}, OK);
 };
