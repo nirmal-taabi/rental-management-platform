@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { CalendarDays, ChevronLeft, ChevronRight, Plus, Search } from 'lucide-react';
 import BookingStatusBadge from '../components/BookingStatusBadge';
 import { bookingStatuses } from '../utils/bookingStatus';
@@ -29,9 +29,10 @@ const formatMoney = (value) => new Intl.NumberFormat('en-IN', { style: 'currency
 
 function BookingListPage() {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const [search, setSearch] = useState('');
   const [debouncedSearch, setDebouncedSearch] = useState('');
-  const [status, setStatus] = useState('');
+  const [status, setStatus] = useState(searchParams.get('status') || '');
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
   const [sortBy, setSortBy] = useState('createdAt');

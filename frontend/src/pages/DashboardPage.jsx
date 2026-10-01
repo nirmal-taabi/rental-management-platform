@@ -1,131 +1,255 @@
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import {
-  Activity,
-  ArrowUpRight,
-  Boxes,
-  Building2,
-  CalendarDays,
-  CircleCheck,
-  Mail,
-  MapPin,
-  Package,
-  Phone,
-  ShieldCheck,
-  Store,
-  Users,
-} from 'lucide-react';
+import PropTypes from 'prop-types';
+import { Activity, AlertTriangle, ArrowUpRight, Boxes, CalendarDays, Clock3, CreditCard, Package, RotateCcw, Users } from 'lucide-react';
 import { useAuth } from '../features/auth/context/AuthContext';
+import { dashboardService } from '../features/dashboard/services/dashboard.service';
+
+const dateInBusinessZone = (date = new Date()) => {
+  const parts = new Intl.DateTimeFormat('en-CA', {
+    timeZone: 'Asia/Kolkata', year: 'numeric', month: '2-digit', day: '2-digit',
+  }).formatToParts(date);
+  const values = Object.fromEntries(parts.map(({ type, value }) => [type, value]));
+  return `${values.year}-${values.month}-${values.day}`;
+};
+
+const shiftDate = (date, days) => {
+  const value = new Date(`${date}T00:00:00.000Z`);
+  value.setUTCDate(value.getUTCDate() + days);
+  return value.toISOString().slice(0, 10);
+};
+
+const getRange = (preset, startDate, endDate) => {
+  const today = dateInBusinessZone();
+  if (preset === 'custom') return { startDate, endDate };
+  if (preset === 'today') return { startDate: today, endDate: today };
+  if (preset === 'yesterday') return { startDate: shiftDate(today, -1), endDate: shiftDate(today, -1) };
+  if (preset === 'week') return { startDate: shiftDate(today, -((new Date(`${today}T00:00:00Z`).getUTCDay() + 6) % 7)), endDate: today };
+  if (preset === 'last30') return { startDate: shiftDate(today, -29), endDate: today };
+  if (preset === 'month') return { startDate: `${today.slice(0, 8)}01`, endDate: today };
+  const firstOfMonth = `${today.slice(0, 8)}01`;
+  const lastMonthEnd = shiftDate(firstOfMonth, -1);
+  return { startDate: `${lastMonthEnd.slice(0, 8)}01`, endDate: lastMonthEnd };
+};
+
+const formatDate = (value) => value
+  ? new Intl.DateTimeFormat('en-IN', { day: '2-digit', month: 'short', year: 'numeric', timeZone: 'UTC' }).format(new Date(`${String(value).slice(0, 10)}T00:00:00Z`))
+  : '—';
+
+const formatMoney = (value) => new Intl.NumberFormat('en-IN', {
+  style: 'currency', currency: 'INR', maximumFractionDigits: 0,
+}).format(Number(value || 0));
+
+const formatChange = (comparison) => {
+  if (!comparison || comparison.percentageChange === null) return 'No previous period data';
+  const change = Number(comparison.percentageChange);
+  return `${change > 0 ? '+' : ''}${change}% vs previous period`;
+};
+
+function Metric({ label, value, detail, icon: Icon, to }) {
+  const content = (
+    <>
+      <span className="grid size-9 shrink-0 place-items-center bg-[#f8f9f6] text-[#68404b]"><Icon size={17} /></span>
+      <span className="min-w-0 flex-1">
+        <span className="block text-xs font-medium text-[#59615e]">{label}</span>
+        <span className="mt-1 block text-2xl font-semibold tabular-nums text-[#252a29]">{value ?? '—'}</span>
+        {detail && <span className="mt-1 block text-xs text-[#59615e]">{detail}</span>}
+      </span>
+      {to && <ArrowUpRight size={15} className="shrink-0 text-[#8b928e]" />}
+    </>
+  );
+  return to
+    ? <Link to={to} className="flex min-h-28 items-start gap-3 border border-[#e6e8e4] bg-white p-4 transition hover:border-[#cbb9bd]">{content}</Link>
+    : <div className="flex min-h-28 items-start gap-3 border border-[#e6e8e4] bg-white p-4">{content}</div>;
+}
+
+function Section({ title, description, loading, error, onRetry, children }) {
+  return (
+    <section className="min-w-0 border border-[#e6e8e4] bg-white">
+      <header className="flex items-start justify-between gap-3 border-b border-[#e8eae7] px-4 py-3 sm:px-5">
+        <div><h2 className="text-sm font-semibold text-[#252a29]">{title}</h2>{description && <p className="mt-1 text-xs text-[#59615e]">{description}</p>}</div>
+        {error && <button type="button" onClick={onRetry} className="text-xs font-semibold text-[#68404b] underline underline-offset-2">Retry</button>}
+      </header>
+      <div className="p-4 sm:p-5">
+        {loading ? <p className="py-5 text-sm text-[#59615e]">Loading {title.toLowerCase()}…</p>
+          : error ? <p role="alert" className="text-sm text-rose-800">Unable to load this section.</p>
+            : children}
+      </div>
+    </section>
+  );
+}
+
+Metric.propTypes = {
+  label: PropTypes.string.isRequired,
+  value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  detail: PropTypes.string,
+  icon: PropTypes.elementType.isRequired,
+  to: PropTypes.string,
+};
+
+Section.propTypes = {
+  title: PropTypes.string.isRequired,
+  description: PropTypes.string,
+  loading: PropTypes.bool,
+  error: PropTypes.string,
+  onRetry: PropTypes.func,
+  children: PropTypes.node,
+};
+
+function TrendList({ rows, valueKey, label }) {
+  if (!rows?.length) return <p className="text-sm text-[#59615e]">No data for this period.</p>;
+  const max = Math.max(...rows.map((row) => Number(row[valueKey] || 0)), 1);
+  return (
+    <div role="img" aria-label={`${label} by date`}>
+      <p className="sr-only">{label} for the selected date range</p>
+      <div className="space-y-3" aria-hidden="true">
+        {rows.slice(-8).map((row) => (
+          <div key={row.period} className="grid grid-cols-[4.5rem_1fr_auto] items-center gap-3 text-xs">
+            <span className="text-[#59615e]">{formatDate(row.period)}</span>
+            <span className="h-2 bg-[#f1f2ef]"><span className="block h-2 bg-[#68404b]" style={{ width: `${Math.max((Number(row[valueKey] || 0) / max) * 100, 2)}%` }} /></span>
+            <span className="min-w-8 text-right font-semibold tabular-nums text-[#252a29]">{valueKey === 'total' ? formatMoney(row[valueKey]) : row[valueKey]}</span>
+          </div>
+        ))}
+      </div>
+      <table className="sr-only"><caption>{label} data</caption><thead><tr><th>Date</th><th>{label}</th></tr></thead><tbody>{rows.map((row) => <tr key={row.period}><td>{row.period}</td><td>{row[valueKey]}</td></tr>)}</tbody></table>
+    </div>
+  );
+}
+
+TrendList.propTypes = {
+  rows: PropTypes.arrayOf(PropTypes.object),
+  valueKey: PropTypes.string.isRequired,
+  label: PropTypes.string.isRequired,
+};
 
 function DashboardPage() {
   const { user, shop, roles } = useAuth();
-  const userName = user?.name || 'Owner';
-  const roleLabel = roles.join(', ') || 'OWNER';
-
+  const [preset, setPreset] = useState('month');
+  const [customStart, setCustomStart] = useState('');
+  const [customEnd, setCustomEnd] = useState('');
+  const [refreshKey, setRefreshKey] = useState(0);
+  const [data, setData] = useState({});
+  const [loading, setLoading] = useState({});
+  const [errors, setErrors] = useState({});
+  const canViewFinancials = roles.includes('OWNER') || roles.includes('ADMIN');
+  const range = getRange(preset, customStart, customEnd);
+  const rangeStartDate = range.startDate;
+  const rangeEndDate = range.endDate;
+  const readyForRange = Boolean(range.startDate && range.endDate);
   const quickLinks = [
-    { label: 'Create a booking', description: 'Start a new rental', to: '/bookings/new', icon: CalendarDays },
-    { label: 'View inventory', description: 'Check item availability', to: '/inventory', icon: Boxes },
-    { label: 'Add a customer', description: 'Build your customer list', to: '/customers/new', icon: Users },
-    { label: 'Manage products', description: 'Update your catalog', to: '/products', icon: Package },
+    { label: 'New booking', to: '/bookings/new', icon: CalendarDays },
+    { label: 'Add customer', to: '/customers/new', icon: Users },
+    { label: 'Add inventory', to: '/inventory/new', icon: Boxes },
+    { label: 'Add product', to: '/products/new', icon: Package },
   ];
 
+  useEffect(() => {
+    if (!readyForRange) return undefined;
+    let active = true;
+    const requests = {
+      summary: () => dashboardService.getSummary({ startDate: rangeStartDate, endDate: rangeEndDate }),
+      operations: () => dashboardService.getOperations(),
+      attention: () => dashboardService.getAttention(),
+      activity: () => dashboardService.getActivity(),
+      bookingTrend: () => dashboardService.getBookingTrend({ startDate: rangeStartDate, endDate: rangeEndDate, groupBy: 'day' }),
+      topProducts: () => dashboardService.getTopProducts({ startDate: rangeStartDate, endDate: rangeEndDate, limit: 5 }),
+      ...(canViewFinancials ? { payments: () => dashboardService.getPaymentReport({ startDate: rangeStartDate, endDate: rangeEndDate, groupBy: 'day' }) } : {}),
+    };
+    setLoading(Object.fromEntries(Object.keys(requests).map((key) => [key, true])));
+    setErrors({});
+    Promise.all(Object.entries(requests).map(async ([key, request]) => {
+      try {
+        const response = await request();
+        if (active) setData((previous) => ({ ...previous, [key]: response.data.data }));
+      } catch (error) {
+        if (active) setErrors((previous) => ({ ...previous, [key]: error.response?.data?.message || 'Request failed' }));
+      } finally {
+        if (active) setLoading((previous) => ({ ...previous, [key]: false }));
+      }
+    }));
+    return () => { active = false; };
+  }, [rangeStartDate, rangeEndDate, readyForRange, canViewFinancials, refreshKey]);
+
+  const retry = () => setRefreshKey((value) => value + 1);
+  const summary = data.summary || {};
+  const operations = data.operations || {};
+  const attention = data.attention || {};
+  const today = dateInBusinessZone();
+
   return (
-    <div className="mx-auto max-w-[1440px] px-4 py-7 text-[#252a29] sm:px-6 sm:py-9 lg:px-10">
-          <div className="mb-7 flex flex-wrap items-end justify-between gap-4">
-            <div>
-              <h1 className="text-3xl font-semibold tracking-normal text-[#252a29]">Dashboard</h1>
-              <p className="mt-2 text-sm text-[#747b78]">A clear view of your rental shop and account.</p>
-            </div>
-            <div className="inline-flex items-center gap-2 border border-[#e6e8e4] bg-white px-3 py-2 text-xs font-medium text-[#59615e]">
-              <Activity size={15} className="text-[#8a5360]" />
-              Workspace active
-            </div>
-          </div>
+    <div className="mx-auto max-w-[1440px] space-y-7 px-4 py-7 text-[#252a29] sm:px-6 sm:py-9 lg:px-10">
+      <header className="flex flex-col gap-4 border-b border-[#e6e8e4] pb-5 sm:flex-row sm:items-end sm:justify-between">
+        <div><p className="text-xs font-semibold uppercase tracking-[0.16em] text-[#8a5360]">{shop?.name || 'Rental workspace'}</p><h1 className="mt-1 text-3xl font-semibold">Operations dashboard</h1><p className="mt-2 text-sm text-[#59615e]">Today is {formatDate(today)}. Signed in as {user?.name || 'Team member'}.</p></div>
+        <Link to="/reports" className="inline-flex min-h-10 items-center justify-center gap-2 border border-[#dfe3df] bg-white px-3 text-sm font-semibold text-[#414846] hover:border-[#68404b]"><Activity size={16} /> Reports</Link>
+      </header>
 
-          <section aria-label="Account summary" className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
-            <div className="flex min-w-0 items-start gap-4 border border-[#e6e8e4] bg-white p-5">
-              <span className="grid size-10 shrink-0 place-items-center bg-[#f8f9f6] text-[#68404b]"><Building2 size={18} /></span>
-              <div className="min-w-0">
-                <p className="text-xs font-semibold uppercase tracking-[0.1em] text-[#8b928e]">Shop</p>
-                <p className="mt-1 truncate text-lg font-semibold text-[#252a29]">{shop?.name || 'Your shop'}</p>
-                <p className="mt-1 text-xs text-[#747b78]">Rental workspace</p>
-              </div>
-            </div>
-            <div className="flex min-w-0 items-start gap-4 border border-[#e6e8e4] bg-white p-5">
-              <span className="grid size-10 shrink-0 place-items-center bg-[#f8f9f6] text-[#68404b]"><CircleCheck size={18} /></span>
-              <div className="min-w-0">
-                <p className="text-xs font-semibold uppercase tracking-[0.1em] text-[#8b928e]">Status</p>
-                <p className="mt-1 text-lg font-semibold text-[#252a29]">Active</p>
-                <p className="mt-1 text-xs text-[#747b78]">Account is ready to use</p>
-              </div>
-            </div>
-            <div className="flex min-w-0 items-start gap-4 border border-[#e6e8e4] bg-white p-5 sm:col-span-2 xl:col-span-1">
-              <span className="grid size-10 shrink-0 place-items-center bg-[#f8f9f6] text-[#68404b]"><ShieldCheck size={18} /></span>
-              <div className="min-w-0">
-                <p className="text-xs font-semibold uppercase tracking-[0.1em] text-[#8b928e]">Access</p>
-                <p className="mt-1 truncate text-lg font-semibold text-[#252a29]">{roleLabel}</p>
-                <p className="mt-1 text-xs text-[#747b78]">Signed in as {userName}</p>
-              </div>
-            </div>
-          </section>
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+        <div>
+          <label htmlFor="dashboard-range" className="mb-1.5 block text-xs font-semibold text-[#414846]">Reporting period</label>
+          <select id="dashboard-range" value={preset} onChange={(event) => setPreset(event.target.value)} className="min-h-10 min-w-48 border border-[#dfe3df] bg-white px-3 text-sm text-[#252a29]">
+            <option value="today">Today</option><option value="yesterday">Yesterday</option><option value="week">This week</option><option value="month">This month</option><option value="lastMonth">Last month</option><option value="last30">Last 30 days</option><option value="custom">Custom range</option>
+          </select>
+        </div>
+        {preset === 'custom' && <div className="grid gap-3 sm:grid-cols-2"><div><label htmlFor="dashboard-start" className="mb-1.5 block text-xs font-semibold text-[#414846]">Start date</label><input id="dashboard-start" type="date" value={customStart} max={customEnd || undefined} onChange={(event) => setCustomStart(event.target.value)} className="min-h-10 w-full border border-[#dfe3df] bg-white px-3 text-sm" /></div><div><label htmlFor="dashboard-end" className="mb-1.5 block text-xs font-semibold text-[#414846]">End date</label><input id="dashboard-end" type="date" value={customEnd} min={customStart || undefined} onChange={(event) => setCustomEnd(event.target.value)} className="min-h-10 w-full border border-[#dfe3df] bg-white px-3 text-sm" /></div></div>}
+        <nav aria-label="Quick actions" className="flex flex-wrap gap-2">{quickLinks.map(({ label, to, icon: Icon }) => <Link key={to} to={to} className="inline-flex min-h-9 items-center gap-2 border border-[#dfe3df] bg-white px-3 text-xs font-semibold text-[#414846] hover:border-[#68404b]"><Icon size={14} />{label}</Link>)}</nav>
+      </div>
+      {preset === 'custom' && !readyForRange && <p role="status" className="text-sm text-[#59615e]">Choose both dates to load the dashboard.</p>}
 
-          <div className="mt-7 grid gap-6 xl:grid-cols-[1.15fr_0.85fr]">
-            <section className="border border-[#e6e8e4] bg-white">
-              <div className="flex items-center justify-between gap-4 border-b border-[#e6e8e4] px-5 py-4 sm:px-6">
-                <div>
-                  <h2 className="text-base font-semibold text-[#252a29]">Shop details</h2>
-                  <p className="mt-1 text-xs text-[#8b928e]">Business information on your account</p>
-                </div>
-                <Building2 size={18} className="text-[#8a5360]" />
-              </div>
-              <dl className="grid gap-x-8 px-5 sm:grid-cols-2 sm:px-6">
-                <div className="border-b border-[#eef0ed] py-4">
-                  <dt className="flex items-center gap-2 text-xs font-medium text-[#8b928e]"><Mail size={14} /> Business email</dt>
-                  <dd className="mt-2 break-words text-sm font-medium text-[#414846]">{shop?.email || 'Not provided'}</dd>
-                </div>
-                <div className="border-b border-[#eef0ed] py-4">
-                  <dt className="flex items-center gap-2 text-xs font-medium text-[#8b928e]"><Phone size={14} /> Business phone</dt>
-                  <dd className="mt-2 text-sm font-medium text-[#414846]">{shop?.phone || 'Not provided'}</dd>
-                </div>
-                <div className="border-b border-[#eef0ed] py-4">
-                  <dt className="flex items-center gap-2 text-xs font-medium text-[#8b928e]"><MapPin size={14} /> Location</dt>
-                  <dd className="mt-2 text-sm font-medium text-[#414846]">{[shop?.city, shop?.state].filter(Boolean).join(', ') || 'Not provided'}</dd>
-                </div>
-                <div className="border-b border-[#eef0ed] py-4">
-                  <dt className="flex items-center gap-2 text-xs font-medium text-[#8b928e]"><Store size={14} /> GST number</dt>
-                  <dd className="mt-2 text-sm font-medium text-[#414846]">{shop?.gstNumber || 'Not provided'}</dd>
-                </div>
-              </dl>
-              <div className="px-5 py-4 sm:px-6">
-                <p className="text-xs text-[#8b928e]">Account owner</p>
-                <p className="mt-1 text-sm font-medium text-[#414846]">{userName}</p>
-              </div>
-            </section>
+      <section aria-label="Key metrics" className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
+        <Metric label="Bookings" value={summary.bookings?.total} detail={formatChange(summary.comparison?.bookings)} icon={CalendarDays} to="/bookings" />
+        <Metric label="Active rentals" value={operations.counts?.active_rentals} icon={Activity} to="/bookings?status=ACTIVE" />
+        <Metric label="Available inventory" value={summary.inventory?.available} detail={`${summary.inventory?.usable ?? '—'} usable items`} icon={Boxes} to="/inventory" />
+        <Metric label="New customers" value={summary.customers?.new} detail={formatChange(summary.comparison?.newCustomers)} icon={Users} to="/customers" />
+        {canViewFinancials && <Metric label="Payments collected" value={formatMoney(summary.payments?.collected)} detail={formatChange(summary.comparison?.paymentsCollected)} icon={CreditCard} to="/payments" />}
+        {canViewFinancials && <Metric label="Outstanding balance" value={formatMoney(summary.payments?.outstanding)} detail={formatChange(summary.comparison?.outstanding)} icon={CreditCard} to="/payments" />}
+      </section>
 
-            <section className="border border-[#e6e8e4] bg-white">
-              <div className="flex items-center justify-between gap-4 border-b border-[#e6e8e4] px-5 py-4 sm:px-6">
-                <div>
-                  <h2 className="text-base font-semibold text-[#252a29]">Quick actions</h2>
-                  <p className="mt-1 text-xs text-[#8b928e]">Go straight to a common task</p>
-                </div>
-                <ArrowUpRight size={18} className="text-[#8a5360]" />
-              </div>
-              <div className="divide-y divide-[#eef0ed] px-5 sm:px-6">
-                {quickLinks.map((item) => {
-                  const Icon = item.icon;
-                  return (
-                    <Link key={item.label} to={item.to} className="group flex min-h-[68px] items-center gap-3 py-3">
-                      <span className="grid size-9 shrink-0 place-items-center bg-[#f8f9f6] text-[#68404b] transition group-hover:bg-[#f8f9f6]"><Icon size={17} /></span>
-                      <span className="min-w-0 flex-1">
-                        <span className="block text-sm font-semibold text-[#414846] group-hover:text-[#68404b]">{item.label}</span>
-                        <span className="mt-0.5 block text-xs text-[#8b928e]">{item.description}</span>
-                      </span>
-                      <ArrowUpRight size={15} className="shrink-0 text-[#a1a6a2] transition group-hover:text-[#68404b]" />
-                    </Link>
-                  );
-                })}
-              </div>
-            </section>
-          </div>
+      <section>
+        <div className="mb-3 flex items-end justify-between gap-3"><div><h2 className="text-lg font-semibold">Today’s operations</h2><p className="mt-1 text-sm text-[#59615e]">Pickup and return workload, with the next seven days in view.</p></div><Link to="/bookings" className="text-xs font-semibold text-[#68404b] underline underline-offset-2">All bookings</Link></div>
+        <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+          <Metric label="Pickups today" value={operations.counts?.pickups_today} icon={CalendarDays} to="/bookings?status=TODAY" />
+          <Metric label="Returns due today" value={operations.counts?.returns_today} icon={RotateCcw} to="/bookings?status=ACTIVE" />
+          <Metric label="Active rentals" value={operations.counts?.active_rentals} icon={Activity} to="/bookings?status=ACTIVE" />
+          <Metric label="Overdue returns" value={operations.counts?.overdue_returns} icon={Clock3} to="/bookings?status=ACTIVE" />
+        </div>
+      </section>
+
+      <section className="grid gap-5 xl:grid-cols-2">
+        <Section title="Upcoming pickups" description="Next seven days" loading={loading.operations} error={errors.operations} onRetry={retry}>
+          {operations.upcomingPickups?.length ? <ul className="divide-y divide-[#eef0ed]">{operations.upcomingPickups.map((booking) => <li key={booking.id} className="flex items-center justify-between gap-3 py-3 first:pt-0 last:pb-0"><div className="min-w-0"><Link to={`/bookings/${booking.id}`} className="font-mono text-sm font-semibold text-[#68404b]">{booking.booking_number}</Link><p className="mt-1 truncate text-sm font-medium">{booking.first_name} {booking.last_name || ''}</p></div><div className="shrink-0 text-right"><p className="text-sm">{formatDate(booking.rental_start_date)}</p><p className="mt-1 text-xs text-[#59615e]">{booking.item_count} items · {booking.status}</p></div></li>)}</ul> : <p className="text-sm text-[#59615e]">No upcoming pickups.</p>}
+        </Section>
+        <Section title="Upcoming returns" description="Next seven days" loading={loading.operations} error={errors.operations} onRetry={retry}>
+          {operations.upcomingReturns?.length ? <ul className="divide-y divide-[#eef0ed]">{operations.upcomingReturns.map((booking) => <li key={booking.id} className="flex items-center justify-between gap-3 py-3 first:pt-0 last:pb-0"><div className="min-w-0"><Link to={`/bookings/${booking.id}`} className="font-mono text-sm font-semibold text-[#68404b]">{booking.booking_number}</Link><p className="mt-1 truncate text-sm font-medium">{booking.first_name} {booking.last_name || ''}</p></div><div className="shrink-0 text-right"><p className="text-sm">{formatDate(booking.expected_return_date)}</p><p className="mt-1 text-xs text-[#59615e]">{booking.item_count} items · {booking.status}</p></div></li>)}</ul> : <p className="text-sm text-[#59615e]">No upcoming returns.</p>}
+        </Section>
+      </section>
+
+      <Section title="Attention required" description="Current operational conditions" loading={loading.attention} error={errors.attention} onRetry={retry}>
+        <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+          <Link to="/bookings?status=ACTIVE" className="flex items-center gap-3 border border-[#e6e8e4] p-3"><AlertTriangle size={17} className="text-[#8a5360]" /><span><span className="block text-lg font-semibold tabular-nums">{operations.counts?.overdue_returns ?? '—'}</span><span className="text-xs text-[#59615e]">Overdue returns</span></span></Link>
+          <Link to="/inventory" className="flex items-center gap-3 border border-[#e6e8e4] p-3"><Boxes size={17} className="text-[#8a5360]" /><span><span className="block text-lg font-semibold tabular-nums">{attention.damagedOrLostInventory ?? '—'}</span><span className="text-xs text-[#59615e]">Damaged or lost items</span></span></Link>
+          <Link to="/inventory" className="flex items-center gap-3 border border-[#e6e8e4] p-3"><RotateCcw size={17} className="text-[#8a5360]" /><span><span className="block text-lg font-semibold tabular-nums">{attention.inventoryInMaintenance ?? '—'}</span><span className="text-xs text-[#59615e]">Items in service</span></span></Link>
+          {canViewFinancials && <Link to="/payments" className="flex items-center gap-3 border border-[#e6e8e4] p-3"><CreditCard size={17} className="text-[#8a5360]" /><span><span className="block text-lg font-semibold tabular-nums">{attention.bookingsWithBalance ?? '—'}</span><span className="text-xs text-[#59615e]">Bookings with a balance</span></span></Link>}
+        </div>
+      </Section>
+
+      <section className="grid gap-5 xl:grid-cols-2">
+        <Section title="Booking trend" description="Bookings created during the selected period" loading={loading.bookingTrend} error={errors.bookingTrend} onRetry={retry}><TrendList rows={data.bookingTrend} valueKey="bookings" label="Bookings" /></Section>
+        {canViewFinancials && <Section title="Payments collected" description="Net successful collections; deposits remain payment collections, not revenue" loading={loading.payments} error={errors.payments} onRetry={retry}><TrendList rows={data.payments?.trend} valueKey="total" label="Payments collected" /></Section>}
+      </section>
+
+      <section className="grid gap-5 xl:grid-cols-2">
+        <Section title="Inventory status" description="Physical units, not catalog products" loading={loading.summary} error={errors.summary} onRetry={retry}>
+          <div className="grid grid-cols-2 gap-x-4 gap-y-3 sm:grid-cols-3">{[['Available', 'available'], ['Reserved', 'reserved'], ['Rented', 'rented'], ['Cleaning', 'cleaning'], ['Repair', 'repair'], ['Damaged', 'damaged'], ['Lost', 'lost'], ['Retired', 'retired']].map(([label, key]) => <div key={key} className="flex items-center justify-between gap-2 border-b border-[#eef0ed] py-2 text-sm"><span className="text-[#59615e]">{label}</span><span className="font-semibold tabular-nums">{summary.inventory?.[key] ?? 0}</span></div>)}</div>
+          <p className="mt-4 text-xs text-[#59615e]">Utilization of usable units: <strong className="text-[#252a29]">{summary.inventory?.utilization ?? 0}%</strong></p>
+        </Section>
+        <Section title="Most rented products" description="Booking-item quantities for the selected period" loading={loading.topProducts} error={errors.topProducts} onRetry={retry}>
+          {data.topProducts?.length ? <ol className="divide-y divide-[#eef0ed]">{data.topProducts.map((product, index) => <li key={product.id} className="flex items-center gap-3 py-3 first:pt-0 last:pb-0"><span className="grid size-7 shrink-0 place-items-center bg-[#f8f9f6] text-xs font-semibold text-[#68404b]">{index + 1}</span><span className="min-w-0 flex-1"><span className="block truncate text-sm font-semibold">{product.name}</span><span className="mt-1 block text-xs text-[#59615e]">{product.sku} · {product.booking_count} bookings</span></span><span className="shrink-0 text-sm font-semibold tabular-nums">{product.quantity_rented}</span></li>)}</ol> : <p className="text-sm text-[#59615e]">No bookings for these dates.</p>}
+        </Section>
+      </section>
+
+      <Section title="Recent activity" description="Latest audit events for this shop" loading={loading.activity} error={errors.activity} onRetry={retry}>
+        {data.activity?.length ? <ol className="grid gap-3 sm:grid-cols-2">{data.activity.map((event, index) => <li key={`${event.entity_type}-${event.entity_id}-${event.created_at}-${index}`} className="flex items-start gap-3 border-b border-[#eef0ed] pb-3"><Activity size={15} className="mt-0.5 shrink-0 text-[#8a5360]" /><span className="min-w-0"><span className="block text-sm font-medium">{String(event.action).replaceAll('_', ' ')}</span><span className="mt-1 block text-xs text-[#59615e]">{event.entity_type} #{event.entity_id} · {new Date(event.created_at).toLocaleString('en-IN')}</span></span></li>)}</ol> : <p className="text-sm text-[#59615e]">No recorded activity yet.</p>}
+      </Section>
     </div>
   );
 }

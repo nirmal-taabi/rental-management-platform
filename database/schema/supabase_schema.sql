@@ -333,6 +333,9 @@ CREATE UNIQUE INDEX IF NOT EXISTS uq_bookings_shop_number ON bookings (shop_id, 
 CREATE INDEX IF NOT EXISTS idx_bookings_shop_customer ON bookings (shop_id, customer_id);
 CREATE INDEX IF NOT EXISTS idx_bookings_status_date
     ON bookings (shop_id, status, rental_start_date, rental_end_date);
+CREATE INDEX IF NOT EXISTS idx_bookings_shop_booking_date
+    ON bookings (shop_id, booking_date)
+    WHERE is_deleted = 0;
 CREATE TRIGGER trg_bookings_updated_at BEFORE UPDATE ON bookings
     FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
 

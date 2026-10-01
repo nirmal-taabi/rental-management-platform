@@ -2,6 +2,7 @@ import { Navigate, Route, Routes } from 'react-router-dom';
 import LoginPage from '../features/auth/pages/LoginPage';
 import RegisterPage from '../features/auth/pages/RegisterPage';
 import DashboardPage from '../pages/DashboardPage';
+import ReportsPage from '../features/reports/pages/ReportsPage';
 import CustomerListPage from '../features/customers/pages/CustomerListPage';
 import CustomerFormPage from '../features/customers/pages/CustomerFormPage';
 import CustomerDetailsPage from '../features/customers/pages/CustomerDetailsPage';
@@ -36,6 +37,7 @@ function AppRoutes() {
       <Route path="/auth/register" element={<RegisterPage />} />
       <Route element={<ProtectedRoute><AppLayout /></ProtectedRoute>}>
         <Route path="/dashboard" element={<DashboardPage />} />
+        <Route path="/reports" element={<ReportsPage />} />
         <Route path="/customers" element={<CustomerListPage />} />
         <Route path="/customers/drafts" element={<CustomerDraftsPage />} />
         <Route path="/customers/new" element={<CustomerFormPage />} />

@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { ChevronLeft, ChevronRight, LayoutGrid, Rows3, Search } from 'lucide-react';
-import { Link, useSearchParams } from 'react-router-dom';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { useAuth } from '../../auth/context/AuthContext';
 import { categoryService } from '../../catalog/services/category.service';
 import { productService } from '../../catalog/services/product.service';
@@ -29,6 +29,7 @@ const getPaginationItems = (currentPage, totalPages) => {
 };
 
 function InventoryListPage() {
+  const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const { roles } = useAuth();
   const canManage = roles.some((role) => ['OWNER', 'ADMIN'].includes(String(role).toUpperCase()));
@@ -41,7 +42,7 @@ function InventoryListPage() {
   const [debouncedSearch, setDebouncedSearch] = useState('');
   const [productId, setProductId] = useState(searchParams.get('productId') || '');
   const [categoryId, setCategoryId] = useState('');
-  const [status, setStatus] = useState('');
+  const [status, setStatus] = useState(searchParams.get('status') || '');
   const [condition, setCondition] = useState('');
   const [size, setSize] = useState('');
   const [color, setColor] = useState('');
@@ -181,7 +182,7 @@ function InventoryListPage() {
               <tr
                 key={item.id}
                 className="cursor-pointer transition hover:bg-[#f8f9f6]"
-                onClick={() => window.location.assign(`/inventory/${item.id}`)}
+                onClick={() => navigate(`/inventory/${item.id}`)}
               >
                 <td className="px-3 py-3"><div className="h-12 w-12 bg-[#f1f2ef]">{item.product.imageUrl && <img crossOrigin="use-credentials" src={imageUrl(item.product.imageUrl)} alt={item.product.name} className="h-full w-full object-cover" />}</div></td>
                 <td className="max-w-48 px-3 py-3"><span className="font-semibold text-[#252a29] hover:text-[#68404b]">{item.product.name}</span><p className="text-xs text-[#59615e]">{item.product.category || '—'}</p></td>

@@ -66,7 +66,7 @@ export const findBookingItemsForUpdate = async (shopId, bookingId, connection = 
      INNER JOIN products p ON p.id = bi.product_id AND p.shop_id = bi.shop_id
      LEFT JOIN inventory_items i ON i.id = bi.inventory_item_id AND i.shop_id = bi.shop_id
      WHERE bi.booking_id = ? AND bi.shop_id = ? AND bi.is_deleted = 0
-     ORDER BY bi.id${lock ? ' FOR UPDATE' : ''}`,
+     ORDER BY bi.id${lock ? ' FOR UPDATE OF bi' : ''}`,
     [bookingId, shopId],
   );
   return rows;

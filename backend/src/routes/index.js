@@ -13,6 +13,8 @@ import availabilityRoutes from './availability.routes.js';
 import paymentRoutes from './payment.routes.js';
 import returnRoutes from './return.routes.js';
 import locationRoutes from './location.routes.js';
+import dashboardRoutes from './dashboard.routes.js';
+import reportRoutes from './report.routes.js';
 
 const router = express.Router();
 
@@ -30,5 +32,7 @@ router.use('/bookings', bookingRoutes);
 router.use('/payments', paymentRoutes);
 router.use('/returns', returnRoutes);
 router.use('/locations', locationRoutes);
+router.use('/dashboard', dashboardRoutes);
+router.use('/reports', reportRoutes);
 
 export default router;

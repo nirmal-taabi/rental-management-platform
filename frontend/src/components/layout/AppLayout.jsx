@@ -39,7 +39,7 @@ const navigationGroups = [
   },
   {
     label: 'Insights',
-    items: [{ label: 'Reports', icon: BarChart3, comingSoon: true }],
+    items: [{ label: 'Reports', to: '/reports', icon: BarChart3 }],
   },
   {
     label: 'System',
