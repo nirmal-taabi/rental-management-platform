@@ -42,8 +42,8 @@ function RegisterPage() {
   useEffect(() => {
     let active = true;
     locationService.getStates()
-      .then((response) => {
-        if (active) setStates(response.data.data || []);
+      .then((data) => {
+        if (active) setStates(data);
       })
       .catch(() => {
         if (active) setLocationError('Unable to load states. Please refresh and try again.');
@@ -62,8 +62,8 @@ function RegisterPage() {
 
     let active = true;
     locationService.getCitiesByState(selectedStateId)
-      .then((response) => {
-        if (active) setCities(response.data.data || []);
+      .then((data) => {
+        if (active) setCities(data);
       })
       .catch(() => {
         if (active) {

@@ -7,16 +7,42 @@ const __dirname = path.dirname(__filename);
 
 dotenv.config({ path: path.resolve(__dirname, '../../../.env') });
 
+const nodeEnv = process.env.NODE_ENV || 'development';
+
+const getDatabaseConnectionString = (value) => {
+  if (!value) return undefined;
+
+  try {
+    const url = new URL(value);
+    if (!['postgres:', 'postgresql:'].includes(url.protocol) || url.hash) {
+      throw new Error('Invalid PostgreSQL URL');
+    }
+    decodeURIComponent(url.username);
+    decodeURIComponent(url.password);
+  } catch {
+    throw new Error(
+      'DATABASE_URL must be a valid PostgreSQL URL. URL-encode reserved characters in credentials (for example, # as %23) and omit placeholder brackets and surrounding quotes.',
+    );
+  }
+
+  return value;
+};
+
+const connectionString = getDatabaseConnectionString(process.env.DATABASE_URL);
+if (nodeEnv === 'production' && !connectionString) {
+  throw new Error('DATABASE_URL is required in production. Set it in the Render environment.');
+}
+
 const dbPassword = process.env.DB_PASSWORD && process.env.DB_PASSWORD.trim() !== '' ? process.env.DB_PASSWORD : undefined;
 
 const env = {
   app: {
     port: Number(process.env.PORT || 5000),
-    nodeEnv: process.env.NODE_ENV || 'development',
+    nodeEnv,
     clientUrl: (process.env.CLIENT_URL || 'http://localhost:5173').split(',').map((value) => value.trim()).filter(Boolean),
   },
   db: {
-    connectionString: process.env.DATABASE_URL || undefined,
+    connectionString,
     ssl: String(process.env.DB_SSL || '').toLowerCase() === 'true',
     sslRejectUnauthorized: String(process.env.DB_SSL_REJECT_UNAUTHORIZED || 'true').toLowerCase() !== 'false',
     host: process.env.DB_HOST || 'localhost',

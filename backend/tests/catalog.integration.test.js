@@ -22,7 +22,7 @@ import { deleteProductImages } from '../src/services/imageStorage.service.js';
 const enabled = process.env.RUN_DB_INTEGRATION === '1';
 const testImage = Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+jJ1sAAAAASUVORK5CYII=', 'base64');
 
-test('catalog CRUD and tenant isolation against MySQL', { skip: !enabled }, async () => {
+test('catalog CRUD and tenant isolation against PostgreSQL', { skip: !enabled }, async () => {
   const suffix = randomUUID().replace(/-/g, '');
   const shopSlugs = [`catalog-test-a-${suffix}`, `catalog-test-b-${suffix}`];
   const shopIds = [];

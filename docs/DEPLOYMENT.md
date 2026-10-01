@@ -24,17 +24,9 @@ Stack: **PostgreSQL on Supabase** · **Backend on Render** · **Frontend on Verc
 
 ### 1.3 Get your connection string
 
-1. Go to **Project Settings → Database**
-2. Under **Connection string** pick the **URI** tab
-3. Copy the string — it looks like:
-   ```
-   postgresql://postgres:[YOUR-PASSWORD]@db.[PROJECT-REF].supabase.co:5432/postgres
-   ```
-4. Append `?sslmode=require` to the end:
-   ```
-   postgresql://postgres:[YOUR-PASSWORD]@db.[PROJECT-REF].supabase.co:5432/postgres?sslmode=require
-   ```
-5. Keep this string — you will paste it as `DATABASE_URL` in the backend env vars
+1. In the Supabase dashboard, open **Connect → Session Pooler**.
+2. Copy the **URI** connection string. Use the session pooler for Render's IPv4 environment; the direct database host may not be reachable from an IPv4-only service.
+3. Use this URI as `DATABASE_URL`. URL-encode reserved characters in the password (for example, `#` as `%23`) and do not include placeholder brackets.
 
 ### 1.4 Disable Row Level Security (RLS) for the app tables
 
@@ -73,7 +65,7 @@ In the Render dashboard → **Environment** tab, add:
 ```
 NODE_ENV=production
 PORT=10000
-DATABASE_URL=postgresql://postgres:[PASSWORD]@db.[REF].supabase.co:5432/postgres?sslmode=require
+DATABASE_URL=<Supabase Session Pooler URI from Connect>
 DB_SSL=true
 DB_SSL_REJECT_UNAUTHORIZED=true
 JWT_SECRET=<generate a strong 64-char random string>

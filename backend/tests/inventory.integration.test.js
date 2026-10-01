@@ -15,7 +15,7 @@ import {
 
 const enabled = process.env.RUN_DB_INTEGRATION === '1';
 
-test('inventory CRUD, constraints, transitions, and tenant isolation against MySQL', { skip: !enabled }, async () => {
+test('inventory CRUD, constraints, transitions, and tenant isolation against PostgreSQL', { skip: !enabled }, async () => {
   const suffix = randomUUID().replace(/-/g, '');
   const shopIds = [];
   try {

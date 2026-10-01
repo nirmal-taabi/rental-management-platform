@@ -35,9 +35,20 @@ const errorHandler = (err, req, res, _next) => {
     code = err.code || NOT_FOUND_CODE;
     message = 'Resource not found';
   } else if (
-    err.code === 'ER_BAD_DB_ERROR' ||
-    err.code === 'ECONNREFUSED' ||
-    err.code === 'ER_ACCESS_DENIED_ERROR'
+    [
+      'ECONNREFUSED',
+      'ECONNRESET',
+      'ETIMEDOUT',
+      'ENOTFOUND',
+      'EHOSTUNREACH',
+      'ENETUNREACH',
+      '08000',
+      '08001',
+      '08003',
+      '08006',
+      '28P01',
+      '3D000',
+    ].includes(err.code)
   ) {
     code = DATABASE_ERROR;
     message = 'Database connection error';

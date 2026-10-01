@@ -84,10 +84,9 @@ test('product list combines tenant, search, category, status, sort, and paginati
   assert.match(capturedQuery, /p\.shop_id = \?/);
   assert.match(capturedQuery, /p\.category_id = \?/);
   assert.match(capturedQuery, /p\.status = \?/);
-  assert.match(capturedQuery, /MATCH\(p\.name, p\.sku, p\.description\) AGAINST/);
-  assert.match(capturedQuery, /p\.name LIKE \? OR p\.sku LIKE \? OR p\.description LIKE \?/);
+  assert.match(capturedQuery, /p\.name ILIKE \? OR p\.sku ILIKE \? OR p\.description ILIKE \?/);
   assert.match(capturedQuery, /ORDER BY p\.created_at DESC/);
-  assert.deepEqual(capturedValues, [7, 'active', 12, 'red', '%red%', '%red%', '%red%', 20, 20]);
+  assert.deepEqual(capturedValues, [7, 'active', 12, '%red%', '%red%', '%red%', 20, 20]);
 });
 
 test('role middleware allows owners/admins and denies staff from manage-only routes', () => {

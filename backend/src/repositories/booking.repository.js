@@ -151,7 +151,7 @@ export const findBookingInventoryIds = async (shopId, bookingId, connection = po
   return rows.map((row) => row.inventory_item_id);
 };
 
-// PostgreSQL: TO_CHAR instead of MySQL DATE_FORMAT
+// Format rental dates for API responses.
 const bookingColumns = `b.id, b.shop_id, b.customer_id, b.booking_number,
   TO_CHAR(b.rental_start_date, 'YYYY-MM-DD') AS rental_start_date,
   TO_CHAR(b.rental_end_date, 'YYYY-MM-DD') AS rental_end_date,
@@ -243,7 +243,7 @@ export const findBookingsByShop = async (shopId, options, connection = pool) => 
 };
 
 export const getBookingSummaryByShop = async (shopId, currentDate, connection = pool) => {
-  // PostgreSQL: use FILTER aggregate instead of MySQL SUM(condition)
+  // FILTER keeps each booking count scoped to its matching status and date rules.
   const [rows] = await connection.query(
     `SELECT
       COUNT(*) FILTER (WHERE status IN ('PENDING', 'CONFIRMED', 'READY') AND rental_start_date > ?) AS upcoming,

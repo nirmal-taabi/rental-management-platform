@@ -169,7 +169,7 @@ export const completeBookingReturn = async (shopId, bookingId, returnedAt, conne
   );
 };
 
-// PostgreSQL: TO_CHAR instead of MySQL DATE_FORMAT
+// Format the expected return date for API responses.
 const returnColumns = `r.id, r.shop_id, r.booking_id, r.customer_id, r.return_date,
   r.received_by_user_id, r.status, r.damage_amount, r.total_late_fee, r.notes, r.created_at,
   b.booking_number, TO_CHAR(b.rental_end_date, 'YYYY-MM-DD') AS expected_return_date,

@@ -49,7 +49,7 @@ export const findCustomersByShop = async (shopId, options = {}, connection = poo
         AND b.is_deleted = 0 AND b.status = 'ACTIVE'
     )`;
   } else if (rentalFilter === 'UPCOMING') {
-    // PostgreSQL: CURRENT_DATE (no parentheses, unlike MySQL's CURRENT_DATE())
+    // CURRENT_DATE is a SQL keyword in PostgreSQL.
     whereClause += ` AND EXISTS (
       SELECT 1 FROM bookings b
       WHERE b.customer_id = customers.id AND b.shop_id = customers.shop_id
