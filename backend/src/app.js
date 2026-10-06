@@ -68,7 +68,7 @@ app.use(requestLogger);
 app.get('/', (req, res) => {
   res.json({
     success: true,
-    message: 'Welcome to the Rental Management Platform API',
+    message: 'Welcome to the TrackinHub API',
   });
 });
 

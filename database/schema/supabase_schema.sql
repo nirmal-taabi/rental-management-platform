@@ -1,5 +1,5 @@
 -- ============================================================
--- Rental Management Platform — PostgreSQL / Supabase Schema
+-- TrackinHub — PostgreSQL / Supabase Schema
 -- Run this entire file in Supabase SQL Editor to bootstrap the DB.
 -- ============================================================
 

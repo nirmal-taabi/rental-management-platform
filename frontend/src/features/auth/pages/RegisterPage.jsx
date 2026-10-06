@@ -182,7 +182,7 @@ function RegisterPage() {
           <div className="flex items-center gap-3">
             <span className="grid size-10 place-items-center border border-white/35 bg-white/10 backdrop-blur-sm"><Shirt size={19} strokeWidth={1.7} /></span>
             <div>
-              <p className="text-sm font-semibold">Rental Management</p>
+              <p className="text-sm font-semibold">TrackinHub</p>
               <p className="mt-0.5 text-[11px] uppercase tracking-[0.16em] text-white/70">Clothing, in good company</p>
             </div>
           </div>
@@ -303,7 +303,7 @@ function RegisterPage() {
             </form>
 
             <p className="mt-7 text-center text-sm text-[#717875]">Already have an account? <Link to="/auth/login" className="font-semibold text-[#68404b] underline decoration-[#cbb9bd] underline-offset-4 hover:text-[#4f3039]">Sign in</Link></p>
-            <p className="mt-8 text-center text-[11px] text-[#a1a6a2]">© {new Date().getFullYear()} Rental Management Platform</p>
+            <p className="mt-8 text-center text-[11px] text-[#a1a6a2]">© {new Date().getFullYear()} TrackinHub</p>
           </div>
         </section>
       </section>

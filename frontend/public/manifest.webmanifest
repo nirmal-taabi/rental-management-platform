@@ -1,7 +1,7 @@
 {
-  "name": "Rental Management Platform",
-  "short_name": "RMP",
-  "description": "Rental Management Platform for managing inventory, bookings, payments, and customers.",
+  "name": "TrackinHub",
+  "short_name": "TrackinHub",
+  "description": "TrackinHub for managing inventory, bookings, payments, and customer operations.",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",

@@ -1,14 +1,13 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 192 192" role="img" aria-label="Rental Management Platform icon">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 192 192" role="img" aria-label="TrackinHub icon">
   <defs>
     <linearGradient id="bg" x1="0" x2="1" y1="0" y2="1">
-      <stop offset="0%" stop-color="#68404b" />
-      <stop offset="100%" stop-color="#4c3138" />
+      <stop offset="0%" stop-color="#0f172a" />
+      <stop offset="45%" stop-color="#1f3a5f" />
+      <stop offset="100%" stop-color="#0b5d6c" />
     </linearGradient>
   </defs>
-  <rect width="192" height="192" rx="38" fill="url(#bg)"/>
-  <rect x="34" y="74" width="124" height="62" rx="16" fill="#f8f9f6" opacity="0.96"/>
-  <path d="M58 80 L96 52 L134 80" fill="none" stroke="#68404b" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/>
-  <path d="M74 128 V104 H118 V128" fill="none" stroke="#68404b" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/>
-  <rect x="86" y="104" width="20" height="24" rx="5" fill="#68404b"/>
-  <path d="M46 136 H146" stroke="#f3d9df" stroke-width="10" stroke-linecap="round" opacity="0.8"/>
+  <rect width="192" height="192" rx="42" fill="url(#bg)" />
+  <circle cx="96" cy="96" r="70" fill="none" stroke="rgba(255,255,255,0.14)" stroke-width="2" />
+  <text x="96" y="112" text-anchor="middle" font-size="82" font-weight="800" letter-spacing="-8" fill="#f8fafc" font-family="Segoe UI, Arial, sans-serif">TH</text>
+  <path d="M42 142 H150" stroke="#9fe6d5" stroke-width="6" stroke-linecap="round" opacity="0.9" />
 </svg>

@@ -1,4 +1,4 @@
-# Deployment Guide — Rental Management Platform
+# Deployment Guide — TrackinHub
 
 Stack: **PostgreSQL on Supabase** · **Backend on Render** · **Frontend on Vercel**
 
