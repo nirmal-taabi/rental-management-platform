@@ -186,9 +186,9 @@ function ProductFormPage() {
   };
 
   if (loading) return <main className="flex min-h-full items-center justify-center bg-[#f8f9f6] text-sm text-[#59615e]">Loading product...</main>;
-  if (!canManage) return <main className="flex min-h-full items-center justify-center bg-[#f8f9f6] px-4"><section className="w-full max-w-lg border border-[#e6e8e4] bg-white p-6"><h1 className="text-xl font-semibold text-[#252a29]">Product management access required</h1><p className="mt-2 text-sm text-[#59615e]">Your role can view the catalog but cannot create or edit products.</p><Link to="/products" className="mt-4 inline-flex min-h-10 items-center rounded-md bg-[#68404b] px-4 text-sm font-semibold text-white transition hover:bg-[#54333d]">Back to products</Link></section></main>;
+  if (!canManage) return <main className="flex min-h-full items-center justify-center bg-[#f8f9f6] px-4"><section className="w-full max-w-lg border border-[#e6e8e4] bg-white p-6"><h1 className="text-xl font-semibold text-[#252a29]">Product management access required</h1><p className="mt-2 text-sm text-[#59615e]">Your role can view the catalog but cannot create or edit products.</p><Link to="/products" className="mt-4 inline-flex min-h-10 items-center rounded-md bg-[#6132DA] px-4 text-sm font-semibold text-white transition hover:bg-[#4D25B5]">Back to products</Link></section></main>;
 
-  const fieldClassName = 'min-h-11 w-full rounded-md border border-[#dfe3df] bg-white px-3.5 text-sm text-[#252a29] outline-none transition focus:border-[#805361] focus:ring-4 focus:ring-[#805361]/10';
+  const fieldClassName = 'min-h-11 w-full rounded-md border border-[#dfe3df] bg-white px-3.5 text-sm text-[#252a29] outline-none transition focus:border-[#7046E8] focus:ring-4 focus:ring-[#7046E8]/10';
   const labelClassName = 'mb-2 block text-xs font-semibold text-[#252a29]';
 
   return (
@@ -197,7 +197,7 @@ function ProductFormPage() {
         <form onSubmit={handleSubmit} className="space-y-5">
           <header className="flex flex-col gap-5 border-b border-[#e8eae7] pb-5 lg:flex-row lg:items-center lg:justify-between">
             <div className="flex min-w-0 flex-col items-start gap-2">
-              <Link to="/products" className="inline-flex items-center gap-2 text-sm font-semibold text-[#68404b] transition hover:text-[#54333d]"><ArrowLeft size={16} /> Products</Link>
+              <Link to="/products" className="inline-flex items-center gap-2 text-sm font-semibold text-[#6132DA] transition hover:text-[#4D25B5]"><ArrowLeft size={16} /> Products</Link>
               <div className="min-w-0">
                 <h1 className="text-3xl font-semibold text-[#252a29]">{isEditing ? 'Edit product' : 'Add product'}</h1>
                 <p className="mt-2 text-sm text-[#59615e]">Product details, pricing, and catalog images.</p>
@@ -205,7 +205,7 @@ function ProductFormPage() {
             </div>
             <div className="flex shrink-0 flex-wrap items-center gap-2">
               <Link to="/products" className="inline-flex min-h-10 items-center rounded-md border border-[#dfe3df] bg-white px-4 text-sm font-medium text-[#414846] transition hover:bg-[#f8f9f6]">Cancel</Link>
-              <button type="submit" disabled={saving || isCheckingSku} className="inline-flex min-h-10 items-center gap-2 rounded-md bg-[#68404b] px-4 text-sm font-semibold text-white transition hover:bg-[#54333d] disabled:cursor-not-allowed disabled:opacity-60">
+              <button type="submit" disabled={saving || isCheckingSku} className="inline-flex min-h-10 items-center gap-2 rounded-md bg-[#6132DA] px-4 text-sm font-semibold text-white transition hover:bg-[#4D25B5] disabled:cursor-not-allowed disabled:opacity-60">
                 <PackagePlus size={15} />
                 {saving ? 'Saving...' : isEditing ? 'Save changes' : 'Create product'}
               </button>
@@ -216,7 +216,7 @@ function ProductFormPage() {
 
           <section className="border border-[#e6e8e4] bg-white p-5 sm:p-6">
             <header className="mb-5 flex items-start gap-3 border-b border-[#e8eae7] pb-4">
-              <span className="grid size-9 shrink-0 place-items-center rounded-sm bg-[#f1e9eb] text-xs font-bold text-[#68404b]">01</span>
+              <span className="grid size-9 shrink-0 place-items-center rounded-sm bg-[#F1ECFC] text-xs font-bold text-[#6132DA]">01</span>
               <div><h2 className="text-base font-semibold text-[#252a29]">Product information</h2><p className="mt-1 text-xs text-[#59615e]">Catalog name, category, and description.</p></div>
             </header>
             <div className="grid gap-5 sm:grid-cols-2">
@@ -231,7 +231,7 @@ function ProductFormPage() {
 
           <section className="border border-[#e6e8e4] bg-white p-5 sm:p-6">
             <header className="mb-5 flex items-start gap-3 border-b border-[#e8eae7] pb-4">
-              <span className="grid size-9 shrink-0 place-items-center rounded-sm bg-[#f8f9f6] text-xs font-bold text-[#68404b]">02</span>
+              <span className="grid size-9 shrink-0 place-items-center rounded-sm bg-[#f8f9f6] text-xs font-bold text-[#6132DA]">02</span>
               <div><h2 className="text-base font-semibold text-[#252a29]">Rental pricing</h2><p className="mt-1 text-xs text-[#59615e]">Set the rental price and security deposit.</p></div>
             </header>
             <div className="grid gap-5 sm:grid-cols-2">
@@ -242,7 +242,7 @@ function ProductFormPage() {
 
           <section className="border border-[#e6e8e4] bg-white p-5 sm:p-6">
             <header className="flex flex-wrap items-end justify-between gap-3 border-b border-[#e8eae7] pb-4">
-              <div className="flex items-start gap-3"><span className="grid size-9 shrink-0 place-items-center rounded-sm bg-[#f8f9f6] text-xs font-bold text-[#68404b]">03</span><div><h2 className="text-base font-semibold text-[#252a29]">Product images</h2><p className="mt-1 text-sm text-[#59615e]">JPEG, PNG, or WEBP. Up to 8 images, 5 MB each.</p></div></div>
+              <div className="flex items-start gap-3"><span className="grid size-9 shrink-0 place-items-center rounded-sm bg-[#f8f9f6] text-xs font-bold text-[#6132DA]">03</span><div><h2 className="text-base font-semibold text-[#252a29]">Product images</h2><p className="mt-1 text-sm text-[#59615e]">JPEG, PNG, or WEBP. Up to 8 images, 5 MB each.</p></div></div>
               <label className="inline-flex min-h-10 cursor-pointer items-center gap-2 rounded-md border border-[#dfe3df] bg-white px-3.5 text-sm font-semibold text-[#414846] transition hover:bg-[#f8f9f6]"><ImagePlus size={16} /> Add images<input type="file" accept="image/jpeg,image/png,image/webp" multiple onChange={handleFiles} className="sr-only" /></label>
             </header>
             {!images.length && <p className="mt-5 border border-dashed border-[#dfe3df] px-4 py-8 text-center text-sm text-[#59615e]">No images selected.</p>}
@@ -250,13 +250,13 @@ function ProductFormPage() {
               {images.map((image, index) => (
                 <div key={image.token} className="overflow-hidden border border-[#e6e8e4] bg-[#f8f9f6]">
                   <img src={image.preview} alt={`${form.name || 'Product'} image ${index + 1}`} className="aspect-square w-full object-cover" />
-                  <div className="space-y-2 p-2"><button type="button" onClick={() => setPrimary(image.token)} aria-pressed={Boolean(image.isPrimary)} className={`w-full rounded-md px-2 py-1.5 text-xs font-semibold ${image.isPrimary ? 'bg-[#68404b] text-white' : 'border border-[#dfe3df] bg-white text-[#414846]'}`}>{image.isPrimary ? 'Primary image' : 'Set primary'}</button><div className="flex justify-between gap-1"><button type="button" disabled={index === 0} onClick={() => moveImage(index, -1)} aria-label={`Move image ${index + 1} earlier`} className="rounded-md border border-[#dfe3df] px-2 py-1 text-xs text-[#414846] disabled:opacity-40">Move up</button><button type="button" disabled={index === images.length - 1} onClick={() => moveImage(index, 1)} aria-label={`Move image ${index + 1} later`} className="rounded-md border border-[#dfe3df] px-2 py-1 text-xs text-[#414846] disabled:opacity-40">Move down</button><button type="button" onClick={() => removeImage(index)} aria-label={`Remove image ${index + 1}`} className="rounded-md border border-rose-300 px-2 py-1 text-xs text-rose-800">Remove</button></div></div>
+                  <div className="space-y-2 p-2"><button type="button" onClick={() => setPrimary(image.token)} aria-pressed={Boolean(image.isPrimary)} className={`w-full rounded-md px-2 py-1.5 text-xs font-semibold ${image.isPrimary ? 'bg-[#6132DA] text-white' : 'border border-[#dfe3df] bg-white text-[#414846]'}`}>{image.isPrimary ? 'Primary image' : 'Set primary'}</button><div className="flex justify-between gap-1"><button type="button" disabled={index === 0} onClick={() => moveImage(index, -1)} aria-label={`Move image ${index + 1} earlier`} className="rounded-md border border-[#dfe3df] px-2 py-1 text-xs text-[#414846] disabled:opacity-40">Move up</button><button type="button" disabled={index === images.length - 1} onClick={() => moveImage(index, 1)} aria-label={`Move image ${index + 1} later`} className="rounded-md border border-[#dfe3df] px-2 py-1 text-xs text-[#414846] disabled:opacity-40">Move down</button><button type="button" onClick={() => removeImage(index)} aria-label={`Remove image ${index + 1}`} className="rounded-md border border-rose-300 px-2 py-1 text-xs text-rose-800">Remove</button></div></div>
                 </div>
               ))}
             </div>
           </section>
 
-          <footer className="flex justify-end gap-3 border-t border-[#e8eae7] pt-4"><Link to="/products" className="inline-flex min-h-10 items-center rounded-md border border-[#dfe3df] bg-white px-4 text-sm font-semibold text-[#414846] transition hover:bg-[#f8f9f6]">Cancel</Link><button type="submit" disabled={saving || isCheckingSku} className="inline-flex min-h-10 items-center gap-2 rounded-md bg-[#68404b] px-5 text-sm font-semibold text-white transition hover:bg-[#54333d] disabled:opacity-50"><PackagePlus size={15} />{saving ? 'Saving...' : isEditing ? 'Save changes' : 'Create product'}</button></footer>
+          <footer className="flex justify-end gap-3 border-t border-[#e8eae7] pt-4"><Link to="/products" className="inline-flex min-h-10 items-center rounded-md border border-[#dfe3df] bg-white px-4 text-sm font-semibold text-[#414846] transition hover:bg-[#f8f9f6]">Cancel</Link><button type="submit" disabled={saving || isCheckingSku} className="inline-flex min-h-10 items-center gap-2 rounded-md bg-[#6132DA] px-5 text-sm font-semibold text-white transition hover:bg-[#4D25B5] disabled:opacity-50"><PackagePlus size={15} />{saving ? 'Saving...' : isEditing ? 'Save changes' : 'Create product'}</button></footer>
         </form>
       </div>
     </main>

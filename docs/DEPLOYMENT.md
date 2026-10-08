@@ -1,4 +1,4 @@
-# Deployment Guide — TrackinHub
+# Deployment Guide — Nirmal Rentals
 
 Stack: **PostgreSQL on Supabase** · **Backend on Render** · **Frontend on Vercel**
 

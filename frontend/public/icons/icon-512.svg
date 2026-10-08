@@ -1,13 +1,18 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="TrackinHub icon">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="Nirmal Rentals icon">
   <defs>
     <linearGradient id="bg" x1="0" x2="1" y1="0" y2="1">
-      <stop offset="0%" stop-color="#0f172a" />
-      <stop offset="45%" stop-color="#1f3a5f" />
-      <stop offset="100%" stop-color="#0b5d6c" />
+      <stop offset="0%" stop-color="#2f1b24" />
+      <stop offset="50%" stop-color="#68404b" />
+      <stop offset="100%" stop-color="#b86d58" />
+    </linearGradient>
+    <linearGradient id="accent" x1="0" x2="1" y1="0" y2="0">
+      <stop offset="0%" stop-color="#f7d7a8" />
+      <stop offset="100%" stop-color="#f4c68a" />
     </linearGradient>
   </defs>
-  <rect width="512" height="512" rx="120" fill="url(#bg)" />
-  <circle cx="256" cy="256" r="188" fill="none" stroke="rgba(255,255,255,0.14)" stroke-width="3" />
-  <text x="256" y="300" text-anchor="middle" font-size="220" font-weight="800" letter-spacing="-18" fill="#f8fafc" font-family="Segoe UI, Arial, sans-serif">TH</text>
-  <path d="M120 392 H392" stroke="#9fe6d5" stroke-width="16" stroke-linecap="round" opacity="0.9" />
+  <rect width="512" height="512" rx="110" fill="url(#bg)" />
+  <circle cx="256" cy="256" r="182" fill="none" stroke="rgba(255,255,255,0.16)" stroke-width="4" />
+  <path d="M138 340V162H182L258 266V162H324V340H280L204 236V340H138Z" fill="url(#accent)" />
+  <path d="M296 162H366L318 244L404 340H330L276 264L296 162Z" fill="#f8f1ea" opacity="0.95" />
+  <path d="M110 382H402" stroke="rgba(255,255,255,0.5)" stroke-width="12" stroke-linecap="round" />
 </svg>

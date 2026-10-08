@@ -44,16 +44,16 @@ function ProductDetailsPage() {
   };
 
   if (loading) return <main className="flex min-h-full items-center justify-center bg-[#f8f9f6] text-sm text-[#59615e]">Loading product...</main>;
-  if (error && !product) return <main className="flex min-h-full items-center justify-center bg-[#f8f9f6] px-4"><div className="w-full max-w-md border border-[#e6e8e4] bg-white p-6"><h1 className="text-xl font-semibold text-[#252a29]">Product unavailable</h1><p role="alert" className="mt-2 text-sm text-[#59615e]">{error}</p><button type="button" onClick={() => navigate('/products')} className="mt-4 inline-flex min-h-10 items-center gap-2 rounded-md bg-[#68404b] px-4 text-sm font-semibold text-white transition hover:bg-[#54333d]"><ArrowLeft size={15} /> Back to products</button></div></main>;
+  if (error && !product) return <main className="flex min-h-full items-center justify-center bg-[#f8f9f6] px-4"><div className="w-full max-w-md border border-[#e6e8e4] bg-white p-6"><h1 className="text-xl font-semibold text-[#252a29]">Product unavailable</h1><p role="alert" className="mt-2 text-sm text-[#59615e]">{error}</p><button type="button" onClick={() => navigate('/products')} className="mt-4 inline-flex min-h-10 items-center gap-2 rounded-md bg-[#6132DA] px-4 text-sm font-semibold text-white transition hover:bg-[#4D25B5]"><ArrowLeft size={15} /> Back to products</button></div></main>;
   if (!product) return null;
 
   return (
     <main className="min-h-full bg-[#f8f9f6] px-4 py-7 text-[#252a29] sm:px-6 lg:px-8">
       <div className="mx-auto max-w-[1200px] space-y-5">
-        <Link to="/products" className="inline-flex items-center gap-2 text-sm font-semibold text-[#68404b] transition hover:text-[#54333d]"><ArrowLeft size={16} /> Products</Link>
+        <Link to="/products" className="inline-flex items-center gap-2 text-sm font-semibold text-[#6132DA] transition hover:text-[#4D25B5]"><ArrowLeft size={16} /> Products</Link>
         <header className="flex flex-col gap-4 border border-[#e6e8e4] bg-white p-5 sm:flex-row sm:items-center sm:justify-between sm:p-6">
             <div className="min-w-0">
-              <p className="text-xs font-bold uppercase tracking-[0.16em] text-[#8a5360]">Product profile</p>
+              <p className="text-xs font-bold uppercase tracking-[0.16em] text-[#8060D9]">Product profile</p>
               <div className="mt-1 flex flex-wrap items-center gap-3">
                 <h1 className="truncate text-2xl font-semibold text-[#252a29] sm:text-3xl">{product.name}</h1>
                 <span className={`inline-flex rounded-full px-2.5 py-1 text-xs font-semibold ${product.status === 'ACTIVE' ? 'bg-[#edf3ef] text-[#35634c]' : 'bg-[#f1f2ef] text-[#59615e]'}`}>{product.status}</span>
@@ -61,7 +61,7 @@ function ProductDetailsPage() {
               <p className="mt-1 font-mono text-xs text-[#59615e]">{product.sku}{product.categoryName ? ` · ${product.categoryName}` : ''}</p>
           </div>
           {canManage && <div className="flex flex-wrap gap-2">
-            <Link to={`/products/${id}/edit`} className="inline-flex min-h-10 items-center gap-2 rounded-md bg-[#68404b] px-4 text-sm font-semibold text-white transition hover:bg-[#54333d]"><Pencil size={15} /> Edit product</Link>
+            <Link to={`/products/${id}/edit`} className="inline-flex min-h-10 items-center gap-2 rounded-md bg-[#6132DA] px-4 text-sm font-semibold text-white transition hover:bg-[#4D25B5]"><Pencil size={15} /> Edit product</Link>
             <button type="button" onClick={toggleStatus} className="inline-flex min-h-10 items-center rounded-md border border-[#dfe3df] bg-white px-4 text-sm font-medium text-[#414846] transition hover:bg-[#f1f2ef]">{product.status === 'ACTIVE' ? 'Deactivate' : 'Activate'}</button>
           </div>}
         </header>
@@ -78,7 +78,7 @@ function ProductDetailsPage() {
                     key={image.id || image.imageUrl}
                     src={resolveImageUrl(image.imageUrl)}
                     alt={`${product.name}, image ${index + 1}${image.isPrimary ? ', primary' : ''}`}
-                    className={`aspect-square w-full bg-[#f1f2ef] object-cover ${image.isPrimary ? 'ring-2 ring-[#68404b]' : ''}`}
+                    className={`aspect-square w-full bg-[#f1f2ef] object-cover ${image.isPrimary ? 'ring-2 ring-[#6132DA]' : ''}`}
                   />
                 ))}
               </div>

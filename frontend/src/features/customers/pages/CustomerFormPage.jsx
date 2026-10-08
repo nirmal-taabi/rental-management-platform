@@ -141,7 +141,7 @@ function CustomerFormPage() {
     return <main className="flex min-h-full items-center justify-center bg-[#f8f9f6] px-4 py-12 text-sm text-[#59615e]">Loading customer form...</main>;
   }
 
-  const inputClassName = 'min-h-11 w-full rounded-md border border-[#dfe3df] bg-white px-3.5 text-sm text-[#252a29] outline-none transition placeholder:text-[#747b78] focus:border-[#805361] focus:ring-4 focus:ring-[#805361]/10';
+  const inputClassName = 'min-h-11 w-full rounded-md border border-[#dfe3df] bg-white px-3.5 text-sm text-[#252a29] outline-none transition placeholder:text-[#747b78] focus:border-[#7046E8] focus:ring-4 focus:ring-[#7046E8]/10';
   const title = isEditing ? 'Edit Customer' : draftId ? 'Continue Customer Draft' : 'New Customer';
 
   return (
@@ -150,7 +150,7 @@ function CustomerFormPage() {
         <form onSubmit={handleSubmit} className="space-y-5">
           <header className="flex flex-col gap-5 border-b border-[#e8eae7] pb-5 lg:flex-row lg:items-center lg:justify-between">
             <div className="flex min-w-0 flex-col items-start gap-2">
-              <Link to="/customers" className="inline-flex shrink-0 items-center gap-2 text-sm font-semibold text-[#68404b] transition hover:text-[#54333d]">
+              <Link to="/customers" className="inline-flex shrink-0 items-center gap-2 text-sm font-semibold text-[#6132DA] transition hover:text-[#4D25B5]">
                 <ArrowLeft size={16} />
                 Customers
               </Link>
@@ -163,12 +163,12 @@ function CustomerFormPage() {
             <div className="flex shrink-0 flex-wrap items-center gap-2">
               <Link to="/customers" className="inline-flex min-h-10 items-center justify-center rounded-md border border-[#dfe3df] bg-white px-4 text-sm font-medium text-[#414846] transition hover:bg-[#f8f9f6]">Cancel</Link>
               {!isEditing && (
-                <button type="button" onClick={handleSaveDraft} disabled={isSavingDraft || isSubmitting} className="inline-flex min-h-10 items-center justify-center gap-2 rounded-md border border-[#cbb9bd] bg-white px-4 text-sm font-semibold text-[#68404b] transition hover:bg-[#f8f9f6] disabled:cursor-not-allowed disabled:opacity-60">
+                <button type="button" onClick={handleSaveDraft} disabled={isSavingDraft || isSubmitting} className="inline-flex min-h-10 items-center justify-center gap-2 rounded-md border border-[#D8CCF5] bg-white px-4 text-sm font-semibold text-[#6132DA] transition hover:bg-[#f8f9f6] disabled:cursor-not-allowed disabled:opacity-60">
                   <Save size={15} />
                   {isSavingDraft ? 'Saving...' : 'Save as Draft'}
                 </button>
               )}
-              <button type="submit" disabled={isSubmitting || isSavingDraft} className="inline-flex min-h-10 items-center justify-center gap-2 rounded-md bg-[#68404b] px-4 text-sm font-semibold text-white transition hover:bg-[#54333d] focus:outline-none focus:ring-4 focus:ring-[#68404b]/20 disabled:cursor-not-allowed disabled:opacity-60">
+              <button type="submit" disabled={isSubmitting || isSavingDraft} className="inline-flex min-h-10 items-center justify-center gap-2 rounded-md bg-[#6132DA] px-4 text-sm font-semibold text-white transition hover:bg-[#4D25B5] focus:outline-none focus:ring-4 focus:ring-[#6132DA]/20 disabled:cursor-not-allowed disabled:opacity-60">
                 <UserRoundPlus size={15} />
                 {isSubmitting ? 'Saving Customer...' : isEditing ? 'Save Changes' : 'Save & Create Customer'}
               </button>
@@ -181,7 +181,7 @@ function CustomerFormPage() {
           <section className="border border-[#e6e8e4] bg-white">
             <header className="flex flex-wrap items-center justify-between gap-3 border-b border-[#e8eae7] px-5 py-4 sm:px-7">
               <div className="flex min-w-0 items-start gap-3">
-                <span className="grid size-9 shrink-0 place-items-center rounded-sm bg-[#f1e9eb] text-xs font-bold text-[#68404b]">01</span>
+                <span className="grid size-9 shrink-0 place-items-center rounded-sm bg-[#F1ECFC] text-xs font-bold text-[#6132DA]">01</span>
                 <div>
                   <h2 className="text-base font-semibold text-[#252a29]">Personal Information</h2>
                   <p className="mt-1 text-xs leading-5 text-[#59615e]">Core client contact, relation hierarchy, and primary auspicious dates.</p>
@@ -191,7 +191,7 @@ function CustomerFormPage() {
 
             <div className="grid gap-x-5 gap-y-5 px-5 py-5 sm:grid-cols-2 sm:px-7 sm:py-6">
               <div>
-                <label htmlFor="customer-first-name" className="mb-2 block text-xs font-semibold text-[#252a29]">First Name <span className="text-[#68404b]">*</span></label>
+                <label htmlFor="customer-first-name" className="mb-2 block text-xs font-semibold text-[#252a29]">First Name <span className="text-[#6132DA]">*</span></label>
                 <input id="customer-first-name" name="firstName" value={form.firstName} onChange={handleChange} autoComplete="given-name" maxLength={100} required className={inputClassName} />
               </div>
               <div>
@@ -199,15 +199,15 @@ function CustomerFormPage() {
                 <input id="customer-last-name" name="lastName" value={form.lastName} onChange={handleChange} autoComplete="family-name" maxLength={100} className={inputClassName} />
               </div>
               <div>
-                <label htmlFor="customer-phone" className="mb-2 block text-xs font-semibold text-[#252a29]">Primary Phone Number <span className="text-[#68404b]">*</span></label>
-                <div className="flex min-h-11 overflow-hidden rounded-md border border-[#dfe3df] focus-within:border-[#805361] focus-within:ring-4 focus-within:ring-[#805361]/10">
+                <label htmlFor="customer-phone" className="mb-2 block text-xs font-semibold text-[#252a29]">Primary Phone Number <span className="text-[#6132DA]">*</span></label>
+                <div className="flex min-h-11 overflow-hidden rounded-md border border-[#dfe3df] focus-within:border-[#7046E8] focus-within:ring-4 focus-within:ring-[#7046E8]/10">
                   <span aria-hidden="true" className="flex items-center border-r border-[#e6e8e4] bg-[#f8f9f6] px-3 text-sm font-medium text-[#414846]">+91</span>
                   <input id="customer-phone" name="phone" type="tel" inputMode="numeric" autoComplete="tel-national" pattern="[6-9][0-9]{9}" maxLength={10} value={form.phone} onChange={handleChange} required className="min-w-0 flex-1 bg-white px-3.5 text-sm text-[#252a29] outline-none placeholder:text-[#747b78]" />
                 </div>
               </div>
               <div>
                 <label htmlFor="customer-alternate-phone" className="mb-2 block text-xs font-semibold text-[#252a29]">WhatsApp / Alternate Contact</label>
-                <div className="flex min-h-11 overflow-hidden rounded-md border border-[#dfe3df] focus-within:border-[#805361] focus-within:ring-4 focus-within:ring-[#805361]/10">
+                <div className="flex min-h-11 overflow-hidden rounded-md border border-[#dfe3df] focus-within:border-[#7046E8] focus-within:ring-4 focus-within:ring-[#7046E8]/10">
                   <span aria-hidden="true" className="flex items-center border-r border-[#e6e8e4] bg-[#f8f9f6] px-3 text-sm font-medium text-[#414846]">+91</span>
                   <input id="customer-alternate-phone" name="alternatePhone" type="tel" inputMode="numeric" autoComplete="tel-national" pattern="[6-9][0-9]{9}" maxLength={10} value={form.alternatePhone} onChange={handleChange} className="min-w-0 flex-1 bg-white px-3.5 text-sm text-[#252a29] outline-none placeholder:text-[#747b78]" />
                 </div>
@@ -222,7 +222,7 @@ function CustomerFormPage() {
           <section className="border border-[#e6e8e4] bg-white">
             <header className="border-b border-[#e8eae7] px-5 py-4 sm:px-7">
               <div className="flex items-start gap-3">
-                <span className="grid size-9 shrink-0 place-items-center rounded-sm bg-[#f8f9f6] text-xs font-bold text-[#68404b]">02</span>
+                <span className="grid size-9 shrink-0 place-items-center rounded-sm bg-[#f8f9f6] text-xs font-bold text-[#6132DA]">02</span>
                 <div>
                   <h2 className="text-base font-semibold text-[#252a29]">Address &amp; Residence</h2>
                   <p className="mt-1 text-xs text-[#59615e]">Where fittings and order coordination should be directed.</p>
@@ -252,7 +252,7 @@ function CustomerFormPage() {
           <section className="border border-[#e6e8e4] bg-white">
             <header className="border-b border-[#e8eae7] px-5 py-4 sm:px-7">
               <div className="flex items-start gap-3">
-                <span className="grid size-9 shrink-0 place-items-center rounded-sm bg-[#f8f9f6] text-xs font-bold text-[#68404b]">03</span>
+                <span className="grid size-9 shrink-0 place-items-center rounded-sm bg-[#f8f9f6] text-xs font-bold text-[#6132DA]">03</span>
                 <div>
                   <h2 className="text-base font-semibold text-[#252a29]">Additional Information</h2>
                   <p className="mt-1 text-xs text-[#59615e]">Keep fitting, ceremony, and concierge notes together.</p>
@@ -269,12 +269,12 @@ function CustomerFormPage() {
             <Link to="/customers" className="text-sm font-medium text-[#59615e] hover:text-[#252a29]">Cancel</Link>
             <div className="flex flex-wrap items-center gap-2">
               {!isEditing && (
-                <button type="button" onClick={handleSaveDraft} disabled={isSavingDraft || isSubmitting} className="inline-flex min-h-10 items-center gap-2 rounded-md border border-[#cbb9bd] bg-white px-4 text-sm font-semibold text-[#68404b] transition hover:bg-[#f8f9f6] disabled:cursor-not-allowed disabled:opacity-60">
+                <button type="button" onClick={handleSaveDraft} disabled={isSavingDraft || isSubmitting} className="inline-flex min-h-10 items-center gap-2 rounded-md border border-[#D8CCF5] bg-white px-4 text-sm font-semibold text-[#6132DA] transition hover:bg-[#f8f9f6] disabled:cursor-not-allowed disabled:opacity-60">
                   <Save size={15} />
                   {isSavingDraft ? 'Saving...' : 'Save as Draft'}
                 </button>
               )}
-              <button type="submit" disabled={isSubmitting || isSavingDraft} className="inline-flex min-h-10 items-center gap-2 rounded-md bg-[#68404b] px-4 text-sm font-semibold text-white transition hover:bg-[#54333d] disabled:cursor-not-allowed disabled:opacity-60">
+              <button type="submit" disabled={isSubmitting || isSavingDraft} className="inline-flex min-h-10 items-center gap-2 rounded-md bg-[#6132DA] px-4 text-sm font-semibold text-white transition hover:bg-[#4D25B5] disabled:cursor-not-allowed disabled:opacity-60">
                 <UserRoundPlus size={15} />
                 {isSubmitting ? 'Saving Customer...' : isEditing ? 'Save Changes' : 'Save & Create Customer'}
               </button>

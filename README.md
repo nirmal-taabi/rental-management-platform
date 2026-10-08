@@ -1,7 +1,7 @@
-# TrackinHub
+# Nirmal Rentals
 
 ## Overview
-This repository is the foundation for TrackinHub, a multi-tenant SaaS platform for clothing and fashion rental businesses operating across Tamil Nadu and India. The initial release focuses on a clean, scalable architecture and development setup without business feature implementation.
+This repository is the foundation for Nirmal Rentals, a multi-tenant SaaS platform for clothing and fashion rental businesses operating across Tamil Nadu and India. The initial release focuses on a clean, scalable architecture and development setup without business feature implementation.
 
 ## Technology Stack
 - Frontend: React, Vite, JavaScript, Tailwind CSS, React Router, Axios

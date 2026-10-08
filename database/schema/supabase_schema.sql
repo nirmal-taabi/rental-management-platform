@@ -1,5 +1,5 @@
 -- ============================================================
--- TrackinHub — PostgreSQL / Supabase Schema
+-- Nirmal Rentals — PostgreSQL / Supabase Schema
 -- Run this entire file in Supabase SQL Editor to bootstrap the DB.
 -- ============================================================
 

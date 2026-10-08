@@ -199,12 +199,12 @@ function CustomerListPage() {
               type="button"
               onClick={handleExport}
               disabled={isExporting}
-              className="inline-flex min-h-10 items-center gap-2 rounded-md bg-[#f1f2ef] px-3.5 text-xs font-medium text-[#414846] transition hover:bg-[#e8eae7] focus:outline-none focus:ring-4 focus:ring-[#68404b]/15 disabled:cursor-not-allowed disabled:opacity-60"
+              className="inline-flex min-h-10 items-center gap-2 rounded-md bg-[#f1f2ef] px-3.5 text-xs font-medium text-[#414846] transition hover:bg-[#e8eae7] focus:outline-none focus:ring-4 focus:ring-[#6132DA]/15 disabled:cursor-not-allowed disabled:opacity-60"
             >
               <Download size={15} />
               {isExporting ? 'Exporting...' : 'Export CSV'}
             </button>
-            <Link to="/customers/new" className="inline-flex min-h-10 items-center gap-2 rounded-md bg-[#68404b] px-3.5 text-xs font-semibold text-white transition hover:bg-[#54333d] focus:outline-none focus:ring-4 focus:ring-[#68404b]/20">
+            <Link to="/customers/new" className="inline-flex min-h-10 items-center gap-2 rounded-md bg-[#6132DA] px-3.5 text-xs font-semibold text-white transition hover:bg-[#4D25B5] focus:outline-none focus:ring-4 focus:ring-[#6132DA]/20">
               <UserRoundPlus size={15} />
               Add Customer
             </Link>
@@ -219,7 +219,7 @@ function CustomerListPage() {
                 type="button"
                 aria-pressed={quickFilter === filter.id}
                 onClick={() => handleQuickFilterChange(filter.id)}
-                className={`inline-flex min-h-10 items-center gap-2 rounded-md px-3.5 text-xs font-semibold transition focus:outline-none focus:ring-4 focus:ring-[#68404b]/15 ${quickFilter === filter.id ? 'bg-[#68404b] text-white' : 'bg-[#f1f2ef] text-[#414846] hover:bg-[#e8eae7]'}`}
+                className={`inline-flex min-h-10 items-center gap-2 rounded-md px-3.5 text-xs font-semibold transition focus:outline-none focus:ring-4 focus:ring-[#6132DA]/15 ${quickFilter === filter.id ? 'bg-[#6132DA] text-white' : 'bg-[#f1f2ef] text-[#414846] hover:bg-[#e8eae7]'}`}
               >
                 {filter.label}
                 <span className={`tabular-nums ${quickFilter === filter.id ? 'text-white/75' : 'text-[#8b928e]'}`}>
@@ -240,7 +240,7 @@ function CustomerListPage() {
                   setPage(1);
                 }}
                 placeholder="Search by name, phone or email"
-                className="min-h-10 w-full rounded-full border border-[#dfe3df] bg-white pl-10 pr-4 text-sm text-[#252a29] outline-none transition placeholder:text-[#b5bbb8] focus:border-[#805361] focus:ring-4 focus:ring-[#805361]/10"
+                className="min-h-10 w-full rounded-full border border-[#dfe3df] bg-white pl-10 pr-4 text-sm text-[#252a29] outline-none transition placeholder:text-[#b5bbb8] focus:border-[#7046E8] focus:ring-4 focus:ring-[#7046E8]/10"
               />
           </label>
         </div>
@@ -285,7 +285,7 @@ function CustomerListPage() {
                     className="cursor-pointer transition hover:bg-[#f8f9f6]"
                   >
                     <td className="px-4 py-3">
-                      <Link to={`/customers/${customer.id}`} onClick={(event) => event.stopPropagation()} className="font-semibold text-[#252a29] hover:text-[#68404b]">
+                      <Link to={`/customers/${customer.id}`} onClick={(event) => event.stopPropagation()} className="font-semibold text-[#252a29] hover:text-[#6132DA]">
                         {customer.firstName} {customer.lastName}
                       </Link>
                     </td>
@@ -299,7 +299,7 @@ function CustomerListPage() {
                     <td className="px-4 py-3 text-[#414846]">{formatDate(customer.createdAt)}</td>
                     <td className="px-4 py-3">
                       <div className="flex flex-wrap gap-2">
-                        <Link to={`/customers/${customer.id}/edit`} onClick={(event) => event.stopPropagation()} className="rounded-md border border-[#e6e8e4] bg-[#f8f9f6] px-2.5 py-1.5 text-xs font-medium text-[#68404b] transition hover:bg-[#e8eae7]">
+                        <Link to={`/customers/${customer.id}/edit`} onClick={(event) => event.stopPropagation()} className="rounded-md border border-[#e6e8e4] bg-[#f8f9f6] px-2.5 py-1.5 text-xs font-medium text-[#6132DA] transition hover:bg-[#e8eae7]">
                           Edit
                         </Link>
                         {canToggleStatus && (
@@ -328,7 +328,7 @@ function CustomerListPage() {
                   setPageSize(Number(event.target.value));
                   setPage(1);
                 }}
-                className="h-8 rounded-sm border border-[#e6e8e4] bg-white px-2 text-xs text-[#414846] outline-none focus:border-[#805361] focus:ring-2 focus:ring-[#805361]/10"
+                className="h-8 rounded-sm border border-[#e6e8e4] bg-white px-2 text-xs text-[#414846] outline-none focus:border-[#7046E8] focus:ring-2 focus:ring-[#7046E8]/10"
               >
                 <option value={20}>20</option>
                 <option value={50}>50</option>
@@ -344,7 +344,7 @@ function CustomerListPage() {
                 aria-label="Previous page"
                 disabled={!pagination.hasPreviousPage || loading}
                 onClick={() => handlePageChange(Math.max(1, page - 1))}
-                className="grid size-8 place-items-center rounded-sm bg-white text-[#68404b] transition hover:bg-[#f8f9f6] disabled:cursor-not-allowed disabled:text-[#c6c9c6]"
+                className="grid size-8 place-items-center rounded-sm bg-white text-[#6132DA] transition hover:bg-[#f8f9f6] disabled:cursor-not-allowed disabled:text-[#c6c9c6]"
               >
                 <ChevronLeft size={16} />
               </button>
@@ -357,7 +357,7 @@ function CustomerListPage() {
                     aria-current={item === page ? 'page' : undefined}
                     disabled={loading}
                     onClick={() => handlePageChange(item)}
-                    className={`grid size-8 place-items-center rounded-sm text-xs font-semibold transition disabled:cursor-wait ${item === page ? 'bg-[#68404b] text-white' : 'bg-white text-[#414846] hover:bg-[#f8f9f6] hover:text-[#68404b]'}`}
+                    className={`grid size-8 place-items-center rounded-sm text-xs font-semibold transition disabled:cursor-wait ${item === page ? 'bg-[#6132DA] text-white' : 'bg-white text-[#414846] hover:bg-[#f8f9f6] hover:text-[#6132DA]'}`}
                   >
                     {item}
                   </button>
@@ -370,7 +370,7 @@ function CustomerListPage() {
                 aria-label="Next page"
                 disabled={!pagination.hasNextPage || loading}
                 onClick={() => handlePageChange(page + 1)}
-                className="grid size-8 place-items-center rounded-sm bg-white text-[#68404b] transition hover:bg-[#f8f9f6] disabled:cursor-not-allowed disabled:text-[#c6c9c6]"
+                className="grid size-8 place-items-center rounded-sm bg-white text-[#6132DA] transition hover:bg-[#f8f9f6] disabled:cursor-not-allowed disabled:text-[#c6c9c6]"
               >
                 <ChevronRight size={16} />
               </button>

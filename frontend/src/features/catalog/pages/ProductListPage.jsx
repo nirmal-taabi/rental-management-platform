@@ -133,7 +133,7 @@ function ProductListPage() {
           </div>
           <div className="flex gap-2">
             <Link to="/settings/categories" className="inline-flex min-h-10 items-center rounded-md border border-[#dfe3df] bg-white px-3.5 text-sm font-medium text-[#414846] transition hover:bg-[#f8f9f6]">Categories</Link>
-            {canManage && <Link to="/products/new" className="inline-flex min-h-10 items-center gap-2 rounded-md bg-[#68404b] px-4 text-sm font-semibold text-white transition hover:bg-[#54333d]"><PackagePlus size={16} /> Add product</Link>}
+            {canManage && <Link to="/products/new" className="inline-flex min-h-10 items-center gap-2 rounded-md bg-[#6132DA] px-4 text-sm font-semibold text-white transition hover:bg-[#4D25B5]"><PackagePlus size={16} /> Add product</Link>}
           </div>
         </header>
 
@@ -145,7 +145,7 @@ function ProductListPage() {
                 type="button"
                 aria-pressed={status === filter.status}
                 onClick={() => { setStatus(filter.status); setPage(1); }}
-                className={`inline-flex min-h-10 items-center gap-2 rounded-md px-3.5 text-xs font-semibold transition focus:outline-none focus:ring-4 focus:ring-[#68404b]/15 ${status === filter.status ? 'bg-[#68404b] text-white' : 'bg-[#f1f2ef] text-[#414846] hover:bg-[#e8eae7]'}`}
+                className={`inline-flex min-h-10 items-center gap-2 rounded-md px-3.5 text-xs font-semibold transition focus:outline-none focus:ring-4 focus:ring-[#6132DA]/15 ${status === filter.status ? 'bg-[#6132DA] text-white' : 'bg-[#f1f2ef] text-[#414846] hover:bg-[#e8eae7]'}`}
               >
                 {filter.label}
                 <span className={`tabular-nums ${status === filter.status ? 'text-white/75' : 'text-[#59615e]'}`}>{productCounts[filter.countKey]}</span>
@@ -156,7 +156,7 @@ function ProductListPage() {
           <label className="relative w-full lg:max-w-[320px]">
             <span className="sr-only">Search product name, SKU or description</span>
             <Search size={17} className="absolute left-5 top-1/2 -translate-y-1/2 text-[#59615e]" />
-            <input id="product-search" type="search" value={search} onChange={(event) => { setSearch(event.target.value); setPage(1); }} placeholder="Search name or SKU" className="min-h-10 w-full rounded-full border border-[#dfe3df] bg-white pl-11 pr-4 text-sm text-[#252a29] outline-none transition placeholder:text-[#747b78] focus:border-[#805361] focus:ring-4 focus:ring-[#805361]/10" />
+            <input id="product-search" type="search" value={search} onChange={(event) => { setSearch(event.target.value); setPage(1); }} placeholder="Search name or SKU" className="min-h-10 w-full rounded-full border border-[#dfe3df] bg-white pl-11 pr-4 text-sm text-[#252a29] outline-none transition placeholder:text-[#747b78] focus:border-[#7046E8] focus:ring-4 focus:ring-[#7046E8]/10" />
           </label>
         </div>
 
@@ -183,9 +183,9 @@ function ProductListPage() {
                   }}
                   className="cursor-pointer transition hover:bg-[#f8f9f6]"
                 >
-                  <td className="px-4 py-3"><Link to={`/products/${product.id}`} onClick={(event) => event.stopPropagation()} className="font-semibold text-[#252a29] hover:text-[#68404b]">{product.name}</Link></td>
+                  <td className="px-4 py-3"><Link to={`/products/${product.id}`} onClick={(event) => event.stopPropagation()} className="font-semibold text-[#252a29] hover:text-[#6132DA]">{product.name}</Link></td>
                   <td className="px-4 py-3 font-mono text-xs text-[#414846]">{product.sku}</td><td className="px-4 py-3 text-[#414846]">{product.categoryName || '—'}</td><td className="px-4 py-3 text-[#252a29]">{money(product.rentalPrice)}</td><td className="px-4 py-3 text-[#252a29]">{money(product.depositAmount)}</td><td className="px-4 py-3"><span className={`inline-flex rounded-full px-2.5 py-1 text-xs font-semibold ${product.status === 'ACTIVE' ? 'bg-[#edf3ef] text-[#35634c]' : 'bg-[#f1f2ef] text-[#59615e]'}`}>{product.status}</span></td>
-                  <td className="px-4 py-3"><div className="flex gap-2">{canManage && <><Link to={`/products/${product.id}/edit`} onClick={(event) => event.stopPropagation()} className="rounded-md border border-[#e6e8e4] bg-[#f8f9f6] px-2.5 py-1.5 text-xs font-medium text-[#68404b] transition hover:bg-[#e8eae7]">Edit</Link><button type="button" onClick={(event) => handleStatus(event, product)} className="rounded-md border border-[#dfe3df] px-2.5 py-1.5 text-xs font-medium text-[#414846] transition hover:bg-[#f8f9f6]">{product.status === 'ACTIVE' ? 'Deactivate' : 'Activate'}</button></>}</div></td>
+                  <td className="px-4 py-3"><div className="flex gap-2">{canManage && <><Link to={`/products/${product.id}/edit`} onClick={(event) => event.stopPropagation()} className="rounded-md border border-[#e6e8e4] bg-[#f8f9f6] px-2.5 py-1.5 text-xs font-medium text-[#6132DA] transition hover:bg-[#e8eae7]">Edit</Link><button type="button" onClick={(event) => handleStatus(event, product)} className="rounded-md border border-[#dfe3df] px-2.5 py-1.5 text-xs font-medium text-[#414846] transition hover:bg-[#f8f9f6]">{product.status === 'ACTIVE' ? 'Deactivate' : 'Activate'}</button></>}</div></td>
                 </tr>
               ))}
             </tbody>
@@ -197,19 +197,19 @@ function ProductListPage() {
             <p className="text-[#414846]">Showing <span className="font-semibold text-[#252a29]">{firstRecord} to {lastRecord}</span> of <span className="font-semibold text-[#252a29]">{pagination.totalItems || 0}</span> products</p>
             <label htmlFor="product-page-size" className="inline-flex items-center gap-2 text-[#59615e]">
               Rows per page
-              <select id="product-page-size" value={pageSize} onChange={(event) => { setPageSize(Number(event.target.value)); setPage(1); }} className="h-8 rounded-sm border border-[#e6e8e4] bg-white px-2 text-xs text-[#414846] outline-none focus:border-[#805361] focus:ring-2 focus:ring-[#805361]/10">
+              <select id="product-page-size" value={pageSize} onChange={(event) => { setPageSize(Number(event.target.value)); setPage(1); }} className="h-8 rounded-sm border border-[#e6e8e4] bg-white px-2 text-xs text-[#414846] outline-none focus:border-[#7046E8] focus:ring-2 focus:ring-[#7046E8]/10">
                 <option value={20}>20</option><option value={50}>50</option><option value={100}>100</option>
               </select>
             </label>
           </div>
           <nav aria-label="Product pagination" className="flex flex-wrap items-center gap-1 sm:justify-end">
-            <button type="button" aria-label="Previous page" disabled={!pagination.hasPreviousPage || loading} onClick={() => handlePageChange(Math.max(1, page - 1))} className="grid size-8 place-items-center rounded-sm bg-white text-[#68404b] transition hover:bg-[#f8f9f6] disabled:cursor-not-allowed disabled:text-[#c6c9c6]"><ChevronLeft size={16} /></button>
+            <button type="button" aria-label="Previous page" disabled={!pagination.hasPreviousPage || loading} onClick={() => handlePageChange(Math.max(1, page - 1))} className="grid size-8 place-items-center rounded-sm bg-white text-[#6132DA] transition hover:bg-[#f8f9f6] disabled:cursor-not-allowed disabled:text-[#c6c9c6]"><ChevronLeft size={16} /></button>
             {paginationItems.map((item) => (
               typeof item === 'number' ? (
-                <button key={item} type="button" aria-label={`Page ${item}`} aria-current={item === page ? 'page' : undefined} disabled={loading} onClick={() => handlePageChange(item)} className={`grid size-8 place-items-center rounded-sm text-xs font-semibold transition disabled:cursor-wait ${item === page ? 'bg-[#68404b] text-white' : 'bg-white text-[#414846] hover:bg-[#f8f9f6] hover:text-[#68404b]'}`}>{item}</button>
+                <button key={item} type="button" aria-label={`Page ${item}`} aria-current={item === page ? 'page' : undefined} disabled={loading} onClick={() => handlePageChange(item)} className={`grid size-8 place-items-center rounded-sm text-xs font-semibold transition disabled:cursor-wait ${item === page ? 'bg-[#6132DA] text-white' : 'bg-white text-[#414846] hover:bg-[#f8f9f6] hover:text-[#6132DA]'}`}>{item}</button>
               ) : <span key={item} aria-hidden="true" className="grid size-7 place-items-center text-xs text-[#59615e]">…</span>
             ))}
-            <button type="button" aria-label="Next page" disabled={!pagination.hasNextPage || loading} onClick={() => handlePageChange(page + 1)} className="grid size-8 place-items-center rounded-sm bg-white text-[#68404b] transition hover:bg-[#f8f9f6] disabled:cursor-not-allowed disabled:text-[#c6c9c6]"><ChevronRight size={16} /></button>
+            <button type="button" aria-label="Next page" disabled={!pagination.hasNextPage || loading} onClick={() => handlePageChange(page + 1)} className="grid size-8 place-items-center rounded-sm bg-white text-[#6132DA] transition hover:bg-[#f8f9f6] disabled:cursor-not-allowed disabled:text-[#c6c9c6]"><ChevronRight size={16} /></button>
           </nav>
         </div>
       </div>

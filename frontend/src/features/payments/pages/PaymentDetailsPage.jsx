@@ -105,7 +105,7 @@ function PaymentDetailsPage() {
           </p>
           <Link
             to="/payments"
-            className="mt-4 inline-flex min-h-10 items-center text-sm font-semibold text-[#68404b] underline"
+            className="mt-4 inline-flex min-h-10 items-center text-sm font-semibold text-[#6132DA] underline"
           >
             Return to payments
           </Link>
@@ -123,11 +123,11 @@ function PaymentDetailsPage() {
           <div>
             <Link
               to="/payments"
-              className="mb-3 inline-flex items-center gap-2 text-sm font-semibold text-[#68404b] transition hover:text-[#54333d]"
+              className="mb-3 inline-flex items-center gap-2 text-sm font-semibold text-[#6132DA] transition hover:text-[#4D25B5]"
             >
               <ArrowLeft size={16} /> Payments
             </Link>
-            <p className="text-xs font-bold uppercase tracking-[0.16em] text-[#8a5360]">
+            <p className="text-xs font-bold uppercase tracking-[0.16em] text-[#8060D9]">
               Payment receipt
             </p>
             <div className="mt-1 flex flex-wrap items-center gap-3">
@@ -188,7 +188,7 @@ function PaymentDetailsPage() {
         <article className="border border-[#e6e8e4] bg-white print:border-0">
           <div className="flex flex-wrap items-start justify-between gap-4 border-b border-[#e8eae7] px-5 py-5 sm:px-8">
             <div>
-              <p className="text-xs font-bold uppercase tracking-wide text-[#8a5360]">
+              <p className="text-xs font-bold uppercase tracking-wide text-[#8060D9]">
                 Rental management
               </p>
               <h2 className="mt-2 text-xl font-semibold">Payment receipt</h2>
@@ -218,7 +218,7 @@ function PaymentDetailsPage() {
               {payment.bookingId ? (
                 <Link
                   to={`/bookings/${payment.bookingId}`}
-                  className="mt-2 inline-flex font-mono font-semibold text-[#68404b] underline underline-offset-4"
+                  className="mt-2 inline-flex font-mono font-semibold text-[#6132DA] underline underline-offset-4"
                 >
                   {payment.bookingNumber}
                 </Link>
@@ -326,7 +326,7 @@ function PaymentDetailsPage() {
                 value={reason}
                 onChange={(event) => setReason(event.target.value)}
                 rows={3}
-                className="mt-1 w-full rounded-md border border-[#dfe3df] bg-white px-3 py-2 font-normal text-[#252a29] outline-none focus:border-[#805361] focus:ring-2 focus:ring-[#805361]/10"
+                className="mt-1 w-full rounded-md border border-[#dfe3df] bg-white px-3 py-2 font-normal text-[#252a29] outline-none focus:border-[#7046E8] focus:ring-2 focus:ring-[#7046E8]/10"
               />
             </label>
             {error && (

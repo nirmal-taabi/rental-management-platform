@@ -106,7 +106,7 @@ function CustomerDetailsPage() {
         <div className="w-full max-w-md border border-[#e6e8e4] bg-white p-6">
           <p className="text-lg font-semibold text-[#252a29]">Unable to load customer</p>
           <p className="mt-2 text-sm text-[#59615e]">{error}</p>
-          <button type="button" onClick={() => navigate('/customers')} className="mt-4 inline-flex min-h-10 items-center gap-2 rounded-md bg-[#68404b] px-4 text-sm font-semibold text-white transition hover:bg-[#54333d]">
+          <button type="button" onClick={() => navigate('/customers')} className="mt-4 inline-flex min-h-10 items-center gap-2 rounded-md bg-[#6132DA] px-4 text-sm font-semibold text-white transition hover:bg-[#4D25B5]">
             <ArrowLeft size={15} /> Back to customers
           </button>
         </div>
@@ -124,14 +124,14 @@ function CustomerDetailsPage() {
     <>
     <main className="min-h-full bg-[#f8f9f6] px-4 py-7 text-[#252a29] sm:px-6 lg:px-8">
       <div className="mx-auto max-w-[1200px] space-y-6">
-        <Link to="/customers" className="inline-flex items-center gap-2 text-sm font-semibold text-[#68404b] transition hover:text-[#54333d]">
+        <Link to="/customers" className="inline-flex items-center gap-2 text-sm font-semibold text-[#6132DA] transition hover:text-[#4D25B5]">
           <ArrowLeft size={16} /> Customers
         </Link>
 
         <section className="border border-[#e6e8e4] bg-white">
           <div className="flex flex-col gap-5 p-5 sm:flex-row sm:items-center sm:justify-between sm:p-6">
             <div className="flex min-w-0 items-center gap-4 sm:gap-5">
-              <span aria-hidden="true" className="grid size-20 shrink-0 place-items-center rounded-md bg-[#68404b] text-2xl font-semibold text-white ring-4 ring-[#f1e9eb] sm:size-24 sm:text-3xl">
+              <span aria-hidden="true" className="grid size-20 shrink-0 place-items-center rounded-md bg-[#6132DA] text-2xl font-semibold text-white ring-4 ring-[#F1ECFC] sm:size-24 sm:text-3xl">
                 {customerInitials || '?'}
               </span>
               <div className="min-w-0">
@@ -143,13 +143,13 @@ function CustomerDetailsPage() {
                 </div>
                 <div className="mt-3 flex flex-wrap items-center gap-x-3 gap-y-1.5 text-sm text-[#59615e]">
                   {customer.createdAt && <span>Registered {new Date(customer.createdAt).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' })}</span>}
-                  {customerLocation && <><span aria-hidden="true" className="hidden size-1 rounded-full bg-[#cbb9bd] sm:block" /><span className="inline-flex items-center gap-1.5"><MapPin size={14} />{customerLocation}</span></>}
-                  {customer.phone && <><span aria-hidden="true" className="hidden size-1 rounded-full bg-[#cbb9bd] sm:block" /><span className="inline-flex items-center gap-1.5"><Phone size={14} />{customer.phone}</span></>}
+                  {customerLocation && <><span aria-hidden="true" className="hidden size-1 rounded-full bg-[#D8CCF5] sm:block" /><span className="inline-flex items-center gap-1.5"><MapPin size={14} />{customerLocation}</span></>}
+                  {customer.phone && <><span aria-hidden="true" className="hidden size-1 rounded-full bg-[#D8CCF5] sm:block" /><span className="inline-flex items-center gap-1.5"><Phone size={14} />{customer.phone}</span></>}
                 </div>
               </div>
             </div>
             <div className="flex shrink-0 flex-wrap gap-2 sm:justify-end">
-              <Link to={`/customers/${customer.id}/edit`} className="inline-flex min-h-10 items-center gap-2 rounded-md bg-[#68404b] px-4 text-sm font-semibold text-white transition hover:bg-[#54333d] focus:outline-none focus:ring-4 focus:ring-[#68404b]/20">
+              <Link to={`/customers/${customer.id}/edit`} className="inline-flex min-h-10 items-center gap-2 rounded-md bg-[#6132DA] px-4 text-sm font-semibold text-white transition hover:bg-[#4D25B5] focus:outline-none focus:ring-4 focus:ring-[#6132DA]/20">
                 <Pencil size={15} /> Edit profile
               </Link>
               {canToggleStatus && (
@@ -199,7 +199,7 @@ function CustomerDetailsPage() {
               <h2 className="text-base font-semibold text-[#252a29]">Rental activity</h2>
               <p className="mt-1 text-xs text-[#59615e]">Active rentals and recent returns</p>
             </div>
-            <Link to="/bookings" className="inline-flex items-center gap-1 text-sm font-semibold text-[#68404b] hover:text-[#54333d]">All bookings <ArrowUpRight size={15} /></Link>
+            <Link to="/bookings" className="inline-flex items-center gap-1 text-sm font-semibold text-[#6132DA] hover:text-[#4D25B5]">All bookings <ArrowUpRight size={15} /></Link>
           </header>
           {rentalData.error && <p role="alert" className="mx-5 mt-4 border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-800 sm:mx-6">{rentalData.error}</p>}
           {rentalData.loading ? <p className="px-5 py-5 text-sm text-[#59615e] sm:px-6">Loading rental activity...</p> : (
@@ -209,11 +209,11 @@ function CustomerDetailsPage() {
                 {rentalData.active.length ? (
                   <div className="mt-3 grid gap-3">
                     {rentalData.active.map((booking) => (
-                      <Link key={booking.id} to={`/bookings/${booking.id}`} className="block border border-[#e6e8e4] bg-[#f8f9f6] p-4 transition hover:border-[#cbb9bd] hover:bg-white">
+                      <Link key={booking.id} to={`/bookings/${booking.id}`} className="block border border-[#e6e8e4] bg-[#f8f9f6] p-4 transition hover:border-[#D8CCF5] hover:bg-white">
                         <div className="flex flex-wrap items-start justify-between gap-3">
                           <div>
                             <p className="text-[10px] font-semibold uppercase tracking-wide text-[#59615e]">Booking</p>
-                            <p className="mt-1 font-mono text-sm font-semibold text-[#68404b]">{booking.bookingNumber}</p>
+                            <p className="mt-1 font-mono text-sm font-semibold text-[#6132DA]">{booking.bookingNumber}</p>
                           </div>
                           <span className="inline-flex rounded-full bg-[#edf3ef] px-2.5 py-1 text-[10px] font-semibold text-[#35634c]">ACTIVE</span>
                         </div>
@@ -227,7 +227,7 @@ function CustomerDetailsPage() {
                             <p className="mt-1 text-xs font-medium text-[#252a29]">{booking.itemCount || 0}</p>
                           </div>
                         </div>
-                        <span className="mt-3 inline-flex items-center gap-1 text-xs font-semibold text-[#68404b]">View booking <ArrowUpRight size={13} /></span>
+                        <span className="mt-3 inline-flex items-center gap-1 text-xs font-semibold text-[#6132DA]">View booking <ArrowUpRight size={13} /></span>
                       </Link>
                     ))}
                   </div>
@@ -235,7 +235,7 @@ function CustomerDetailsPage() {
               </div>
               <div>
                 <h3 className="text-xs font-bold uppercase tracking-wide text-[#414846]">Recent returns</h3>
-                {rentalData.returns.length ? <div className="mt-2 divide-y divide-[#eef0ed]">{rentalData.returns.map((entry) => <Link key={entry.id} to={`/returns/${entry.id}`} className="flex items-center justify-between gap-3 py-3"><span><span className="block font-mono text-sm font-semibold text-[#68404b]">RT-{String(entry.id).padStart(5, '0')} · {entry.bookingNumber}</span><span className="mt-1 block text-xs text-[#59615e]">{formatDate(entry.returnedAt)}</span></span><span className={`text-xs font-semibold ${entry.returnStatus === 'LATE' ? 'text-amber-800' : 'text-[#35634c]'}`}>{entry.returnStatus}{entry.daysLate ? ` · ${entry.daysLate}d` : ''}</span></Link>)}</div> : <p className="mt-2 text-sm text-[#59615e]">No returns recorded.</p>}
+                {rentalData.returns.length ? <div className="mt-2 divide-y divide-[#eef0ed]">{rentalData.returns.map((entry) => <Link key={entry.id} to={`/returns/${entry.id}`} className="flex items-center justify-between gap-3 py-3"><span><span className="block font-mono text-sm font-semibold text-[#6132DA]">RT-{String(entry.id).padStart(5, '0')} · {entry.bookingNumber}</span><span className="mt-1 block text-xs text-[#59615e]">{formatDate(entry.returnedAt)}</span></span><span className={`text-xs font-semibold ${entry.returnStatus === 'LATE' ? 'text-amber-800' : 'text-[#35634c]'}`}>{entry.returnStatus}{entry.daysLate ? ` · ${entry.daysLate}d` : ''}</span></Link>)}</div> : <p className="mt-2 text-sm text-[#59615e]">No returns recorded.</p>}
               </div>
             </div>
           )}
@@ -247,7 +247,7 @@ function CustomerDetailsPage() {
               <h2 className="text-base font-semibold text-[#252a29]">Payment history</h2>
               <p className="mt-1 text-xs text-[#59615e]">Booking-linked payments recorded for this customer</p>
             </div>
-            <Link to="/payments" className="inline-flex items-center gap-1 text-sm font-semibold text-[#68404b] hover:text-[#54333d]">All payments <ArrowUpRight size={15} /></Link>
+            <Link to="/payments" className="inline-flex items-center gap-1 text-sm font-semibold text-[#6132DA] hover:text-[#4D25B5]">All payments <ArrowUpRight size={15} /></Link>
           </header>
           {paymentData.error && <p role="alert" className="mx-5 mt-4 border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-800 sm:mx-6">{paymentData.error}</p>}
           {paymentData.loading ? <p className="px-5 py-5 text-sm text-[#59615e] sm:px-6">Loading payment history...</p> : paymentData.summary && (
@@ -257,7 +257,7 @@ function CustomerDetailsPage() {
               <div className="bg-white px-4 py-4"><p className="text-xs font-medium text-[#59615e]">Outstanding</p><p className="mt-1 text-lg font-semibold tabular-nums text-[#252a29]">₹{Number(paymentData.summary.outstanding || 0).toLocaleString('en-IN', { minimumFractionDigits: 2 })}</p></div>
             </div>
           )}
-          {!paymentData.loading && paymentData.data.length > 0 && <div className="divide-y divide-[#eef0ed] px-5 sm:px-6">{paymentData.data.map((payment) => <Link key={payment.id} to={`/payments/${payment.id}`} className="flex flex-wrap items-center justify-between gap-3 py-4"><div><p className="font-mono text-sm font-semibold text-[#68404b]">{payment.paymentReference}</p><p className="mt-1 text-xs text-[#59615e]">{payment.bookingNumber || 'Legacy'} · {payment.paymentMethod.replaceAll('_', ' ')} · {payment.transactionDate}</p></div><div className="flex items-center gap-3"><span className="text-sm font-semibold tabular-nums text-[#252a29]">₹{Number(payment.amount).toLocaleString('en-IN', { minimumFractionDigits: 2 })}</span><PaymentStatusBadge status={payment.status} /></div></Link>)}</div>}
+          {!paymentData.loading && paymentData.data.length > 0 && <div className="divide-y divide-[#eef0ed] px-5 sm:px-6">{paymentData.data.map((payment) => <Link key={payment.id} to={`/payments/${payment.id}`} className="flex flex-wrap items-center justify-between gap-3 py-4"><div><p className="font-mono text-sm font-semibold text-[#6132DA]">{payment.paymentReference}</p><p className="mt-1 text-xs text-[#59615e]">{payment.bookingNumber || 'Legacy'} · {payment.paymentMethod.replaceAll('_', ' ')} · {payment.transactionDate}</p></div><div className="flex items-center gap-3"><span className="text-sm font-semibold tabular-nums text-[#252a29]">₹{Number(payment.amount).toLocaleString('en-IN', { minimumFractionDigits: 2 })}</span><PaymentStatusBadge status={payment.status} /></div></Link>)}</div>}
           {!paymentData.loading && !paymentData.error && !paymentData.data.length && <p className="px-5 py-5 text-sm text-[#59615e] sm:px-6">No payment transactions recorded.</p>}
         </section>
       </div>

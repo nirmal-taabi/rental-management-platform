@@ -49,7 +49,7 @@ const formatChange = (comparison) => {
 function Metric({ label, value, detail, icon: Icon, to }) {
   const content = (
     <>
-      <span className="grid size-9 shrink-0 place-items-center bg-[#f8f9f6] text-[#68404b]"><Icon size={17} /></span>
+      <span className="grid size-9 shrink-0 place-items-center bg-[#f8f9f6] text-[#6132DA]"><Icon size={17} /></span>
       <span className="min-w-0 flex-1">
         <span className="block text-xs font-medium text-[#59615e]">{label}</span>
         <span className="mt-1 block text-2xl font-semibold tabular-nums text-[#252a29]">{value ?? '—'}</span>
@@ -59,7 +59,7 @@ function Metric({ label, value, detail, icon: Icon, to }) {
     </>
   );
   return to
-    ? <Link to={to} className="flex min-h-28 items-start gap-3 border border-[#e6e8e4] bg-white p-4 transition hover:border-[#cbb9bd]">{content}</Link>
+    ? <Link to={to} className="flex min-h-28 items-start gap-3 border border-[#e6e8e4] bg-white p-4 transition hover:border-[#D8CCF5]">{content}</Link>
     : <div className="flex min-h-28 items-start gap-3 border border-[#e6e8e4] bg-white p-4">{content}</div>;
 }
 
@@ -68,7 +68,7 @@ function Section({ title, description, loading, error, onRetry, children }) {
     <section className="min-w-0 border border-[#e6e8e4] bg-white">
       <header className="flex items-start justify-between gap-3 border-b border-[#e8eae7] px-4 py-3 sm:px-5">
         <div><h2 className="text-sm font-semibold text-[#252a29]">{title}</h2>{description && <p className="mt-1 text-xs text-[#59615e]">{description}</p>}</div>
-        {error && <button type="button" onClick={onRetry} className="text-xs font-semibold text-[#68404b] underline underline-offset-2">Retry</button>}
+        {error && <button type="button" onClick={onRetry} className="text-xs font-semibold text-[#6132DA] underline underline-offset-2">Retry</button>}
       </header>
       <div className="p-4 sm:p-5">
         {loading ? <p className="py-5 text-sm text-[#59615e]">Loading {title.toLowerCase()}…</p>
@@ -106,7 +106,7 @@ function TrendList({ rows, valueKey, label }) {
         {rows.slice(-8).map((row) => (
           <div key={row.period} className="grid grid-cols-[4.5rem_1fr_auto] items-center gap-3 text-xs">
             <span className="text-[#59615e]">{formatDate(row.period)}</span>
-            <span className="h-2 bg-[#f1f2ef]"><span className="block h-2 bg-[#68404b]" style={{ width: `${Math.max((Number(row[valueKey] || 0) / max) * 100, 2)}%` }} /></span>
+            <span className="h-2 bg-[#f1f2ef]"><span className="block h-2 bg-[#6132DA]" style={{ width: `${Math.max((Number(row[valueKey] || 0) / max) * 100, 2)}%` }} /></span>
             <span className="min-w-8 text-right font-semibold tabular-nums text-[#252a29]">{valueKey === 'total' ? formatMoney(row[valueKey]) : row[valueKey]}</span>
           </div>
         ))}
@@ -179,8 +179,8 @@ function DashboardPage() {
   return (
     <div className="mx-auto max-w-[1440px] space-y-7 px-4 py-7 text-[#252a29] sm:px-6 sm:py-9 lg:px-10">
       <header className="flex flex-col gap-4 border-b border-[#e6e8e4] pb-5 sm:flex-row sm:items-end sm:justify-between">
-        <div><p className="text-xs font-semibold uppercase tracking-[0.16em] text-[#8a5360]">{shop?.name || 'Rental workspace'}</p><h1 className="mt-1 text-3xl font-semibold">Operations dashboard</h1><p className="mt-2 text-sm text-[#59615e]">Today is {formatDate(today)}. Signed in as {user?.name || 'Team member'}.</p></div>
-        <Link to="/reports" className="inline-flex min-h-10 items-center justify-center gap-2 border border-[#dfe3df] bg-white px-3 text-sm font-semibold text-[#414846] hover:border-[#68404b]"><Activity size={16} /> Reports</Link>
+        <div><p className="text-xs font-semibold uppercase tracking-[0.16em] text-[#8060D9]">{shop?.name || 'Rental workspace'}</p><h1 className="mt-1 text-3xl font-semibold">Operations dashboard</h1><p className="mt-2 text-sm text-[#59615e]">Today is {formatDate(today)}. Signed in as {user?.name || 'Team member'}.</p></div>
+        <Link to="/reports" className="inline-flex min-h-10 items-center justify-center gap-2 border border-[#dfe3df] bg-white px-3 text-sm font-semibold text-[#414846] hover:border-[#6132DA]"><Activity size={16} /> Reports</Link>
       </header>
 
       <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
@@ -191,7 +191,7 @@ function DashboardPage() {
           </select>
         </div>
         {preset === 'custom' && <div className="grid gap-3 sm:grid-cols-2"><div><label htmlFor="dashboard-start" className="mb-1.5 block text-xs font-semibold text-[#414846]">Start date</label><input id="dashboard-start" type="date" value={customStart} max={customEnd || undefined} onChange={(event) => setCustomStart(event.target.value)} className="min-h-10 w-full border border-[#dfe3df] bg-white px-3 text-sm" /></div><div><label htmlFor="dashboard-end" className="mb-1.5 block text-xs font-semibold text-[#414846]">End date</label><input id="dashboard-end" type="date" value={customEnd} min={customStart || undefined} onChange={(event) => setCustomEnd(event.target.value)} className="min-h-10 w-full border border-[#dfe3df] bg-white px-3 text-sm" /></div></div>}
-        <nav aria-label="Quick actions" className="flex flex-wrap gap-2">{quickLinks.map(({ label, to, icon: Icon }) => <Link key={to} to={to} className="inline-flex min-h-9 items-center gap-2 border border-[#dfe3df] bg-white px-3 text-xs font-semibold text-[#414846] hover:border-[#68404b]"><Icon size={14} />{label}</Link>)}</nav>
+        <nav aria-label="Quick actions" className="flex flex-wrap gap-2">{quickLinks.map(({ label, to, icon: Icon }) => <Link key={to} to={to} className="inline-flex min-h-9 items-center gap-2 border border-[#dfe3df] bg-white px-3 text-xs font-semibold text-[#414846] hover:border-[#6132DA]"><Icon size={14} />{label}</Link>)}</nav>
       </div>
       {preset === 'custom' && !readyForRange && <p role="status" className="text-sm text-[#59615e]">Choose both dates to load the dashboard.</p>}
 
@@ -205,7 +205,7 @@ function DashboardPage() {
       </section>
 
       <section>
-        <div className="mb-3 flex items-end justify-between gap-3"><div><h2 className="text-lg font-semibold">Today’s operations</h2><p className="mt-1 text-sm text-[#59615e]">Pickup and return workload, with the next seven days in view.</p></div><Link to="/bookings" className="text-xs font-semibold text-[#68404b] underline underline-offset-2">All bookings</Link></div>
+        <div className="mb-3 flex items-end justify-between gap-3"><div><h2 className="text-lg font-semibold">Today’s operations</h2><p className="mt-1 text-sm text-[#59615e]">Pickup and return workload, with the next seven days in view.</p></div><Link to="/bookings" className="text-xs font-semibold text-[#6132DA] underline underline-offset-2">All bookings</Link></div>
         <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
           <Metric label="Pickups today" value={operations.counts?.pickups_today} icon={CalendarDays} to="/bookings?status=TODAY" />
           <Metric label="Returns due today" value={operations.counts?.returns_today} icon={RotateCcw} to="/bookings?status=ACTIVE" />
@@ -216,19 +216,19 @@ function DashboardPage() {
 
       <section className="grid gap-5 xl:grid-cols-2">
         <Section title="Upcoming pickups" description="Next seven days" loading={loading.operations} error={errors.operations} onRetry={retry}>
-          {operations.upcomingPickups?.length ? <ul className="divide-y divide-[#eef0ed]">{operations.upcomingPickups.map((booking) => <li key={booking.id} className="flex items-center justify-between gap-3 py-3 first:pt-0 last:pb-0"><div className="min-w-0"><Link to={`/bookings/${booking.id}`} className="font-mono text-sm font-semibold text-[#68404b]">{booking.booking_number}</Link><p className="mt-1 truncate text-sm font-medium">{booking.first_name} {booking.last_name || ''}</p></div><div className="shrink-0 text-right"><p className="text-sm">{formatDate(booking.rental_start_date)}</p><p className="mt-1 text-xs text-[#59615e]">{booking.item_count} items · {booking.status}</p></div></li>)}</ul> : <p className="text-sm text-[#59615e]">No upcoming pickups.</p>}
+          {operations.upcomingPickups?.length ? <ul className="divide-y divide-[#eef0ed]">{operations.upcomingPickups.map((booking) => <li key={booking.id} className="flex items-center justify-between gap-3 py-3 first:pt-0 last:pb-0"><div className="min-w-0"><Link to={`/bookings/${booking.id}`} className="font-mono text-sm font-semibold text-[#6132DA]">{booking.booking_number}</Link><p className="mt-1 truncate text-sm font-medium">{booking.first_name} {booking.last_name || ''}</p></div><div className="shrink-0 text-right"><p className="text-sm">{formatDate(booking.rental_start_date)}</p><p className="mt-1 text-xs text-[#59615e]">{booking.item_count} items · {booking.status}</p></div></li>)}</ul> : <p className="text-sm text-[#59615e]">No upcoming pickups.</p>}
         </Section>
         <Section title="Upcoming returns" description="Next seven days" loading={loading.operations} error={errors.operations} onRetry={retry}>
-          {operations.upcomingReturns?.length ? <ul className="divide-y divide-[#eef0ed]">{operations.upcomingReturns.map((booking) => <li key={booking.id} className="flex items-center justify-between gap-3 py-3 first:pt-0 last:pb-0"><div className="min-w-0"><Link to={`/bookings/${booking.id}`} className="font-mono text-sm font-semibold text-[#68404b]">{booking.booking_number}</Link><p className="mt-1 truncate text-sm font-medium">{booking.first_name} {booking.last_name || ''}</p></div><div className="shrink-0 text-right"><p className="text-sm">{formatDate(booking.expected_return_date)}</p><p className="mt-1 text-xs text-[#59615e]">{booking.item_count} items · {booking.status}</p></div></li>)}</ul> : <p className="text-sm text-[#59615e]">No upcoming returns.</p>}
+          {operations.upcomingReturns?.length ? <ul className="divide-y divide-[#eef0ed]">{operations.upcomingReturns.map((booking) => <li key={booking.id} className="flex items-center justify-between gap-3 py-3 first:pt-0 last:pb-0"><div className="min-w-0"><Link to={`/bookings/${booking.id}`} className="font-mono text-sm font-semibold text-[#6132DA]">{booking.booking_number}</Link><p className="mt-1 truncate text-sm font-medium">{booking.first_name} {booking.last_name || ''}</p></div><div className="shrink-0 text-right"><p className="text-sm">{formatDate(booking.expected_return_date)}</p><p className="mt-1 text-xs text-[#59615e]">{booking.item_count} items · {booking.status}</p></div></li>)}</ul> : <p className="text-sm text-[#59615e]">No upcoming returns.</p>}
         </Section>
       </section>
 
       <Section title="Attention required" description="Current operational conditions" loading={loading.attention} error={errors.attention} onRetry={retry}>
         <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
-          <Link to="/bookings?status=ACTIVE" className="flex items-center gap-3 border border-[#e6e8e4] p-3"><AlertTriangle size={17} className="text-[#8a5360]" /><span><span className="block text-lg font-semibold tabular-nums">{operations.counts?.overdue_returns ?? '—'}</span><span className="text-xs text-[#59615e]">Overdue returns</span></span></Link>
-          <Link to="/inventory" className="flex items-center gap-3 border border-[#e6e8e4] p-3"><Boxes size={17} className="text-[#8a5360]" /><span><span className="block text-lg font-semibold tabular-nums">{attention.damagedOrLostInventory ?? '—'}</span><span className="text-xs text-[#59615e]">Damaged or lost items</span></span></Link>
-          <Link to="/inventory" className="flex items-center gap-3 border border-[#e6e8e4] p-3"><RotateCcw size={17} className="text-[#8a5360]" /><span><span className="block text-lg font-semibold tabular-nums">{attention.inventoryInMaintenance ?? '—'}</span><span className="text-xs text-[#59615e]">Items in service</span></span></Link>
-          {canViewFinancials && <Link to="/payments" className="flex items-center gap-3 border border-[#e6e8e4] p-3"><CreditCard size={17} className="text-[#8a5360]" /><span><span className="block text-lg font-semibold tabular-nums">{attention.bookingsWithBalance ?? '—'}</span><span className="text-xs text-[#59615e]">Bookings with a balance</span></span></Link>}
+          <Link to="/bookings?status=ACTIVE" className="flex items-center gap-3 border border-[#e6e8e4] p-3"><AlertTriangle size={17} className="text-[#8060D9]" /><span><span className="block text-lg font-semibold tabular-nums">{operations.counts?.overdue_returns ?? '—'}</span><span className="text-xs text-[#59615e]">Overdue returns</span></span></Link>
+          <Link to="/inventory" className="flex items-center gap-3 border border-[#e6e8e4] p-3"><Boxes size={17} className="text-[#8060D9]" /><span><span className="block text-lg font-semibold tabular-nums">{attention.damagedOrLostInventory ?? '—'}</span><span className="text-xs text-[#59615e]">Damaged or lost items</span></span></Link>
+          <Link to="/inventory" className="flex items-center gap-3 border border-[#e6e8e4] p-3"><RotateCcw size={17} className="text-[#8060D9]" /><span><span className="block text-lg font-semibold tabular-nums">{attention.inventoryInMaintenance ?? '—'}</span><span className="text-xs text-[#59615e]">Items in service</span></span></Link>
+          {canViewFinancials && <Link to="/payments" className="flex items-center gap-3 border border-[#e6e8e4] p-3"><CreditCard size={17} className="text-[#8060D9]" /><span><span className="block text-lg font-semibold tabular-nums">{attention.bookingsWithBalance ?? '—'}</span><span className="text-xs text-[#59615e]">Bookings with a balance</span></span></Link>}
         </div>
       </Section>
 
@@ -243,12 +243,12 @@ function DashboardPage() {
           <p className="mt-4 text-xs text-[#59615e]">Utilization of usable units: <strong className="text-[#252a29]">{summary.inventory?.utilization ?? 0}%</strong></p>
         </Section>
         <Section title="Most rented products" description="Booking-item quantities for the selected period" loading={loading.topProducts} error={errors.topProducts} onRetry={retry}>
-          {data.topProducts?.length ? <ol className="divide-y divide-[#eef0ed]">{data.topProducts.map((product, index) => <li key={product.id} className="flex items-center gap-3 py-3 first:pt-0 last:pb-0"><span className="grid size-7 shrink-0 place-items-center bg-[#f8f9f6] text-xs font-semibold text-[#68404b]">{index + 1}</span><span className="min-w-0 flex-1"><span className="block truncate text-sm font-semibold">{product.name}</span><span className="mt-1 block text-xs text-[#59615e]">{product.sku} · {product.booking_count} bookings</span></span><span className="shrink-0 text-sm font-semibold tabular-nums">{product.quantity_rented}</span></li>)}</ol> : <p className="text-sm text-[#59615e]">No bookings for these dates.</p>}
+          {data.topProducts?.length ? <ol className="divide-y divide-[#eef0ed]">{data.topProducts.map((product, index) => <li key={product.id} className="flex items-center gap-3 py-3 first:pt-0 last:pb-0"><span className="grid size-7 shrink-0 place-items-center bg-[#f8f9f6] text-xs font-semibold text-[#6132DA]">{index + 1}</span><span className="min-w-0 flex-1"><span className="block truncate text-sm font-semibold">{product.name}</span><span className="mt-1 block text-xs text-[#59615e]">{product.sku} · {product.booking_count} bookings</span></span><span className="shrink-0 text-sm font-semibold tabular-nums">{product.quantity_rented}</span></li>)}</ol> : <p className="text-sm text-[#59615e]">No bookings for these dates.</p>}
         </Section>
       </section>
 
       <Section title="Recent activity" description="Latest audit events for this shop" loading={loading.activity} error={errors.activity} onRetry={retry}>
-        {data.activity?.length ? <ol className="grid gap-3 sm:grid-cols-2">{data.activity.map((event, index) => <li key={`${event.entity_type}-${event.entity_id}-${event.created_at}-${index}`} className="flex items-start gap-3 border-b border-[#eef0ed] pb-3"><Activity size={15} className="mt-0.5 shrink-0 text-[#8a5360]" /><span className="min-w-0"><span className="block text-sm font-medium">{String(event.action).replaceAll('_', ' ')}</span><span className="mt-1 block text-xs text-[#59615e]">{event.entity_type} #{event.entity_id} · {new Date(event.created_at).toLocaleString('en-IN')}</span></span></li>)}</ol> : <p className="text-sm text-[#59615e]">No recorded activity yet.</p>}
+        {data.activity?.length ? <ol className="grid gap-3 sm:grid-cols-2">{data.activity.map((event, index) => <li key={`${event.entity_type}-${event.entity_id}-${event.created_at}-${index}`} className="flex items-start gap-3 border-b border-[#eef0ed] pb-3"><Activity size={15} className="mt-0.5 shrink-0 text-[#8060D9]" /><span className="min-w-0"><span className="block text-sm font-medium">{String(event.action).replaceAll('_', ' ')}</span><span className="mt-1 block text-xs text-[#59615e]">{event.entity_type} #{event.entity_id} · {new Date(event.created_at).toLocaleString('en-IN')}</span></span></li>)}</ol> : <p className="text-sm text-[#59615e]">No recorded activity yet.</p>}
       </Section>
     </div>
   );

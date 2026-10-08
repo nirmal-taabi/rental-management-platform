@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { Link, NavLink, Outlet, useNavigate } from 'react-router-dom';
 import PropTypes from 'prop-types';
+import brandLogo from '../../assets/TrackinHubLogo.png';
 import {
   BarChart3,
   Boxes,
@@ -104,12 +105,8 @@ function AppLayout({ children }) {
   return (
     <div className="min-h-screen bg-[#f8f9f6] text-[#252a29]">
       <aside className="fixed inset-y-0 left-0 z-50 flex w-16 flex-col border-r border-[#e6e8e4] bg-white md:w-[250px]">
-        <Link to="/dashboard" className="flex h-[72px] shrink-0 items-center justify-center gap-2 border-b border-[#e6e8e4] px-2 md:justify-start md:px-5">
-          <span className="grid size-8 shrink-0 place-items-center rounded-md bg-[#68404b] text-sm font-bold text-white">R</span>
-          <span className="hidden min-w-0 md:block">
-            <span className="block text-[12px] font-extrabold tracking-[0.08em] text-[#252a29]">RENTORA</span>
-            <span className="mt-0.5 block text-[9px] font-semibold uppercase tracking-[0.12em] text-[#8a5360]">Atelier Suite</span>
-          </span>
+        <Link to="/dashboard" className="flex h-[72px] shrink-0 items-center justify-center border-b border-[#e6e8e4] bg-white px-2 md:justify-start md:px-5">
+          <img src={brandLogo} alt="TrackinHub logo" className="h-9 w-auto max-w-[150px] object-contain" />
         </Link>
 
         <div className="px-2 py-4 md:px-4">
@@ -122,9 +119,9 @@ function AppLayout({ children }) {
                 setIsShopMenuOpen((open) => !open);
                 setShopSwitchError('');
               }}
-              className="flex min-h-[56px] w-full items-center justify-center gap-2 rounded-md border border-[#e6e8e4] bg-[#f8f9f6] p-1.5 text-left transition hover:border-[#cbb9bd] focus:outline-none focus:ring-2 focus:ring-[#68404b]/20 md:justify-start md:px-2"
+              className="flex min-h-[56px] w-full items-center justify-center gap-2 rounded-md border border-[#e6e8e4] bg-[#f8f9f6] p-1.5 text-left transition hover:border-[#D8CCF5] focus:outline-none focus:ring-2 focus:ring-[#6132DA]/20 md:justify-start md:px-2"
             >
-              <span className="grid size-8 shrink-0 place-items-center rounded-sm bg-[#68404b] text-xs font-bold text-white">{shopInitial}</span>
+              <span className="grid size-8 shrink-0 place-items-center rounded-sm bg-[#6132DA] text-xs font-bold text-white">{shopInitial}</span>
               <span className="hidden min-w-0 flex-1 md:block">
                 <span className="block truncate text-[11px] font-semibold text-[#252a29]">{shop?.name || 'Your shop'}</span>
                 <span className="mt-0.5 block truncate text-[10px] text-[#747b78]">{shopLocation} · {shop?.role || roles[0] || 'OWNER'}</span>
@@ -150,12 +147,12 @@ function AppLayout({ children }) {
                         onClick={() => handleShopSwitch(availableShop)}
                         className="flex min-h-14 w-full items-center gap-3 rounded-sm px-2.5 py-2 text-left transition hover:bg-[#f8f9f6] disabled:cursor-not-allowed disabled:opacity-55"
                       >
-                        <span className="grid size-8 shrink-0 place-items-center rounded-sm bg-[#f1f2ef] text-xs font-semibold text-[#68404b]">{availableShop.name?.trim()?.charAt(0)?.toUpperCase() || 'S'}</span>
+                        <span className="grid size-8 shrink-0 place-items-center rounded-sm bg-[#f1f2ef] text-xs font-semibold text-[#6132DA]">{availableShop.name?.trim()?.charAt(0)?.toUpperCase() || 'S'}</span>
                         <span className="min-w-0 flex-1">
                           <span className="block truncate text-xs font-semibold text-[#252a29]">{availableShop.name}</span>
                           <span className="mt-0.5 block truncate text-[10px] text-[#747b78]">{[availableShop.city, availableShop.state].filter(Boolean).join(', ') || 'Location not set'} · {availableShop.role}</span>
                         </span>
-                        {isCurrentShop && <span className="inline-flex items-center gap-1 text-[10px] font-semibold text-[#68404b]"><Check size={14} /> Current</span>}
+                        {isCurrentShop && <span className="inline-flex items-center gap-1 text-[10px] font-semibold text-[#6132DA]"><Check size={14} /> Current</span>}
                         {!isActive && <span className="text-[10px] text-[#747b78]">Inactive</span>}
                       </button>
                     );
@@ -164,7 +161,7 @@ function AppLayout({ children }) {
                 {shopSwitchError && <p role="alert" className="mx-3 mb-2 border border-rose-200 bg-rose-50 px-2 py-1.5 text-[10px] text-rose-800">{shopSwitchError}</p>}
                 <div className="grid grid-cols-2 gap-1 border-t border-[#e8eae7] p-2">
                   <Link to="/settings/shops" onClick={() => setIsShopMenuOpen(false)} className="inline-flex min-h-9 items-center justify-center gap-1 rounded-sm px-2 text-[10px] font-semibold text-[#414846] transition hover:bg-[#f8f9f6]"><Settings size={13} /> Manage shops</Link>
-                  <Link to="/settings/shops" onClick={() => setIsShopMenuOpen(false)} className="inline-flex min-h-9 items-center justify-center gap-1 rounded-sm bg-[#68404b] px-2 text-[10px] font-semibold text-white transition hover:bg-[#54333d]"><Plus size={13} /> Create shop</Link>
+                  <Link to="/settings/shops" onClick={() => setIsShopMenuOpen(false)} className="inline-flex min-h-9 items-center justify-center gap-1 rounded-sm bg-[#6132DA] px-2 text-[10px] font-semibold text-white transition hover:bg-[#4D25B5]"><Plus size={13} /> Create shop</Link>
                 </div>
               </div>
             )}
@@ -183,7 +180,7 @@ function AppLayout({ children }) {
                       <div key={item.label} className="flex min-h-9 items-center justify-center gap-2 rounded-sm px-2 text-[11px] text-[#a1a6a2] md:justify-start md:px-2.5">
                         <Icon size={15} strokeWidth={1.8} />
                         <span className="hidden flex-1 md:inline">{item.label}</span>
-                        <span className="hidden rounded-sm bg-[#f8f9f6] px-1.5 py-0.5 text-[9px] font-medium text-[#8a5360] md:inline">Soon</span>
+                        <span className="hidden rounded-sm bg-[#f8f9f6] px-1.5 py-0.5 text-[9px] font-medium text-[#8060D9] md:inline">Soon</span>
                       </div>
                     );
                   }
@@ -196,7 +193,7 @@ function AppLayout({ children }) {
                       title={item.label}
                       aria-label={item.label}
                       className={({ isActive }) => `flex min-h-9 items-center justify-center gap-2 rounded-sm px-2 text-[11px] font-medium transition md:justify-start md:px-2.5 ${
-                        isActive ? 'bg-[#68404b] text-white' : 'text-[#717875] hover:bg-[#f8f9f6] hover:text-[#68404b]'
+                        isActive ? 'bg-[#6132DA] text-white' : 'text-[#717875] hover:bg-[#f8f9f6] hover:text-[#6132DA]'
                       }`}
                     >
                       <Icon size={15} strokeWidth={1.9} />
@@ -213,7 +210,7 @@ function AppLayout({ children }) {
       <header className="fixed left-16 right-0 top-0 z-40 h-[72px] border-b border-[#e6e8e4] bg-white md:left-[250px]">
         <div className="flex h-full items-center justify-end gap-3 px-3 sm:px-5">
           <div className="flex shrink-0 items-center gap-2 sm:gap-3">
-            <span className="grid size-8 place-items-center rounded-full bg-[#f8f9f6] text-[10px] font-bold text-[#68404b]">{initials || 'R'}</span>
+            <span className="grid size-8 place-items-center rounded-full bg-[#f8f9f6] text-[10px] font-bold text-[#6132DA]">{initials || 'R'}</span>
             <div className="hidden sm:block">
               <p className="max-w-36 truncate text-[11px] font-semibold text-[#252a29]">{userName}</p>
               <p className="max-w-36 truncate text-[10px] text-[#747b78]">{roles.join(', ') || 'OWNER'}</p>
@@ -223,7 +220,7 @@ function AppLayout({ children }) {
               onClick={handleLogout}
               aria-label="Sign out"
               title="Sign out"
-              className="grid size-8 place-items-center rounded-sm text-[#68404b] transition hover:bg-[#f8f9f6] hover:text-[#54333d] focus:outline-none focus:ring-2 focus:ring-[#68404b]/20"
+              className="grid size-8 place-items-center rounded-sm text-[#6132DA] transition hover:bg-[#f8f9f6] hover:text-[#4D25B5] focus:outline-none focus:ring-2 focus:ring-[#6132DA]/20"
             >
               <LogOut size={16} />
             </button>

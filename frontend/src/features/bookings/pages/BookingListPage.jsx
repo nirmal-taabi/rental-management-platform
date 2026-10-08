@@ -109,7 +109,7 @@ function BookingListPage() {
       className="cursor-pointer transition hover:bg-[#f8f9f6]"
     >
       <td className="px-4 py-3">
-        <Link to={`/bookings/${booking.id}`} onClick={(event) => event.stopPropagation()} className="font-mono text-sm font-semibold text-[#252a29] hover:text-[#68404b]">{booking.bookingNumber}</Link>
+        <Link to={`/bookings/${booking.id}`} onClick={(event) => event.stopPropagation()} className="font-mono text-sm font-semibold text-[#252a29] hover:text-[#6132DA]">{booking.bookingNumber}</Link>
         <p className="mt-1 text-xs text-[#59615e]">{booking.itemCount || 0} physical {(booking.itemCount || 0) === 1 ? 'piece' : 'pieces'}</p>
       </td>
       <td className="px-4 py-3"><p className="font-semibold text-[#252a29]">{booking.customer?.name || 'Customer'}</p><p className="mt-1 text-xs text-[#59615e]">{booking.customer?.phone || '—'}</p></td>
@@ -128,7 +128,7 @@ function BookingListPage() {
             <h1 className="text-3xl font-semibold text-[#252a29]">Bookings</h1>
             <p className="mt-1 text-sm text-[#59615e]">Manage rental reservations and customer schedules.</p>
           </div>
-          <Link to="/bookings/new" className="inline-flex min-h-10 items-center gap-2 rounded-md bg-[#68404b] px-4 text-sm font-semibold text-white transition hover:bg-[#54333d]">
+          <Link to="/bookings/new" className="inline-flex min-h-10 items-center gap-2 rounded-md bg-[#6132DA] px-4 text-sm font-semibold text-white transition hover:bg-[#4D25B5]">
             <Plus size={17} /> New booking
           </Link>
         </header>
@@ -141,7 +141,7 @@ function BookingListPage() {
                 type="button"
                 aria-pressed={status === filter.value}
                 onClick={() => { setStatus(filter.value); setPage(1); }}
-                className={`inline-flex min-h-10 items-center gap-2 rounded-md px-3.5 text-xs font-semibold transition focus:outline-none focus:ring-4 focus:ring-[#68404b]/15 ${status === filter.value ? 'bg-[#68404b] text-white' : 'bg-[#f1f2ef] text-[#414846] hover:bg-[#e8eae7]'}`}
+                className={`inline-flex min-h-10 items-center gap-2 rounded-md px-3.5 text-xs font-semibold transition focus:outline-none focus:ring-4 focus:ring-[#6132DA]/15 ${status === filter.value ? 'bg-[#6132DA] text-white' : 'bg-[#f1f2ef] text-[#414846] hover:bg-[#e8eae7]'}`}
               >
                 {filter.label}
                 <span className={`tabular-nums ${status === filter.value ? 'text-white/75' : 'text-[#59615e]'}`}>{filter.key === 'all' ? (summary.totalBookings ?? summary.upcoming ?? 0) : (summary[filter.key] ?? 0)}</span>
@@ -157,7 +157,7 @@ function BookingListPage() {
               value={search}
               onChange={(event) => { setSearch(event.target.value); setPage(1); }}
               placeholder="Search booking or customer"
-              className="min-h-10 w-full rounded-full border border-[#dfe3df] bg-white pl-11 pr-4 text-sm text-[#252a29] outline-none transition placeholder:text-[#747b78] focus:border-[#805361] focus:ring-4 focus:ring-[#805361]/10"
+              className="min-h-10 w-full rounded-full border border-[#dfe3df] bg-white pl-11 pr-4 text-sm text-[#252a29] outline-none transition placeholder:text-[#747b78] focus:border-[#7046E8] focus:ring-4 focus:ring-[#7046E8]/10"
             />
           </label>
         </div>
@@ -178,7 +178,7 @@ function BookingListPage() {
             </thead>
             <tbody className="divide-y divide-[#eef0ed] bg-white">
               {loading && <tr><td colSpan="6" className="px-4 py-10 text-center text-[#59615e]">Loading bookings...</td></tr>}
-              {!loading && !bookings.length && <tr><td colSpan="6" className="px-4 py-12 text-center"><p className="font-semibold text-[#252a29]">{search || status || startDate || endDate ? 'No bookings match these filters.' : 'No bookings yet.'}</p><p className="mt-1 text-sm text-[#59615e]">{search || status || startDate || endDate ? 'Adjust your search or date range.' : 'Create a reservation to begin planning the rental schedule.'}</p>{!search && !status && !startDate && !endDate && <Link to="/bookings/new" className="mt-4 inline-flex min-h-10 items-center gap-2 rounded-md bg-[#68404b] px-4 text-sm font-semibold text-white"><Plus size={16} /> New booking</Link>}</td></tr>}
+              {!loading && !bookings.length && <tr><td colSpan="6" className="px-4 py-12 text-center"><p className="font-semibold text-[#252a29]">{search || status || startDate || endDate ? 'No bookings match these filters.' : 'No bookings yet.'}</p><p className="mt-1 text-sm text-[#59615e]">{search || status || startDate || endDate ? 'Adjust your search or date range.' : 'Create a reservation to begin planning the rental schedule.'}</p>{!search && !status && !startDate && !endDate && <Link to="/bookings/new" className="mt-4 inline-flex min-h-10 items-center gap-2 rounded-md bg-[#6132DA] px-4 text-sm font-semibold text-white"><Plus size={16} /> New booking</Link>}</td></tr>}
               {!loading && bookings.map(renderBooking)}
             </tbody>
           </table>
@@ -186,7 +186,7 @@ function BookingListPage() {
 
         <div className="grid gap-px border border-[#e6e8e4] bg-[#e6e8e4] md:hidden">
           {loading && <p className="bg-white px-4 py-10 text-center text-[#59615e]">Loading bookings...</p>}
-          {!loading && !bookings.length && <div className="bg-white px-4 py-12 text-center"><p className="font-semibold text-[#252a29]">{search || status || startDate || endDate ? 'No bookings match these filters.' : 'No bookings yet.'}</p><Link to="/bookings/new" className="mt-4 inline-flex min-h-10 items-center gap-2 rounded-md bg-[#68404b] px-4 text-sm font-semibold text-white"><Plus size={16} /> New booking</Link></div>}
+          {!loading && !bookings.length && <div className="bg-white px-4 py-12 text-center"><p className="font-semibold text-[#252a29]">{search || status || startDate || endDate ? 'No bookings match these filters.' : 'No bookings yet.'}</p><Link to="/bookings/new" className="mt-4 inline-flex min-h-10 items-center gap-2 rounded-md bg-[#6132DA] px-4 text-sm font-semibold text-white"><Plus size={16} /> New booking</Link></div>}
           {!loading && bookings.map((booking) => <article
             key={booking.id}
             role="link"
@@ -201,7 +201,7 @@ function BookingListPage() {
             }}
             className="cursor-pointer bg-white p-4 transition hover:bg-[#f8f9f6]"
           >
-            <div className="flex items-start justify-between gap-3"><div><Link to={`/bookings/${booking.id}`} onClick={(event) => event.stopPropagation()} className="font-mono font-semibold text-[#252a29] hover:text-[#68404b]">{booking.bookingNumber}</Link><p className="mt-1 font-semibold text-[#252a29]">{booking.customer?.name || 'Customer'}</p><p className="text-xs text-[#59615e]">{booking.customer?.phone || '—'}</p></div><BookingStatusBadge status={booking.status} /></div>
+            <div className="flex items-start justify-between gap-3"><div><Link to={`/bookings/${booking.id}`} onClick={(event) => event.stopPropagation()} className="font-mono font-semibold text-[#252a29] hover:text-[#6132DA]">{booking.bookingNumber}</Link><p className="mt-1 font-semibold text-[#252a29]">{booking.customer?.name || 'Customer'}</p><p className="text-xs text-[#59615e]">{booking.customer?.phone || '—'}</p></div><BookingStatusBadge status={booking.status} /></div>
             <div className="mt-4 grid grid-cols-2 gap-3 border-y border-[#eef0ed] py-3 text-sm"><div><p className="text-xs text-[#59615e]">Rental period</p><p className="mt-1 text-[#414846]">{formatDate(booking.rentalStartDate)} – {formatDate(booking.rentalEndDate)}</p></div><div><p className="text-xs text-[#59615e]">{booking.itemCount || 0} pieces</p><p className="mt-1 font-semibold text-[#252a29]">{formatMoney(booking.totalAmount)}</p></div></div>
           </article>)}
         </div>
@@ -218,7 +218,7 @@ function BookingListPage() {
                   setPageSize(Number(event.target.value));
                   setPage(1);
                 }}
-                className="h-8 rounded-sm border border-[#e6e8e4] bg-white px-2 text-xs text-[#414846] outline-none focus:border-[#805361] focus:ring-2 focus:ring-[#805361]/10"
+                className="h-8 rounded-sm border border-[#e6e8e4] bg-white px-2 text-xs text-[#414846] outline-none focus:border-[#7046E8] focus:ring-2 focus:ring-[#7046E8]/10"
               >
                 <option value={20}>20</option>
                 <option value={50}>50</option>
@@ -234,7 +234,7 @@ function BookingListPage() {
                 aria-label="Previous page"
                 disabled={!pagination.hasPreviousPage || loading}
                 onClick={() => handlePageChange(Math.max(1, page - 1))}
-                className="grid size-8 place-items-center rounded-sm bg-white text-[#68404b] transition hover:bg-[#f8f9f6] disabled:cursor-not-allowed disabled:text-[#c6c9c6]"
+                className="grid size-8 place-items-center rounded-sm bg-white text-[#6132DA] transition hover:bg-[#f8f9f6] disabled:cursor-not-allowed disabled:text-[#c6c9c6]"
               >
                 <ChevronLeft size={16} />
               </button>
@@ -247,7 +247,7 @@ function BookingListPage() {
                     aria-current={item === page ? 'page' : undefined}
                     disabled={loading}
                     onClick={() => handlePageChange(item)}
-                    className={`grid size-8 place-items-center rounded-sm text-xs font-semibold transition disabled:cursor-wait ${item === page ? 'bg-[#68404b] text-white' : 'bg-white text-[#414846] hover:bg-[#f8f9f6] hover:text-[#68404b]'}`}
+                    className={`grid size-8 place-items-center rounded-sm text-xs font-semibold transition disabled:cursor-wait ${item === page ? 'bg-[#6132DA] text-white' : 'bg-white text-[#414846] hover:bg-[#f8f9f6] hover:text-[#6132DA]'}`}
                   >
                     {item}
                   </button>
@@ -260,7 +260,7 @@ function BookingListPage() {
                 aria-label="Next page"
                 disabled={!pagination.hasNextPage || loading}
                 onClick={() => handlePageChange(page + 1)}
-                className="grid size-8 place-items-center rounded-sm bg-white text-[#68404b] transition hover:bg-[#f8f9f6] disabled:cursor-not-allowed disabled:text-[#c6c9c6]"
+                className="grid size-8 place-items-center rounded-sm bg-white text-[#6132DA] transition hover:bg-[#f8f9f6] disabled:cursor-not-allowed disabled:text-[#c6c9c6]"
               >
                 <ChevronRight size={16} />
               </button>

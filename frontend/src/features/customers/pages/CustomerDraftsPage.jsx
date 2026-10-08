@@ -56,14 +56,14 @@ function CustomerDraftsPage() {
       <div className="mx-auto max-w-[1200px]">
         <header className="mb-6 flex flex-wrap items-end justify-between gap-4 border-b border-[#e8eae7] pb-5">
           <div>
-            <Link to="/customers" className="mb-3 inline-flex items-center gap-2 text-sm font-semibold text-[#68404b] hover:text-[#54333d]">
+            <Link to="/customers" className="mb-3 inline-flex items-center gap-2 text-sm font-semibold text-[#6132DA] hover:text-[#4D25B5]">
               <ArrowLeft size={16} /> Customers
             </Link>
-            <p className="text-xs font-bold uppercase tracking-[0.16em] text-[#8a5360]">Customer onboarding</p>
+            <p className="text-xs font-bold uppercase tracking-[0.16em] text-[#8060D9]">Customer onboarding</p>
             <h1 className="mt-1 text-3xl font-semibold text-[#252a29]">Saved drafts</h1>
             <p className="mt-2 text-sm text-[#59615e]">Resume a customer profile or remove an unfinished draft.</p>
           </div>
-          <Link to="/customers/new" className="inline-flex min-h-10 items-center gap-2 rounded-md bg-[#68404b] px-3.5 text-sm font-semibold text-white transition hover:bg-[#54333d] focus:outline-none focus:ring-4 focus:ring-[#68404b]/20">
+          <Link to="/customers/new" className="inline-flex min-h-10 items-center gap-2 rounded-md bg-[#6132DA] px-3.5 text-sm font-semibold text-white transition hover:bg-[#4D25B5] focus:outline-none focus:ring-4 focus:ring-[#6132DA]/20">
             <Plus size={16} /> New customer
           </Link>
         </header>
@@ -79,7 +79,7 @@ function CustomerDraftsPage() {
           {loading && <p className="px-5 py-10 text-center text-sm text-[#59615e]">Loading drafts...</p>}
           {!loading && drafts.length === 0 && (
             <div className="px-5 py-12 text-center">
-              <FileText size={22} className="mx-auto text-[#68404b]" />
+              <FileText size={22} className="mx-auto text-[#6132DA]" />
               <p className="mt-3 text-sm font-semibold text-[#252a29]">No saved drafts</p>
               <p className="mt-1 text-sm text-[#59615e]">Use Save Draft while creating a customer to keep an unfinished profile here.</p>
             </div>
@@ -97,7 +97,7 @@ function CustomerDraftsPage() {
                 </div>
                 <p className="hidden text-xs text-[#59615e] sm:block">{formatDate(draft.updatedAt)}</p>
                 <div className="flex items-center justify-end gap-2">
-                  <Link to={`/customers/new?draftId=${draft.id}`} className="inline-flex min-h-9 items-center gap-2 rounded-md bg-[#68404b] px-3 text-xs font-semibold text-white transition hover:bg-[#54333d]">
+                  <Link to={`/customers/new?draftId=${draft.id}`} className="inline-flex min-h-9 items-center gap-2 rounded-md bg-[#6132DA] px-3 text-xs font-semibold text-white transition hover:bg-[#4D25B5]">
                     Resume
                   </Link>
                   <button

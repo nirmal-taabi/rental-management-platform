@@ -160,7 +160,7 @@ function RegisterPage() {
           onChange={(event) => updateField(group, field, event.target.value)}
           aria-invalid={Boolean(error)}
           aria-describedby={error ? `${id}-error` : undefined}
-          className="min-h-12 w-full rounded-full border border-[#dfe3df] bg-white px-5 text-sm text-[#252a29] outline-none transition placeholder:text-[#b5bbb8] focus:border-[#805361] focus:ring-4 focus:ring-[#805361]/10"
+          className="min-h-12 w-full rounded-full border border-[#dfe3df] bg-white px-5 text-sm text-[#252a29] outline-none transition placeholder:text-[#b5bbb8] focus:border-[#7046E8] focus:ring-4 focus:ring-[#7046E8]/10"
           placeholder={placeholder}
         />
         {error && <p id={`${id}-error`} className="mt-1.5 text-xs text-rose-700">{error}</p>}
@@ -171,18 +171,18 @@ function RegisterPage() {
   return (
     <main className="min-h-screen bg-white md:h-screen md:overflow-hidden">
       <section className="grid min-h-screen w-full overflow-hidden bg-white md:h-screen md:min-h-0 md:grid-cols-2">
-        <aside className="relative order-2 isolate flex min-h-[280px] flex-col justify-between overflow-hidden bg-[#3d252b] px-7 py-7 text-white sm:px-10 sm:py-9 md:order-1 md:h-screen md:min-h-0 md:px-12 md:py-11">
+        <aside className="relative order-2 isolate flex min-h-[280px] flex-col justify-between overflow-hidden bg-[#30184D] px-7 py-7 text-white sm:px-10 sm:py-9 md:order-1 md:h-screen md:min-h-0 md:px-12 md:py-11">
           <img
             src="https://images.unsplash.com/photo-1490481651871-ab68de25d43d?auto=format&fit=crop&w=1800&q=85"
             alt="Carefully selected garments in a fashion boutique"
             className="absolute inset-0 -z-20 h-full w-full object-cover object-center"
           />
-          <div className="absolute inset-0 -z-10 bg-[linear-gradient(160deg,rgba(35,24,28,0.74)_0%,rgba(71,38,45,0.28)_48%,rgba(31,30,29,0.72)_100%)]" />
+          <div className="absolute inset-0 -z-10 bg-[linear-gradient(160deg,rgba(27,16,40,0.74)_0%,rgba(67,34,105,0.28)_48%,rgba(32,19,50,0.72)_100%)]" />
 
           <div className="flex items-center gap-3">
             <span className="grid size-10 place-items-center border border-white/35 bg-white/10 backdrop-blur-sm"><Shirt size={19} strokeWidth={1.7} /></span>
             <div>
-              <p className="text-sm font-semibold">TrackinHub</p>
+              <p className="text-sm font-semibold">Nirmal Rentals</p>
               <p className="mt-0.5 text-[11px] uppercase tracking-[0.16em] text-white/70">Clothing, in good company</p>
             </div>
           </div>
@@ -204,11 +204,11 @@ function RegisterPage() {
           <div className="w-full max-w-[560px]">
             <div className="mb-7 flex items-start justify-between gap-4">
               <div>
-                <p className="text-xs font-bold uppercase tracking-[0.18em] text-[#8a5360]">Shop access</p>
+                <p className="text-xs font-bold uppercase tracking-[0.18em] text-[#8060D9]">Shop access</p>
                 <h1 className="mt-2 text-3xl font-semibold text-[#252a29]">Register your shop</h1>
                 <p className="mt-2 text-sm text-[#747b78]">Create an account to set up your rental workspace.</p>
               </div>
-              <span className="grid size-10 shrink-0 place-items-center border border-[#e6e8e4] bg-[#f8f9f6] text-[#68404b]"><Store size={17} /></span>
+              <span className="grid size-10 shrink-0 place-items-center border border-[#e6e8e4] bg-[#f8f9f6] text-[#6132DA]"><Store size={17} /></span>
             </div>
 
             <div className="mb-6 flex items-center gap-3 text-[11px] font-medium text-[#a1a5a2]">
@@ -256,7 +256,7 @@ function RegisterPage() {
                       aria-invalid={Boolean(errors['shop.state'])}
                       aria-describedby={errors['shop.state'] ? 'shop-state-error' : undefined}
                       disabled={isLoadingStates || states.length === 0}
-                      className="min-h-12 w-full rounded-full border border-[#dfe3df] bg-white px-5 text-sm text-[#252a29] outline-none transition focus:border-[#805361] focus:ring-4 focus:ring-[#805361]/10 disabled:cursor-not-allowed disabled:bg-[#f8f9f6]"
+                      className="min-h-12 w-full rounded-full border border-[#dfe3df] bg-white px-5 text-sm text-[#252a29] outline-none transition focus:border-[#7046E8] focus:ring-4 focus:ring-[#7046E8]/10 disabled:cursor-not-allowed disabled:bg-[#f8f9f6]"
                     >
                       <option value="">{isLoadingStates ? 'Loading states...' : 'Select a state'}</option>
                       {states.map((state) => <option key={state.id} value={state.id}>{state.name}</option>)}
@@ -275,7 +275,7 @@ function RegisterPage() {
                       aria-invalid={Boolean(errors['shop.city'])}
                       aria-describedby={errors['shop.city'] ? 'shop-city-error' : undefined}
                       disabled={!selectedStateId || isLoadingCities || cities.length === 0}
-                      className="min-h-12 w-full rounded-full border border-[#dfe3df] bg-white px-5 text-sm text-[#252a29] outline-none transition focus:border-[#805361] focus:ring-4 focus:ring-[#805361]/10 disabled:cursor-not-allowed disabled:bg-[#f8f9f6]"
+                      className="min-h-12 w-full rounded-full border border-[#dfe3df] bg-white px-5 text-sm text-[#252a29] outline-none transition focus:border-[#7046E8] focus:ring-4 focus:ring-[#7046E8]/10 disabled:cursor-not-allowed disabled:bg-[#f8f9f6]"
                     >
                       <option value="">
                         {!selectedStateId ? 'Select a state first' : isLoadingCities ? 'Loading cities...' : 'Select a city'}
@@ -295,15 +295,15 @@ function RegisterPage() {
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-full bg-[#68404b] px-5 text-sm font-semibold text-white transition hover:bg-[#54333d] focus:outline-none focus:ring-4 focus:ring-[#68404b]/20 disabled:cursor-not-allowed disabled:opacity-60"
+                className="inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-full bg-[#6132DA] px-5 text-sm font-semibold text-white transition hover:bg-[#4D25B5] focus:outline-none focus:ring-4 focus:ring-[#6132DA]/20 disabled:cursor-not-allowed disabled:opacity-60"
               >
                 {isSubmitting ? 'Creating account...' : 'Register shop'}
                 {!isSubmitting && <ArrowRight size={16} />}
               </button>
             </form>
 
-            <p className="mt-7 text-center text-sm text-[#717875]">Already have an account? <Link to="/auth/login" className="font-semibold text-[#68404b] underline decoration-[#cbb9bd] underline-offset-4 hover:text-[#4f3039]">Sign in</Link></p>
-            <p className="mt-8 text-center text-[11px] text-[#a1a6a2]">© {new Date().getFullYear()} TrackinHub</p>
+            <p className="mt-7 text-center text-sm text-[#717875]">Already have an account? <Link to="/auth/login" className="font-semibold text-[#6132DA] underline decoration-[#D8CCF5] underline-offset-4 hover:text-[#43209B]">Sign in</Link></p>
+            <p className="mt-8 text-center text-[11px] text-[#a1a6a2]">© {new Date().getFullYear()} Nirmal Rentals</p>
           </div>
         </section>
       </section>

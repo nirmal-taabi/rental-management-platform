@@ -18,7 +18,7 @@ function SettingsLayout() {
             <NavLink
               key={tab.to}
               to={tab.to}
-              className={({ isActive }) => `inline-flex min-h-12 shrink-0 items-center gap-2 rounded-t-md border-b-2 px-4 text-sm font-medium transition focus:outline-none focus:ring-2 focus:ring-inset focus:ring-[#68404b]/20 ${isActive ? 'border-[#68404b] bg-[#f1e9eb] text-[#68404b]' : 'border-transparent text-[#59615e] hover:bg-[#f1f2ef] hover:text-[#414846]'}`}
+              className={({ isActive }) => `inline-flex min-h-12 shrink-0 items-center gap-2 rounded-t-md border-b-2 px-4 text-sm font-medium transition focus:outline-none focus:ring-2 focus:ring-inset focus:ring-[#6132DA]/20 ${isActive ? 'border-[#6132DA] bg-[#F1ECFC] text-[#6132DA]' : 'border-transparent text-[#59615e] hover:bg-[#f1f2ef] hover:text-[#414846]'}`}
             >
               <tab.icon size={16} aria-hidden="true" />
               {tab.label}

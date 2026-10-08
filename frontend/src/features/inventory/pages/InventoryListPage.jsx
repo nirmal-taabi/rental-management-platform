@@ -123,14 +123,14 @@ function InventoryListPage() {
         <div className="min-w-0"><p className="truncate font-semibold text-[#252a29]">{item.product.name}</p><p className="mt-1 font-mono text-xs text-[#414846]">{item.sku}</p><p className="mt-1 text-xs text-[#59615e]">{item.product.sku} · {item.product.category || '—'}</p></div>
       </div>
       <div className="mt-4 grid grid-cols-2 gap-3 text-sm"><div><p className="text-xs text-[#59615e]">Size / color</p><p className="mt-1 font-medium text-[#252a29]">{item.size || '—'} / {item.color || '—'}</p></div><div><p className="text-xs text-[#59615e]">Condition</p><p className="mt-1 font-medium text-[#252a29]">{item.condition}</p></div><div className="col-span-2"><p className="mb-1 text-xs text-[#59615e]">Status</p><InventoryStatusBadge status={item.status} /></div><div><p className="text-xs text-[#59615e]">Barcode / QR</p><p className="mt-1 truncate font-mono text-xs text-[#252a29]">{item.barcode || item.qrCode || '—'}</p></div><div><p className="text-xs text-[#59615e]">Updated</p><p className="mt-1 text-xs text-[#252a29]">{dateTime(item.updatedAt)}</p></div></div>
-      <div className="mt-4 flex gap-2 border-t border-[#e8eae7] pt-3"><Link to={`/inventory/${item.id}`} className="rounded-md border border-[#dfe3df] px-3 py-1.5 text-sm font-semibold text-[#414846] transition hover:border-[#68404b] hover:text-[#68404b]">View</Link><Link to={`/inventory/${item.id}/edit`} className="rounded-md border border-[#e6e8e4] bg-[#f8f9f6] px-3 py-1.5 text-sm font-semibold text-[#68404b] transition hover:bg-[#e8eae7]">Edit</Link>{canManage && <select aria-label={`Change ${item.sku} status`} value="" onChange={(event) => { if (event.target.value) handleStatus(item, event.target.value); }} className="min-w-0 flex-1 rounded-md border border-[#dfe3df] bg-white px-2 text-sm text-[#414846] outline-none focus:border-[#805361] focus:ring-2 focus:ring-[#805361]/10"><option value="">Change status</option>{inventoryStatuses.filter((next) => next !== item.status).map((next) => <option key={next} value={next}>{next}</option>)}</select>}</div>
+      <div className="mt-4 flex gap-2 border-t border-[#e8eae7] pt-3"><Link to={`/inventory/${item.id}`} className="rounded-md border border-[#dfe3df] px-3 py-1.5 text-sm font-semibold text-[#414846] transition hover:border-[#6132DA] hover:text-[#6132DA]">View</Link><Link to={`/inventory/${item.id}/edit`} className="rounded-md border border-[#e6e8e4] bg-[#f8f9f6] px-3 py-1.5 text-sm font-semibold text-[#6132DA] transition hover:bg-[#e8eae7]">Edit</Link>{canManage && <select aria-label={`Change ${item.sku} status`} value="" onChange={(event) => { if (event.target.value) handleStatus(item, event.target.value); }} className="min-w-0 flex-1 rounded-md border border-[#dfe3df] bg-white px-2 text-sm text-[#414846] outline-none focus:border-[#7046E8] focus:ring-2 focus:ring-[#7046E8]/10"><option value="">Change status</option>{inventoryStatuses.filter((next) => next !== item.status).map((next) => <option key={next} value={next}>{next}</option>)}</select>}</div>
     </article>
   );
 
   return (
     <main className="min-h-full bg-[#f8f9f6] px-4 py-7 text-[#252a29] sm:px-6 lg:px-8">
       <div className="mx-auto max-w-[1440px]">
-        <header className="mb-6 flex flex-wrap items-end justify-between gap-4 border-b border-[#e8eae7] pb-5"><div><h1 className="text-3xl font-semibold text-[#252a29]">Inventory</h1><p className="mt-1 text-sm text-[#59615e]">Manage individual rental pieces and their operational status.</p></div>{canManage && <Link to="/inventory/new" className="inline-flex min-h-10 items-center gap-2 rounded-md bg-[#68404b] px-4 text-sm font-semibold text-white transition hover:bg-[#54333d]"><span aria-hidden="true">+</span> Add inventory</Link>}</header>
+        <header className="mb-6 flex flex-wrap items-end justify-between gap-4 border-b border-[#e8eae7] pb-5"><div><h1 className="text-3xl font-semibold text-[#252a29]">Inventory</h1><p className="mt-1 text-sm text-[#59615e]">Manage individual rental pieces and their operational status.</p></div>{canManage && <Link to="/inventory/new" className="inline-flex min-h-10 items-center gap-2 rounded-md bg-[#6132DA] px-4 text-sm font-semibold text-white transition hover:bg-[#4D25B5]"><span aria-hidden="true">+</span> Add inventory</Link>}</header>
 
         <section aria-label="Inventory summary" className="mb-5 grid grid-cols-2 gap-px border border-[#e6e8e4] bg-[#e6e8e4] sm:grid-cols-3 lg:grid-cols-6">{summaryCards.map((card) => <div key={card.key} className="bg-white px-4 py-4"><p className="text-xs font-semibold uppercase tracking-wide text-[#59615e]">{card.label}</p><p className="mt-1 text-2xl font-semibold tabular-nums text-[#252a29]">{summary[card.key] ?? 0}</p></div>)}</section>
 
@@ -144,7 +144,7 @@ function InventoryListPage() {
               value={search}
               onChange={(event) => { setSearch(event.target.value); setPage(1); }}
               placeholder="Search SKU, product, barcode..."
-              className="min-h-11 w-full rounded-full border border-[#dfe3df] bg-[#f8f9f6] pl-10 pr-4 text-sm text-[#252a29] outline-none placeholder:text-[#8a8f8c] focus:border-[#805361] focus:ring-4 focus:ring-[#805361]/10"
+              className="min-h-11 w-full rounded-full border border-[#dfe3df] bg-[#f8f9f6] pl-10 pr-4 text-sm text-[#252a29] outline-none placeholder:text-[#8a8f8c] focus:border-[#7046E8] focus:ring-4 focus:ring-[#7046E8]/10"
             />
           </label>
 
@@ -155,7 +155,7 @@ function InventoryListPage() {
               title="Table view"
               aria-pressed={view === 'table'}
               onClick={() => setView('table')}
-              className={`grid size-9 place-items-center rounded-full transition ${view === 'table' ? 'bg-[#68404b] text-white shadow-sm' : 'text-[#414846] hover:bg-white'}`}
+              className={`grid size-9 place-items-center rounded-full transition ${view === 'table' ? 'bg-[#6132DA] text-white shadow-sm' : 'text-[#414846] hover:bg-white'}`}
             >
               <Rows3 size={16} />
             </button>
@@ -165,7 +165,7 @@ function InventoryListPage() {
               title="Card view"
               aria-pressed={view === 'cards'}
               onClick={() => setView('cards')}
-              className={`grid size-9 place-items-center rounded-full transition ${view === 'cards' ? 'bg-[#68404b] text-white shadow-sm' : 'text-[#414846] hover:bg-white'}`}
+              className={`grid size-9 place-items-center rounded-full transition ${view === 'cards' ? 'bg-[#6132DA] text-white shadow-sm' : 'text-[#414846] hover:bg-white'}`}
             >
               <LayoutGrid size={16} />
             </button>
@@ -177,7 +177,7 @@ function InventoryListPage() {
         <div className={`${view === 'table' ? 'hidden md:block' : 'hidden' } overflow-x-auto border border-[#e6e8e4] bg-white`}>
           <table className="min-w-[1050px] w-full divide-y divide-[#e8eae7] text-left text-sm"><thead className="bg-[#f8f9f6] text-[#414846]"><tr><th className="px-3 py-3 text-xs font-semibold">Item</th><th className="px-3 py-3 text-xs font-semibold">Product</th><th className="px-3 py-3 text-xs font-semibold">SKU</th><th className="px-3 py-3 text-xs font-semibold">Size</th><th className="px-3 py-3 text-xs font-semibold">Color</th><th className="px-3 py-3 text-xs font-semibold">Condition</th><th className="px-3 py-3 text-xs font-semibold">Status</th><th className="px-3 py-3 text-xs font-semibold">Barcode / QR</th><th className="px-3 py-3 text-xs font-semibold">Updated</th><th className="px-3 py-3 text-xs font-semibold">Actions</th></tr></thead><tbody className="divide-y divide-[#eef0ed]">
             {loading && <tr><td colSpan="10" className="px-4 py-10 text-center text-[#59615e]">Loading physical inventory...</td></tr>}
-            {!loading && !items.length && <tr><td colSpan="10" className="px-4 py-12 text-center"><p className="font-semibold text-[#252a29]">{search || status || condition || productId || categoryId || size || color ? 'No inventory matches your filters.' : 'No physical inventory yet.'}</p><p className="mt-1 text-sm text-[#59615e]">{items.length === 0 && !search && !status && !condition && !productId && !categoryId && !size && !color ? 'Add your first physical rental piece to start tracking stock.' : 'Try clearing or changing your filters.'}</p>{canManage && !items.length && !search && !status && !condition && !productId && !categoryId && !size && !color && <Link to="/inventory/new" className="mt-4 inline-flex min-h-10 items-center rounded-md bg-[#68404b] px-4 text-sm font-semibold text-white">Add inventory</Link>}</td></tr>}
+            {!loading && !items.length && <tr><td colSpan="10" className="px-4 py-12 text-center"><p className="font-semibold text-[#252a29]">{search || status || condition || productId || categoryId || size || color ? 'No inventory matches your filters.' : 'No physical inventory yet.'}</p><p className="mt-1 text-sm text-[#59615e]">{items.length === 0 && !search && !status && !condition && !productId && !categoryId && !size && !color ? 'Add your first physical rental piece to start tracking stock.' : 'Try clearing or changing your filters.'}</p>{canManage && !items.length && !search && !status && !condition && !productId && !categoryId && !size && !color && <Link to="/inventory/new" className="mt-4 inline-flex min-h-10 items-center rounded-md bg-[#6132DA] px-4 text-sm font-semibold text-white">Add inventory</Link>}</td></tr>}
             {!loading && items.map((item) => (
               <tr
                 key={item.id}
@@ -185,7 +185,7 @@ function InventoryListPage() {
                 onClick={() => navigate(`/inventory/${item.id}`)}
               >
                 <td className="px-3 py-3"><div className="h-12 w-12 bg-[#f1f2ef]">{item.product.imageUrl && <img crossOrigin="use-credentials" src={imageUrl(item.product.imageUrl)} alt={item.product.name} className="h-full w-full object-cover" />}</div></td>
-                <td className="max-w-48 px-3 py-3"><span className="font-semibold text-[#252a29] hover:text-[#68404b]">{item.product.name}</span><p className="text-xs text-[#59615e]">{item.product.category || '—'}</p></td>
+                <td className="max-w-48 px-3 py-3"><span className="font-semibold text-[#252a29] hover:text-[#6132DA]">{item.product.name}</span><p className="text-xs text-[#59615e]">{item.product.category || '—'}</p></td>
                 <td className="px-3 py-3 font-mono text-xs text-[#414846]">{item.sku}</td>
                 <td className="px-3 py-3 text-[#414846]">{item.size || '—'}</td>
                 <td className="px-3 py-3 text-[#414846]">{item.color || '—'}</td>
@@ -195,7 +195,7 @@ function InventoryListPage() {
                 <td className="px-3 py-3 text-xs text-[#414846]">{dateTime(item.updatedAt)}</td>
                 <td className="px-3 py-3" onClick={(event) => event.stopPropagation()}>
                   <div className="flex gap-2">
-                    <Link to={`/inventory/${item.id}/edit`} className="rounded-md border border-[#e6e8e4] bg-[#f8f9f6] px-2 py-1 text-xs font-semibold text-[#68404b]">Edit</Link>
+                    <Link to={`/inventory/${item.id}/edit`} className="rounded-md border border-[#e6e8e4] bg-[#f8f9f6] px-2 py-1 text-xs font-semibold text-[#6132DA]">Edit</Link>
                     {canManage && <select aria-label={`Change ${item.sku} status`} value="" onChange={(event) => { if (event.target.value) handleStatus(item, event.target.value); }} className="max-w-28 rounded-md border border-[#dfe3df] bg-white px-1 py-1 text-xs text-[#414846]"><option value="">Status</option>{inventoryStatuses.filter((next) => next !== item.status).map((next) => <option key={next} value={next}>{next}</option>)}</select>}
                   </div>
                 </td>
@@ -204,7 +204,7 @@ function InventoryListPage() {
           </tbody></table>
         </div>
 
-        <div className={`${view === 'cards' ? 'grid' : 'grid md:hidden'} gap-3`}>{loading && <div className="border border-[#e6e8e4] bg-white px-4 py-10 text-center text-[#59615e]">Loading physical inventory...</div>}{!loading && !items.length && <div className="border border-[#e6e8e4] bg-white px-4 py-10 text-center"><p className="font-semibold text-[#252a29]">{search || status || condition || productId || categoryId || size || color ? 'No inventory matches your filters.' : 'No physical inventory yet.'}</p><p className="mt-1 text-sm text-[#59615e]">Use filters or add your first physical rental piece.</p>{canManage && <Link to="/inventory/new" className="mt-4 inline-flex min-h-10 items-center rounded-md bg-[#68404b] px-4 text-sm font-semibold text-white">Add inventory</Link>}</div>}{!loading && items.map(renderCard)}</div>
+        <div className={`${view === 'cards' ? 'grid' : 'grid md:hidden'} gap-3`}>{loading && <div className="border border-[#e6e8e4] bg-white px-4 py-10 text-center text-[#59615e]">Loading physical inventory...</div>}{!loading && !items.length && <div className="border border-[#e6e8e4] bg-white px-4 py-10 text-center"><p className="font-semibold text-[#252a29]">{search || status || condition || productId || categoryId || size || color ? 'No inventory matches your filters.' : 'No physical inventory yet.'}</p><p className="mt-1 text-sm text-[#59615e]">Use filters or add your first physical rental piece.</p>{canManage && <Link to="/inventory/new" className="mt-4 inline-flex min-h-10 items-center rounded-md bg-[#6132DA] px-4 text-sm font-semibold text-white">Add inventory</Link>}</div>}{!loading && items.map(renderCard)}</div>
 
         <div className="mt-5 flex flex-col gap-4 border-t border-[#e8eae7] pt-4 sm:flex-row sm:items-center sm:justify-between">
           <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-xs">
@@ -218,7 +218,7 @@ function InventoryListPage() {
                   setPageSize(Number(event.target.value));
                   setPage(1);
                 }}
-                className="h-8 rounded-sm border border-[#e6e8e4] bg-white px-2 text-xs text-[#414846] outline-none focus:border-[#805361] focus:ring-2 focus:ring-[#805361]/10"
+                className="h-8 rounded-sm border border-[#e6e8e4] bg-white px-2 text-xs text-[#414846] outline-none focus:border-[#7046E8] focus:ring-2 focus:ring-[#7046E8]/10"
               >
                 <option value={20}>20</option>
                 <option value={50}>50</option>
@@ -234,7 +234,7 @@ function InventoryListPage() {
                 aria-label="Previous page"
                 disabled={!pagination.hasPreviousPage || loading}
                 onClick={() => handlePageChange(Math.max(1, page - 1))}
-                className="grid size-8 place-items-center rounded-sm bg-white text-[#68404b] transition hover:bg-[#f8f9f6] disabled:cursor-not-allowed disabled:text-[#c6c9c6]"
+                className="grid size-8 place-items-center rounded-sm bg-white text-[#6132DA] transition hover:bg-[#f8f9f6] disabled:cursor-not-allowed disabled:text-[#c6c9c6]"
               >
                 <ChevronLeft size={16} />
               </button>
@@ -247,7 +247,7 @@ function InventoryListPage() {
                     aria-current={item === page ? 'page' : undefined}
                     disabled={loading}
                     onClick={() => handlePageChange(item)}
-                    className={`grid size-8 place-items-center rounded-sm text-xs font-semibold transition disabled:cursor-wait ${item === page ? 'bg-[#68404b] text-white' : 'bg-white text-[#414846] hover:bg-[#f8f9f6] hover:text-[#68404b]'}`}
+                    className={`grid size-8 place-items-center rounded-sm text-xs font-semibold transition disabled:cursor-wait ${item === page ? 'bg-[#6132DA] text-white' : 'bg-white text-[#414846] hover:bg-[#f8f9f6] hover:text-[#6132DA]'}`}
                   >
                     {item}
                   </button>
@@ -260,7 +260,7 @@ function InventoryListPage() {
                 aria-label="Next page"
                 disabled={!pagination.hasNextPage || loading}
                 onClick={() => handlePageChange(page + 1)}
-                className="grid size-8 place-items-center rounded-sm bg-white text-[#68404b] transition hover:bg-[#f8f9f6] disabled:cursor-not-allowed disabled:text-[#c6c9c6]"
+                className="grid size-8 place-items-center rounded-sm bg-white text-[#6132DA] transition hover:bg-[#f8f9f6] disabled:cursor-not-allowed disabled:text-[#c6c9c6]"
               >
                 <ChevronRight size={16} />
               </button>

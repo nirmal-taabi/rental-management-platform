@@ -78,7 +78,7 @@ function ReturnDetailsPage() {
           <p className="mt-2 text-sm text-[#59615e]">{error}</p>
           <Link
             to="/returns"
-            className="mt-4 inline-flex min-h-10 items-center text-sm font-semibold text-[#68404b] underline"
+            className="mt-4 inline-flex min-h-10 items-center text-sm font-semibold text-[#6132DA] underline"
           >
             Back to returns
           </Link>
@@ -93,11 +93,11 @@ function ReturnDetailsPage() {
           <div>
             <Link
               to="/returns"
-              className="mb-3 inline-flex items-center gap-2 text-sm font-semibold text-[#68404b] transition hover:text-[#54333d]"
+              className="mb-3 inline-flex items-center gap-2 text-sm font-semibold text-[#6132DA] transition hover:text-[#4D25B5]"
             >
               <ArrowLeft size={16} /> Returns
             </Link>
-            <p className="text-xs font-bold uppercase tracking-[0.16em] text-[#8a5360]">
+            <p className="text-xs font-bold uppercase tracking-[0.16em] text-[#8060D9]">
               Return receipt
             </p>
             <h1 className="mt-1 font-mono text-2xl font-semibold text-[#252a29]">
@@ -123,13 +123,13 @@ function ReturnDetailsPage() {
         <article className="border border-[#e6e8e4] bg-white print:border-0">
           <header className="flex flex-wrap items-start justify-between gap-4 border-b border-[#e8eae7] px-5 py-5 sm:px-8">
             <div>
-              <p className="text-xs font-bold uppercase tracking-[0.16em] text-[#8a5360]">
+              <p className="text-xs font-bold uppercase tracking-[0.16em] text-[#8060D9]">
                 {shop?.name || 'Rental shop'}
               </p>
               <h2 className="mt-2 text-xl font-semibold text-[#252a29]">Return receipt</h2>
               <Link
                 to={`/bookings/${returnRecord.bookingId}`}
-                className="mt-1 inline-flex font-mono text-sm font-semibold text-[#68404b] underline underline-offset-4"
+                className="mt-1 inline-flex font-mono text-sm font-semibold text-[#6132DA] underline underline-offset-4"
               >
                 {returnRecord.bookingNumber}
               </Link>
@@ -187,7 +187,7 @@ function ReturnDetailsPage() {
                 >
                   <div>
                     <p className="font-semibold text-[#252a29]">{item.productName}</p>
-                    <p className="mt-1 font-mono text-xs text-[#68404b]">{item.inventorySku}</p>
+                    <p className="mt-1 font-mono text-xs text-[#6132DA]">{item.inventorySku}</p>
                     <p className="mt-1 text-xs text-[#59615e]">
                       Size {item.size || '—'} · {item.color || '—'} ·{' '}
                       {formatDateTime(item.actualReturnedAt)}

@@ -81,9 +81,9 @@ function InventoryFormPage() {
   };
 
   if (loading) return <main className="flex min-h-full items-center justify-center bg-[#f8f9f6] text-sm text-[#59615e]">Loading inventory item...</main>;
-  if (!isEditing && !canCreate) return <main className="flex min-h-full items-center justify-center bg-[#f8f9f6] px-4"><section className="w-full max-w-lg border border-[#e6e8e4] bg-white p-6"><h1 className="text-xl font-semibold text-[#252a29]">Inventory creation access required</h1><p className="mt-2 text-sm text-[#59615e]">Your role can view and update inventory metadata but cannot create stock items.</p><Link to="/inventory" className="mt-4 inline-flex min-h-10 items-center rounded-md bg-[#68404b] px-4 text-sm font-semibold text-white">Back to inventory</Link></section></main>;
+  if (!isEditing && !canCreate) return <main className="flex min-h-full items-center justify-center bg-[#f8f9f6] px-4"><section className="w-full max-w-lg border border-[#e6e8e4] bg-white p-6"><h1 className="text-xl font-semibold text-[#252a29]">Inventory creation access required</h1><p className="mt-2 text-sm text-[#59615e]">Your role can view and update inventory metadata but cannot create stock items.</p><Link to="/inventory" className="mt-4 inline-flex min-h-10 items-center rounded-md bg-[#6132DA] px-4 text-sm font-semibold text-white">Back to inventory</Link></section></main>;
 
-  const fieldClassName = 'min-h-11 w-full rounded-md border border-[#dfe3df] bg-white px-3.5 text-sm text-[#252a29] outline-none transition focus:border-[#805361] focus:ring-4 focus:ring-[#805361]/10';
+  const fieldClassName = 'min-h-11 w-full rounded-md border border-[#dfe3df] bg-white px-3.5 text-sm text-[#252a29] outline-none transition focus:border-[#7046E8] focus:ring-4 focus:ring-[#7046E8]/10';
   const labelClassName = 'mb-2 block text-xs font-semibold text-[#252a29]';
 
   return (
@@ -94,14 +94,14 @@ function InventoryFormPage() {
         <form onSubmit={handleSubmit} className="space-y-6">
           <header className="flex flex-col gap-5 border-b border-[#e8eae7] pb-5 lg:flex-row lg:items-center lg:justify-between">
             <div className="flex min-w-0 flex-col items-start gap-2">
-              <Link to="/inventory" className="inline-flex items-center gap-2 text-sm font-semibold text-[#68404b] transition hover:text-[#54333d]"><ArrowLeft size={16} /> Inventory</Link>
+              <Link to="/inventory" className="inline-flex items-center gap-2 text-sm font-semibold text-[#6132DA] transition hover:text-[#4D25B5]"><ArrowLeft size={16} /> Inventory</Link>
               <div><h1 className="text-3xl font-semibold text-[#252a29]">{isEditing ? 'Edit physical item' : 'Add physical item'}</h1><p className="mt-2 text-sm text-[#59615e]">Register and maintain individual rental stock.</p></div>
             </div>
-            <div className="flex gap-2"><Link to="/inventory" className="inline-flex min-h-10 items-center rounded-md border border-[#dfe3df] bg-white px-4 text-sm font-medium text-[#414846] transition hover:bg-[#f8f9f6]">Cancel</Link><button type="submit" disabled={saving} className="inline-flex min-h-10 items-center gap-2 rounded-md bg-[#68404b] px-4 text-sm font-semibold text-white transition hover:bg-[#54333d] disabled:opacity-50"><Boxes size={15} />{saving ? 'Saving...' : isEditing ? 'Save changes' : 'Add inventory item'}</button></div>
+            <div className="flex gap-2"><Link to="/inventory" className="inline-flex min-h-10 items-center rounded-md border border-[#dfe3df] bg-white px-4 text-sm font-medium text-[#414846] transition hover:bg-[#f8f9f6]">Cancel</Link><button type="submit" disabled={saving} className="inline-flex min-h-10 items-center gap-2 rounded-md bg-[#6132DA] px-4 text-sm font-semibold text-white transition hover:bg-[#4D25B5] disabled:opacity-50"><Boxes size={15} />{saving ? 'Saving...' : isEditing ? 'Save changes' : 'Add inventory item'}</button></div>
           </header>
 
           <section className="border border-[#e6e8e4] bg-white p-5 sm:p-6">
-            <header className="mb-4 flex items-start gap-3 border-b border-[#e8eae7] pb-4"><span className="grid size-9 shrink-0 place-items-center rounded-sm bg-[#f1e9eb] text-xs font-bold text-[#68404b]">01</span><div><h2 className="text-base font-semibold text-[#252a29]">Product</h2><p className="mt-1 text-xs text-[#59615e]">Connect this physical piece to a catalog product.</p></div></header>
+            <header className="mb-4 flex items-start gap-3 border-b border-[#e8eae7] pb-4"><span className="grid size-9 shrink-0 place-items-center rounded-sm bg-[#F1ECFC] text-xs font-bold text-[#6132DA]">01</span><div><h2 className="text-base font-semibold text-[#252a29]">Product</h2><p className="mt-1 text-xs text-[#59615e]">Connect this physical piece to a catalog product.</p></div></header>
             {isEditing ? (
               <div className="flex items-center gap-4 border border-[#e6e8e4] bg-[#f8f9f6] p-3">
                 <div className="h-16 w-16 shrink-0 bg-[#f1f2ef]">{product?.imageUrl && <img crossOrigin="use-credentials" src={resolveImageUrl(product.imageUrl)} alt={product.name} className="h-full w-full object-cover" />}</div>
@@ -111,7 +111,7 @@ function InventoryFormPage() {
               <div className="relative">
                 <label htmlFor="product-search" className={labelClassName}>Choose an active product *</label>
                 {product ? (
-                  <div className="flex items-center justify-between gap-3 border border-[#cbb9bd] bg-[#f8f9f6] p-3">
+                  <div className="flex items-center justify-between gap-3 border border-[#D8CCF5] bg-[#f8f9f6] p-3">
                     <div className="flex min-w-0 items-center gap-3"><div className="h-14 w-14 shrink-0 bg-white">{product.primaryImage && <img crossOrigin="use-credentials" src={resolveImageUrl(product.primaryImage)} alt={product.name} className="h-full w-full object-cover" />}</div><div className="min-w-0"><p className="truncate font-semibold text-[#252a29]">{product.name}</p><p className="font-mono text-sm text-[#414846]">{product.sku}</p><p className="text-xs text-[#59615e]">{product.categoryName || '—'}</p></div></div>
                     <button type="button" onClick={() => { setProduct(null); setProductSearch(''); setShowProductResults(true); }} className="min-h-9 shrink-0 rounded-md border border-[#dfe3df] bg-white px-3 text-sm font-semibold text-[#414846] transition hover:bg-[#f1f2ef]">Change</button>
                   </div>
@@ -126,7 +126,7 @@ function InventoryFormPage() {
           </section>
 
           <section className="border border-[#e6e8e4] bg-white p-5 sm:p-6">
-            <header className="mb-5 flex items-start gap-3 border-b border-[#e8eae7] pb-4"><span className="grid size-9 shrink-0 place-items-center rounded-sm bg-[#f8f9f6] text-xs font-bold text-[#68404b]">02</span><div><h2 className="text-base font-semibold text-[#252a29]">Physical item details</h2><p className="mt-1 text-xs text-[#59615e]">Identification, size, condition, and purchase record.</p></div></header>
+            <header className="mb-5 flex items-start gap-3 border-b border-[#e8eae7] pb-4"><span className="grid size-9 shrink-0 place-items-center rounded-sm bg-[#f8f9f6] text-xs font-bold text-[#6132DA]">02</span><div><h2 className="text-base font-semibold text-[#252a29]">Physical item details</h2><p className="mt-1 text-xs text-[#59615e]">Identification, size, condition, and purchase record.</p></div></header>
             <div className="grid gap-5 sm:grid-cols-2">
               <div><label htmlFor="inventory-sku" className={labelClassName}>Inventory SKU *</label><input id="inventory-sku" value={form.sku} onChange={(event) => setForm({ ...form, sku: event.target.value })} maxLength={80} pattern="[A-Za-z0-9][A-Za-z0-9._-]{1,79}" required className={`${fieldClassName} font-mono`} /><p className="mt-1.5 text-xs text-[#59615e]">Unique in your shop. You can enter your own item code.</p></div>
               <div><label htmlFor="inventory-barcode" className={labelClassName}>Barcode</label><input id="inventory-barcode" value={form.barcode} onChange={(event) => setForm({ ...form, barcode: event.target.value })} maxLength={100} className={fieldClassName} /></div>
@@ -140,7 +140,7 @@ function InventoryFormPage() {
           </section>
 
           {!isEditing && <p className="text-sm text-[#59615e]">New physical items start with status AVAILABLE.</p>}
-          <footer className="flex justify-end gap-3 border-t border-[#e8eae7] pt-4"><Link to="/inventory" className="inline-flex min-h-10 items-center rounded-md border border-[#dfe3df] bg-white px-4 text-sm font-semibold text-[#414846] transition hover:bg-[#f8f9f6]">Cancel</Link><button type="submit" disabled={saving} className="inline-flex min-h-10 items-center gap-2 rounded-md bg-[#68404b] px-5 text-sm font-semibold text-white transition hover:bg-[#54333d] disabled:opacity-50"><Boxes size={15} />{saving ? 'Saving...' : isEditing ? 'Save changes' : 'Add inventory item'}</button></footer>
+          <footer className="flex justify-end gap-3 border-t border-[#e8eae7] pt-4"><Link to="/inventory" className="inline-flex min-h-10 items-center rounded-md border border-[#dfe3df] bg-white px-4 text-sm font-semibold text-[#414846] transition hover:bg-[#f8f9f6]">Cancel</Link><button type="submit" disabled={saving} className="inline-flex min-h-10 items-center gap-2 rounded-md bg-[#6132DA] px-5 text-sm font-semibold text-white transition hover:bg-[#4D25B5] disabled:opacity-50"><Boxes size={15} />{saving ? 'Saving...' : isEditing ? 'Save changes' : 'Add inventory item'}</button></footer>
         </form>
       </div>
     </main>

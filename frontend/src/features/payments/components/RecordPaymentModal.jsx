@@ -88,7 +88,7 @@ function RecordPaymentModal({ booking, summary, onClose, onSuccess }) {
       >
         <header className="flex items-start justify-between gap-4 border-b border-[#e8eae7] bg-white px-5 py-4 sm:px-6">
           <div>
-            <p className="text-xs font-bold uppercase tracking-wide text-[#8a5360]">
+            <p className="text-xs font-bold uppercase tracking-wide text-[#8060D9]">
               {booking.bookingNumber}
             </p>
             <h2 id="record-payment-title" className="mt-1 text-xl font-semibold text-[#252a29]">
@@ -150,7 +150,7 @@ function RecordPaymentModal({ booking, summary, onClose, onSuccess }) {
               <button
                 type="button"
                 onClick={onClose}
-                className="min-h-10 rounded-md bg-[#68404b] px-4 text-sm font-semibold text-white transition hover:bg-[#54333d]"
+                className="min-h-10 rounded-md bg-[#6132DA] px-4 text-sm font-semibold text-white transition hover:bg-[#4D25B5]"
               >
                 Done
               </button>
@@ -182,7 +182,7 @@ function RecordPaymentModal({ booking, summary, onClose, onSuccess }) {
                   step="0.01"
                   value={amount}
                   onChange={(event) => setAmount(event.target.value)}
-                  className="mt-1 min-h-11 w-full rounded-md border border-[#dfe3df] bg-white px-3 font-normal text-[#252a29] tabular-nums outline-none focus:border-[#805361] focus:ring-2 focus:ring-[#805361]/10"
+                  className="mt-1 min-h-11 w-full rounded-md border border-[#dfe3df] bg-white px-3 font-normal text-[#252a29] tabular-nums outline-none focus:border-[#7046E8] focus:ring-2 focus:ring-[#7046E8]/10"
                   placeholder="0.00"
                 />
               </label>
@@ -192,7 +192,7 @@ function RecordPaymentModal({ booking, summary, onClose, onSuccess }) {
                   required
                   value={paymentType}
                   onChange={(event) => setPaymentType(event.target.value)}
-                  className="mt-1 min-h-11 w-full rounded-md border border-[#dfe3df] bg-white px-3 font-normal text-[#414846] outline-none focus:border-[#805361] focus:ring-2 focus:ring-[#805361]/10"
+                  className="mt-1 min-h-11 w-full rounded-md border border-[#dfe3df] bg-white px-3 font-normal text-[#414846] outline-none focus:border-[#7046E8] focus:ring-2 focus:ring-[#7046E8]/10"
                 >
                   {paymentTypes.map((type) => (
                     <option key={type} value={type}>
@@ -207,7 +207,7 @@ function RecordPaymentModal({ booking, summary, onClose, onSuccess }) {
                   required
                   value={paymentMethod}
                   onChange={(event) => setPaymentMethod(event.target.value)}
-                  className="mt-1 min-h-11 w-full rounded-md border border-[#dfe3df] bg-white px-3 font-normal text-[#414846] outline-none focus:border-[#805361] focus:ring-2 focus:ring-[#805361]/10"
+                  className="mt-1 min-h-11 w-full rounded-md border border-[#dfe3df] bg-white px-3 font-normal text-[#414846] outline-none focus:border-[#7046E8] focus:ring-2 focus:ring-[#7046E8]/10"
                 >
                   {paymentMethods.map((method) => (
                     <option key={method} value={method}>
@@ -223,7 +223,7 @@ function RecordPaymentModal({ booking, summary, onClose, onSuccess }) {
                   type="date"
                   value={transactionDate}
                   onChange={(event) => setTransactionDate(event.target.value)}
-                  className="mt-1 min-h-11 w-full rounded-md border border-[#dfe3df] bg-white px-3 font-normal text-[#414846] outline-none focus:border-[#805361] focus:ring-2 focus:ring-[#805361]/10"
+                  className="mt-1 min-h-11 w-full rounded-md border border-[#dfe3df] bg-white px-3 font-normal text-[#414846] outline-none focus:border-[#7046E8] focus:ring-2 focus:ring-[#7046E8]/10"
                 />
               </label>
             </div>
@@ -234,7 +234,7 @@ function RecordPaymentModal({ booking, summary, onClose, onSuccess }) {
                 onChange={(event) => setNotes(event.target.value)}
                 maxLength={2000}
                 rows={2}
-                className="mt-1 w-full rounded-md border border-[#dfe3df] bg-white px-3 py-2 font-normal text-[#414846] outline-none focus:border-[#805361] focus:ring-2 focus:ring-[#805361]/10"
+                className="mt-1 w-full rounded-md border border-[#dfe3df] bg-white px-3 py-2 font-normal text-[#414846] outline-none focus:border-[#7046E8] focus:ring-2 focus:ring-[#7046E8]/10"
               />
             </label>
             <div
@@ -260,7 +260,7 @@ function RecordPaymentModal({ booking, summary, onClose, onSuccess }) {
               <button
                 type="submit"
                 disabled={saving || !amountValid}
-                className="inline-flex min-h-10 items-center gap-2 rounded-md bg-[#68404b] px-4 text-sm font-semibold text-white transition hover:bg-[#54333d] disabled:cursor-not-allowed disabled:opacity-45"
+                className="inline-flex min-h-10 items-center gap-2 rounded-md bg-[#6132DA] px-4 text-sm font-semibold text-white transition hover:bg-[#4D25B5] disabled:cursor-not-allowed disabled:opacity-45"
               >
                 {saving ? <LoaderCircle size={16} className="animate-spin" /> : <Check size={16} />}
                 {saving ? 'Recording payment...' : 'Record payment'}

@@ -130,7 +130,7 @@ function ReturnListPage() {
       <td className="px-4 py-3">
         <Link
           to={`/returns/${entry.id}`}
-          className="font-mono text-sm font-semibold text-[#252a29] underline-offset-4 hover:text-[#68404b] hover:underline"
+          className="font-mono text-sm font-semibold text-[#252a29] underline-offset-4 hover:text-[#6132DA] hover:underline"
         >
           RT-{String(entry.id).padStart(5, '0')}
         </Link>
@@ -139,7 +139,7 @@ function ReturnListPage() {
       <td className="px-4 py-3">
         <Link
           to={`/bookings/${entry.bookingId}`}
-          className="font-mono text-sm font-semibold text-[#414846] hover:text-[#68404b]"
+          className="font-mono text-sm font-semibold text-[#414846] hover:text-[#6132DA]"
         >
           {entry.bookingNumber}
         </Link>
@@ -159,7 +159,7 @@ function ReturnListPage() {
       <td className="px-4 py-3 text-right">
         <Link
           to={`/returns/${entry.id}`}
-          className="inline-flex min-h-8 items-center rounded-md border border-[#e6e8e4] bg-[#f8f9f6] px-2.5 py-1.5 text-xs font-medium text-[#68404b] transition hover:bg-[#e8eae7]"
+          className="inline-flex min-h-8 items-center rounded-md border border-[#e6e8e4] bg-[#f8f9f6] px-2.5 py-1.5 text-xs font-medium text-[#6132DA] transition hover:bg-[#e8eae7]"
         >
           Receipt
         </Link>
@@ -179,7 +179,7 @@ function ReturnListPage() {
           </div>
           <Link
             to="/bookings"
-            className="inline-flex min-h-10 items-center rounded-md border border-[#dfe3df] bg-white px-4 text-sm font-semibold text-[#414846] transition hover:border-[#68404b] hover:text-[#68404b]"
+            className="inline-flex min-h-10 items-center rounded-md border border-[#dfe3df] bg-white px-4 text-sm font-semibold text-[#414846] transition hover:border-[#6132DA] hover:text-[#6132DA]"
           >
             Open bookings
           </Link>
@@ -201,7 +201,7 @@ function ReturnListPage() {
                     setStatus(filter.value);
                     setPage(1);
                   }}
-                  className={`inline-flex min-h-10 items-center rounded-md px-3.5 text-xs font-semibold transition focus:outline-none focus:ring-4 focus:ring-[#68404b]/15 ${status === filter.value ? 'bg-[#68404b] text-white' : 'bg-[#f1f2ef] text-[#414846] hover:bg-[#e8eae7]'}`}
+                  className={`inline-flex min-h-10 items-center rounded-md px-3.5 text-xs font-semibold transition focus:outline-none focus:ring-4 focus:ring-[#6132DA]/15 ${status === filter.value ? 'bg-[#6132DA] text-white' : 'bg-[#f1f2ef] text-[#414846] hover:bg-[#e8eae7]'}`}
                 >
                   {filter.label}
                 </button>
@@ -221,7 +221,7 @@ function ReturnListPage() {
                   setPage(1);
                 }}
                 placeholder="Search return, booking or customer"
-                className="min-h-10 w-full rounded-full border border-[#dfe3df] bg-white pl-11 pr-4 text-sm text-[#252a29] outline-none transition placeholder:text-[#747b78] focus:border-[#805361] focus:ring-4 focus:ring-[#805361]/10"
+                className="min-h-10 w-full rounded-full border border-[#dfe3df] bg-white pl-11 pr-4 text-sm text-[#252a29] outline-none transition placeholder:text-[#747b78] focus:border-[#7046E8] focus:ring-4 focus:ring-[#7046E8]/10"
               />
             </label>
           </div>
@@ -233,7 +233,7 @@ function ReturnListPage() {
                 setDamageStatus(event.target.value);
                 setPage(1);
               }}
-              className="min-h-9 rounded-md border border-[#dfe3df] bg-white px-3 text-xs text-[#414846] outline-none focus:border-[#805361] focus:ring-2 focus:ring-[#805361]/10"
+              className="min-h-9 rounded-md border border-[#dfe3df] bg-white px-3 text-xs text-[#414846] outline-none focus:border-[#7046E8] focus:ring-2 focus:ring-[#7046E8]/10"
             >
               <option value="">All damage statuses</option>
               {returnDamageStatuses.map((value) => (
@@ -249,7 +249,7 @@ function ReturnListPage() {
                 setSort(event.target.value);
                 setPage(1);
               }}
-              className="min-h-9 rounded-md border border-[#dfe3df] bg-white px-3 text-xs text-[#414846] outline-none focus:border-[#805361] focus:ring-2 focus:ring-[#805361]/10"
+              className="min-h-9 rounded-md border border-[#dfe3df] bg-white px-3 text-xs text-[#414846] outline-none focus:border-[#7046E8] focus:ring-2 focus:ring-[#7046E8]/10"
             >
               <option value="returnDate:desc">Latest return</option>
               <option value="returnDate:asc">Oldest return</option>
@@ -286,7 +286,7 @@ function ReturnListPage() {
             <button
               type="button"
               onClick={clearFilters}
-              className="text-xs font-semibold text-[#68404b] underline underline-offset-4"
+              className="text-xs font-semibold text-[#6132DA] underline underline-offset-4"
             >
               Clear filters
             </button>
@@ -363,7 +363,7 @@ function ReturnListPage() {
                   <div>
                     <Link
                       to={`/returns/${entry.id}`}
-                      className="font-mono font-semibold text-[#252a29] hover:text-[#68404b]"
+                      className="font-mono font-semibold text-[#252a29] hover:text-[#6132DA]"
                     >
                       RT-{String(entry.id).padStart(5, '0')}
                     </Link>
@@ -376,7 +376,7 @@ function ReturnListPage() {
                     <p className="text-xs text-[#59615e]">Booking</p>
                     <Link
                       to={`/bookings/${entry.bookingId}`}
-                      className="mt-1 inline-flex font-mono text-[#68404b]"
+                      className="mt-1 inline-flex font-mono text-[#6132DA]"
                     >
                       {entry.bookingNumber}
                     </Link>
@@ -400,7 +400,7 @@ function ReturnListPage() {
                 </div>
                 <Link
                   to={`/returns/${entry.id}`}
-                  className="mt-3 inline-flex text-sm font-semibold text-[#68404b] underline underline-offset-4"
+                  className="mt-3 inline-flex text-sm font-semibold text-[#6132DA] underline underline-offset-4"
                 >
                   View return
                 </Link>
@@ -429,7 +429,7 @@ function ReturnListPage() {
                   setPageSize(Number(event.target.value));
                   setPage(1);
                 }}
-                className="h-8 rounded-sm border border-[#e6e8e4] bg-white px-2 text-xs text-[#414846] outline-none focus:border-[#805361] focus:ring-2 focus:ring-[#805361]/10"
+                className="h-8 rounded-sm border border-[#e6e8e4] bg-white px-2 text-xs text-[#414846] outline-none focus:border-[#7046E8] focus:ring-2 focus:ring-[#7046E8]/10"
               >
                 <option value={20}>20</option>
                 <option value={50}>50</option>
@@ -443,7 +443,7 @@ function ReturnListPage() {
               aria-label="Previous page"
               disabled={!pagination.hasPreviousPage || loading}
               onClick={() => handlePageChange(page - 1)}
-              className="grid size-8 place-items-center rounded-sm bg-white text-[#68404b] transition hover:bg-[#f8f9f6] disabled:cursor-not-allowed disabled:text-[#c6c9c6]"
+              className="grid size-8 place-items-center rounded-sm bg-white text-[#6132DA] transition hover:bg-[#f8f9f6] disabled:cursor-not-allowed disabled:text-[#c6c9c6]"
             >
               <ChevronLeft size={16} />
             </button>
@@ -456,7 +456,7 @@ function ReturnListPage() {
                   aria-current={item === page ? 'page' : undefined}
                   disabled={loading}
                   onClick={() => handlePageChange(item)}
-                  className={`grid size-8 place-items-center rounded-sm text-xs font-semibold transition disabled:cursor-wait ${item === page ? 'bg-[#68404b] text-white' : 'bg-white text-[#414846] hover:bg-[#f8f9f6] hover:text-[#68404b]'}`}
+                  className={`grid size-8 place-items-center rounded-sm text-xs font-semibold transition disabled:cursor-wait ${item === page ? 'bg-[#6132DA] text-white' : 'bg-white text-[#414846] hover:bg-[#f8f9f6] hover:text-[#6132DA]'}`}
                 >
                   {item}
                 </button>
@@ -475,7 +475,7 @@ function ReturnListPage() {
               aria-label="Next page"
               disabled={!pagination.hasNextPage || loading}
               onClick={() => handlePageChange(page + 1)}
-              className="grid size-8 place-items-center rounded-sm bg-white text-[#68404b] transition hover:bg-[#f8f9f6] disabled:cursor-not-allowed disabled:text-[#c6c9c6]"
+              className="grid size-8 place-items-center rounded-sm bg-white text-[#6132DA] transition hover:bg-[#f8f9f6] disabled:cursor-not-allowed disabled:text-[#c6c9c6]"
             >
               <ChevronRight size={16} />
             </button>

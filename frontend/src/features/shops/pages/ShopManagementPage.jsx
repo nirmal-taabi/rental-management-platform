@@ -41,7 +41,7 @@ const shopFields = [
 ];
 
 const fieldClassName =
-  'mt-1 min-h-11 w-full rounded-md border border-[#dfe3df] bg-white px-3 text-sm text-[#252a29] outline-none transition placeholder:text-[#a1a6a2] focus:border-[#805361] focus:ring-2 focus:ring-[#805361]/10';
+  'mt-1 min-h-11 w-full rounded-md border border-[#dfe3df] bg-white px-3 text-sm text-[#252a29] outline-none transition placeholder:text-[#a1a6a2] focus:border-[#7046E8] focus:ring-2 focus:ring-[#7046E8]/10';
 
 function ShopManagementPage() {
   const { shop: currentShop, availableShops, refreshShops, reloadSession, switchShop } = useAuth();
@@ -181,7 +181,7 @@ function ShopManagementPage() {
           <button
             type="button"
             onClick={openCreateShop}
-            className="inline-flex min-h-10 items-center gap-2 rounded-md bg-[#68404b] px-4 text-sm font-semibold text-white transition hover:bg-[#54333d]"
+            className="inline-flex min-h-10 items-center gap-2 rounded-md bg-[#6132DA] px-4 text-sm font-semibold text-white transition hover:bg-[#4D25B5]"
           >
             <Plus size={16} /> Create shop
           </button>
@@ -205,7 +205,7 @@ function ShopManagementPage() {
               <button
                 type="button"
                 onClick={() => handleSwitchShop(createdShop)}
-                className="min-h-9 rounded-md bg-[#68404b] px-3 text-xs font-semibold text-white transition hover:bg-[#54333d]"
+                className="min-h-9 rounded-md bg-[#6132DA] px-3 text-xs font-semibold text-white transition hover:bg-[#4D25B5]"
               >
                 Switch to this shop
               </button>
@@ -240,7 +240,7 @@ function ShopManagementPage() {
                   className="flex flex-wrap items-center justify-between gap-4 py-4"
                 >
                   <div className="flex min-w-0 items-center gap-3">
-                    <span className="grid size-10 shrink-0 place-items-center rounded-sm bg-[#f1f2ef] text-sm font-semibold text-[#68404b]">
+                    <span className="grid size-10 shrink-0 place-items-center rounded-sm bg-[#f1f2ef] text-sm font-semibold text-[#6132DA]">
                       {availableShop.name?.trim()?.charAt(0)?.toUpperCase() || 'S'}
                     </span>
                     <div className="min-w-0">
@@ -328,7 +328,7 @@ function ShopManagementPage() {
           >
             <header className="flex items-start justify-between gap-4 border-b border-[#e8eae7] px-5 py-4 sm:px-6">
               <div>
-                <p className="text-xs font-bold uppercase tracking-[0.14em] text-[#8a5360]">
+                <p className="text-xs font-bold uppercase tracking-[0.14em] text-[#8060D9]">
                   Shops &amp; Branches
                 </p>
                 <h2 id="shop-form-title" className="mt-1 text-lg font-semibold">
@@ -403,7 +403,7 @@ function ShopManagementPage() {
                 <button
                   type="submit"
                   disabled={isSaving}
-                  className="inline-flex min-h-10 items-center justify-center rounded-md bg-[#68404b] px-4 text-sm font-semibold text-white transition hover:bg-[#54333d] disabled:cursor-wait disabled:opacity-60"
+                  className="inline-flex min-h-10 items-center justify-center rounded-md bg-[#6132DA] px-4 text-sm font-semibold text-white transition hover:bg-[#4D25B5] disabled:cursor-wait disabled:opacity-60"
                 >
                   {isSaving ? 'Saving…' : editingShop ? 'Save changes' : 'Create shop'}
                 </button>

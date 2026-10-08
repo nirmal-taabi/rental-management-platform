@@ -1,7 +1,7 @@
 {
-  "name": "TrackinHub",
-  "short_name": "TrackinHub",
-  "description": "TrackinHub for managing inventory, bookings, payments, and customer operations.",
+  "name": "Nirmal Rentals",
+  "short_name": "Nirmal Rentals",
+  "description": "Nirmal Rentals for managing inventory, bookings, payments, and customer operations.",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",

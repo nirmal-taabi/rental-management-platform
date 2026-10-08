@@ -144,7 +144,7 @@ function ReturnWorkspacePage() {
           <p className="mt-2 text-sm text-[#59615e]">{error}</p>
           <Link
             to="/bookings"
-            className="mt-4 inline-flex min-h-10 items-center text-sm font-semibold text-[#68404b] underline"
+            className="mt-4 inline-flex min-h-10 items-center text-sm font-semibold text-[#6132DA] underline"
           >
             Back to bookings
           </Link>
@@ -217,7 +217,7 @@ function ReturnWorkspacePage() {
             </Link>
             <Link
               to={`/bookings/${booking.id}`}
-              className="inline-flex min-h-10 items-center rounded-md bg-[#68404b] px-4 text-sm font-semibold text-white transition hover:bg-[#54333d]"
+              className="inline-flex min-h-10 items-center rounded-md bg-[#6132DA] px-4 text-sm font-semibold text-white transition hover:bg-[#4D25B5]"
             >
               View booking
             </Link>
@@ -236,7 +236,7 @@ function ReturnWorkspacePage() {
           </p>
           <Link
             to={`/bookings/${booking.id}`}
-            className="mt-4 inline-flex min-h-10 items-center text-sm font-semibold text-[#68404b] underline"
+            className="mt-4 inline-flex min-h-10 items-center text-sm font-semibold text-[#6132DA] underline"
           >
             View booking
           </Link>
@@ -251,7 +251,7 @@ function ReturnWorkspacePage() {
           <div>
             <Link
               to={`/bookings/${booking.id}`}
-              className="mb-3 inline-flex items-center gap-2 text-sm font-semibold text-[#68404b] transition hover:text-[#54333d]"
+              className="mb-3 inline-flex items-center gap-2 text-sm font-semibold text-[#6132DA] transition hover:text-[#4D25B5]"
             >
               <ArrowLeft size={16} /> Booking details
             </Link>
@@ -292,13 +292,13 @@ function ReturnWorkspacePage() {
                         type="checkbox"
                         checked={state.returned}
                         onChange={(event) => updateItem(item.id, 'returned', event.target.checked)}
-                        className="mt-1 size-4 accent-[#68404b]"
+                        className="mt-1 size-4 accent-[#6132DA]"
                       />
                       <span>
                         <span className="block font-semibold text-[#252a29]">
                           {item.product?.name}
                         </span>
-                        <span className="mt-1 block font-mono text-xs text-[#68404b]">
+                        <span className="mt-1 block font-mono text-xs text-[#6132DA]">
                           {item.inventoryItem?.sku}
                         </span>
                         <span className="mt-1 block text-xs text-[#59615e]">
@@ -317,7 +317,7 @@ function ReturnWorkspacePage() {
                             onChange={(event) =>
                               updateItem(item.id, 'condition', event.target.value)
                             }
-                            className="mt-1 min-h-10 w-full rounded-md border border-[#dfe3df] bg-white px-3 text-sm font-normal text-[#414846] outline-none focus:border-[#805361] focus:ring-2 focus:ring-[#805361]/10"
+                            className="mt-1 min-h-10 w-full rounded-md border border-[#dfe3df] bg-white px-3 text-sm font-normal text-[#414846] outline-none focus:border-[#7046E8] focus:ring-2 focus:ring-[#7046E8]/10"
                           >
                             {returnConditions.map((value) => (
                               <option key={value} value={value}>
@@ -333,7 +333,7 @@ function ReturnWorkspacePage() {
                             onChange={(event) =>
                               updateItem(item.id, 'damageStatus', event.target.value)
                             }
-                            className="mt-1 min-h-10 w-full rounded-md border border-[#dfe3df] bg-white px-3 text-sm font-normal text-[#414846] outline-none focus:border-[#805361] focus:ring-2 focus:ring-[#805361]/10"
+                            className="mt-1 min-h-10 w-full rounded-md border border-[#dfe3df] bg-white px-3 text-sm font-normal text-[#414846] outline-none focus:border-[#7046E8] focus:ring-2 focus:ring-[#7046E8]/10"
                           >
                             {returnDamageStatuses.map((value) => (
                               <option key={value} value={value}>
@@ -349,7 +349,7 @@ function ReturnWorkspacePage() {
                             onChange={(event) => updateItem(item.id, 'notes', event.target.value)}
                             rows={2}
                             maxLength={2000}
-                            className="mt-1 w-full rounded-md border border-[#dfe3df] bg-white px-3 py-2 text-sm font-normal text-[#414846] outline-none focus:border-[#805361] focus:ring-2 focus:ring-[#805361]/10"
+                            className="mt-1 w-full rounded-md border border-[#dfe3df] bg-white px-3 py-2 text-sm font-normal text-[#414846] outline-none focus:border-[#7046E8] focus:ring-2 focus:ring-[#7046E8]/10"
                           />
                         </label>
                       </div>
@@ -361,7 +361,7 @@ function ReturnWorkspacePage() {
           </section>
 
           <aside className="border border-[#e6e8e4] bg-white p-5 xl:sticky xl:top-5">
-            <p className="text-xs font-bold uppercase tracking-wide text-[#8a5360]">
+            <p className="text-xs font-bold uppercase tracking-wide text-[#8060D9]">
               Return summary
             </p>
             <h2 className="mt-1 text-lg font-semibold text-[#252a29]">{booking.customer?.name}</h2>
@@ -379,7 +379,7 @@ function ReturnWorkspacePage() {
                   type="datetime-local"
                   value={returnedAt}
                   onChange={(event) => setReturnedAt(event.target.value)}
-                  className="mt-1 min-h-10 w-full rounded-md border border-[#dfe3df] bg-white px-3 text-sm text-[#414846] outline-none focus:border-[#805361] focus:ring-2 focus:ring-[#805361]/10"
+                  className="mt-1 min-h-10 w-full rounded-md border border-[#dfe3df] bg-white px-3 text-sm text-[#414846] outline-none focus:border-[#7046E8] focus:ring-2 focus:ring-[#7046E8]/10"
                 />
               </label>
               <div className="flex justify-between gap-3">
@@ -422,14 +422,14 @@ function ReturnWorkspacePage() {
                 onChange={(event) => setNotes(event.target.value)}
                 rows={2}
                 maxLength={5000}
-                className="mt-1 w-full rounded-md border border-[#dfe3df] bg-white px-3 py-2 text-sm font-normal text-[#414846] outline-none focus:border-[#805361] focus:ring-2 focus:ring-[#805361]/10"
+                className="mt-1 w-full rounded-md border border-[#dfe3df] bg-white px-3 py-2 text-sm font-normal text-[#414846] outline-none focus:border-[#7046E8] focus:ring-2 focus:ring-[#7046E8]/10"
               />
             </label>
             <button
               type="button"
               disabled={!selectedItems.length || saving}
               onClick={() => setConfirming(true)}
-              className="mt-4 inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-md bg-[#68404b] px-4 text-sm font-semibold text-white transition hover:bg-[#54333d] disabled:cursor-not-allowed disabled:opacity-45"
+              className="mt-4 inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-md bg-[#6132DA] px-4 text-sm font-semibold text-white transition hover:bg-[#4D25B5] disabled:cursor-not-allowed disabled:opacity-45"
             >
               {saving ? <LoaderCircle size={16} className="animate-spin" /> : <Check size={16} />}
               {remainingCount > 0 ? 'Save partial return' : 'Complete return'}
@@ -470,7 +470,7 @@ function ReturnWorkspacePage() {
                   type="button"
                   disabled={saving}
                   onClick={submitReturn}
-                  className="inline-flex min-h-10 items-center gap-2 rounded-md bg-[#68404b] px-4 text-sm font-semibold text-white transition hover:bg-[#54333d] disabled:opacity-50"
+                  className="inline-flex min-h-10 items-center gap-2 rounded-md bg-[#6132DA] px-4 text-sm font-semibold text-white transition hover:bg-[#4D25B5] disabled:opacity-50"
                 >
                   {saving ? (
                     <LoaderCircle size={16} className="animate-spin" />

@@ -91,15 +91,15 @@ function CategoryManagementPage() {
           <form onSubmit={handleSubmit} className="mb-5 grid gap-4 border border-[#e6e8e4] bg-white p-4 md:grid-cols-[1fr_1.2fr_auto] md:items-end">
             <div>
               <label htmlFor="category-name" className="mb-2 block text-xs font-semibold text-[#252a29]">Category name</label>
-              <input id="category-name" value={form.name} onChange={(event) => setForm({ ...form, name: event.target.value })} maxLength={120} required className="min-h-11 w-full rounded-md border border-[#dfe3df] bg-white px-3.5 text-sm text-[#252a29] outline-none transition focus:border-[#805361] focus:ring-4 focus:ring-[#805361]/10" />
+              <input id="category-name" value={form.name} onChange={(event) => setForm({ ...form, name: event.target.value })} maxLength={120} required className="min-h-11 w-full rounded-md border border-[#dfe3df] bg-white px-3.5 text-sm text-[#252a29] outline-none transition focus:border-[#7046E8] focus:ring-4 focus:ring-[#7046E8]/10" />
             </div>
             <div>
               <label htmlFor="category-description" className="mb-2 block text-xs font-semibold text-[#252a29]">Description</label>
-              <input id="category-description" value={form.description} onChange={(event) => setForm({ ...form, description: event.target.value })} maxLength={500} className="min-h-11 w-full rounded-md border border-[#dfe3df] bg-white px-3.5 text-sm text-[#252a29] outline-none transition focus:border-[#805361] focus:ring-4 focus:ring-[#805361]/10" />
+              <input id="category-description" value={form.description} onChange={(event) => setForm({ ...form, description: event.target.value })} maxLength={500} className="min-h-11 w-full rounded-md border border-[#dfe3df] bg-white px-3.5 text-sm text-[#252a29] outline-none transition focus:border-[#7046E8] focus:ring-4 focus:ring-[#7046E8]/10" />
             </div>
             <div className="flex gap-2">
               {editingId && <button type="button" onClick={resetForm} className="min-h-11 rounded-md border border-[#dfe3df] bg-white px-3.5 text-sm font-semibold text-[#414846] transition hover:bg-[#f8f9f6]">Cancel</button>}
-              <button type="submit" disabled={saving} className="inline-flex min-h-11 items-center gap-2 rounded-md bg-[#68404b] px-4 text-sm font-semibold text-white transition hover:bg-[#54333d] disabled:opacity-50">{!saving && !editingId && <Plus size={15} />}{saving ? 'Saving...' : editingId ? 'Save changes' : 'Add category'}</button>
+              <button type="submit" disabled={saving} className="inline-flex min-h-11 items-center gap-2 rounded-md bg-[#6132DA] px-4 text-sm font-semibold text-white transition hover:bg-[#4D25B5] disabled:opacity-50">{!saving && !editingId && <Plus size={15} />}{saving ? 'Saving...' : editingId ? 'Save changes' : 'Add category'}</button>
             </div>
           </form>
         )}
@@ -109,7 +109,7 @@ function CategoryManagementPage() {
 
         <div className="mb-4 flex max-w-md items-center gap-3">
           <label htmlFor="category-search" className="sr-only">Search categories</label>
-          <div className="relative w-full"><Search size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-[#59615e]" /><input id="category-search" type="search" value={search} onChange={(event) => setSearch(event.target.value)} placeholder="Search categories" className="min-h-11 w-full rounded-full border border-[#dfe3df] bg-white pl-10 pr-4 text-sm text-[#252a29] outline-none transition placeholder:text-[#747b78] focus:border-[#805361] focus:ring-4 focus:ring-[#805361]/10" /></div>
+          <div className="relative w-full"><Search size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-[#59615e]" /><input id="category-search" type="search" value={search} onChange={(event) => setSearch(event.target.value)} placeholder="Search categories" className="min-h-11 w-full rounded-full border border-[#dfe3df] bg-white pl-10 pr-4 text-sm text-[#252a29] outline-none transition placeholder:text-[#747b78] focus:border-[#7046E8] focus:ring-4 focus:ring-[#7046E8]/10" /></div>
         </div>
 
         <div className="overflow-x-auto border border-[#e6e8e4] bg-white">
