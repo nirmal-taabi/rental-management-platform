@@ -120,7 +120,7 @@ function TeamManagementPage() {
 
   return (
     <div className="min-h-full bg-[#f8f9f6] px-4 py-7 text-[#252a29] sm:px-6 lg:px-8">
-      <div className="mx-auto max-w-[1200px] space-y-5">
+      <div className="mx-auto max-w-[1600px] space-y-5">
         <header className="mb-6 flex flex-col gap-4 border-b border-[#e8eae7] pb-5 sm:flex-row sm:items-center sm:justify-between">
           <div>
             <h1 className="text-3xl font-semibold">Staff accounts</h1>
@@ -160,7 +160,7 @@ function TeamManagementPage() {
             <div><h2 className="text-base font-semibold">Team members</h2><p className="mt-1 text-xs text-[#59615e]">Suspending access only affects this shop; account history is retained.</p></div>
             <span className="inline-flex items-center gap-1.5 text-xs text-[#59615e]"><Users size={15} /> {members.length} {members.length === 1 ? 'member' : 'members'}</span>
           </header>
-          <div className="overflow-x-auto">
+          <div className="hidden overflow-x-auto md:block">
             <table className="min-w-full divide-y divide-[#e8eae7] text-left text-sm">
               <thead className="bg-[#f8f9f6] text-[#747b78]">
                 <tr>
@@ -193,6 +193,30 @@ function TeamManagementPage() {
                     : <tr><td colSpan={6} className="px-4 py-12 text-center text-sm text-[#747b78]">No staff accounts found for this shop. Add a staff member to get started.</td></tr>}
               </tbody>
             </table>
+          </div>
+          <div className="grid gap-3 bg-[#f8f9f6] p-3 md:hidden">
+            {isLoading
+              ? <p className="bg-white px-4 py-10 text-center text-sm text-[#747b78]">Loading staff accounts...</p>
+              : members.length
+                ? members.map((member) => (
+                  <article key={member.id} className="border border-[#e6e8e4] bg-white p-4">
+                    <div className="flex items-start justify-between gap-3">
+                      <div className="min-w-0">
+                        <h3 className="truncate font-semibold text-[#252a29]">{member.name}</h3>
+                        <p className="mt-1 break-all text-sm text-[#59615e]">{member.email}</p>
+                      </div>
+                      <span className={`shrink-0 inline-flex min-h-7 items-center rounded-md px-2.5 text-xs font-semibold ${member.membershipStatus === 'active' ? 'bg-[#edf3ef] text-[#35634c]' : 'bg-rose-50 text-rose-800'}`}>{member.membershipStatus === 'active' ? 'Active' : 'Suspended'}</span>
+                    </div>
+                    <div className="mt-3 grid grid-cols-2 gap-3 border-y border-[#eef0ed] py-3 text-sm">
+                      <div><p className="text-xs text-[#747b78]">Phone</p><p className="mt-1 text-[#414846]">{member.phone || '—'}</p></div>
+                      <div><p className="text-xs text-[#747b78]">Joined</p><p className="mt-1 text-[#414846]">{member.joinedAt ? new Intl.DateTimeFormat('en-IN', { day: '2-digit', month: 'short', year: 'numeric' }).format(new Date(member.joinedAt)) : '—'}</p></div>
+                    </div>
+                    <button type="button" disabled={updatingMemberId === member.id || member.accountStatus !== 'active'} onClick={() => member.membershipStatus === 'active' ? setMemberToSuspend(member) : updateMemberStatus(member, 'active')} className={`mt-3 inline-flex min-h-11 w-full items-center justify-center rounded-md border px-3 text-sm font-semibold transition disabled:opacity-50 ${member.membershipStatus === 'active' ? 'border-rose-200 bg-white text-rose-800 hover:bg-rose-50' : 'border-[#dfe3df] bg-white text-[#414846] hover:bg-[#f8f9f6]'}`}>
+                      {updatingMemberId === member.id ? 'Saving...' : member.membershipStatus === 'active' ? 'Suspend access' : 'Reactivate access'}
+                    </button>
+                  </article>
+                ))
+                : <p className="bg-white px-4 py-10 text-center text-sm text-[#747b78]">No staff accounts found for this shop. Add a staff member to get started.</p>}
           </div>
         </section>
       </div>

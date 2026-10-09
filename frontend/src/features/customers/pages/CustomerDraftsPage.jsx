@@ -53,7 +53,7 @@ function CustomerDraftsPage() {
 
   return (
     <main className="min-h-full bg-[#f8f9f6] px-4 py-7 text-[#252a29] sm:px-6 lg:px-8">
-      <div className="mx-auto max-w-[1200px]">
+      <div className="mx-auto max-w-[1600px]">
         <header className="mb-6 flex flex-wrap items-end justify-between gap-4 border-b border-[#e8eae7] pb-5">
           <div>
             <Link to="/customers" className="mb-3 inline-flex items-center gap-2 text-sm font-semibold text-[#6132DA] hover:text-[#4D25B5]">

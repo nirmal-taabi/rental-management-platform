@@ -269,7 +269,7 @@ function BookingWorkspacePage() {
 
   return (
     <main className="min-h-screen bg-[#f8f9f6] px-4 py-7 text-[#252a29] sm:px-6 lg:px-8">
-      <form onSubmit={submitBooking} className="mx-auto max-w-[1440px]">
+      <form onSubmit={submitBooking} className="mx-auto max-w-[1600px]">
         <header className="mb-6 flex flex-wrap items-end justify-between gap-4 border-b border-[#e8eae7] pb-5">
           <div>
             <Link to={editing ? `/bookings/${id}` : '/bookings'} className="mb-3 inline-flex items-center gap-2 text-sm font-semibold text-[#6132DA]"><ArrowLeft size={16} /> {editing ? 'Booking details' : 'All bookings'}</Link>

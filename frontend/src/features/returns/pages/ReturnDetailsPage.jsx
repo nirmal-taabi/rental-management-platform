@@ -88,7 +88,7 @@ function ReturnDetailsPage() {
 
   return (
     <main className="min-h-full bg-[#f8f9f6] px-4 py-7 text-[#252a29] sm:px-6 print:bg-white print:px-0 print:py-0">
-      <div className="mx-auto max-w-[1200px] space-y-5">
+      <div className="mx-auto max-w-[1600px] space-y-5">
         <header className="flex flex-col gap-4 border border-[#e6e8e4] bg-white p-5 sm:flex-row sm:items-center sm:justify-between sm:p-6 print:hidden">
           <div>
             <Link

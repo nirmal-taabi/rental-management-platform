@@ -76,7 +76,7 @@ function PickupWorkspacePage() {
 
   return (
     <main className="min-h-full bg-[#f8f9f6] px-4 py-7 text-[#252a29] sm:px-6 lg:px-8">
-      <div className="mx-auto max-w-[1200px] space-y-5">
+      <div className="mx-auto max-w-[1600px] space-y-5">
         <Link to={`/bookings/${booking.id}`} className="inline-flex items-center gap-2 text-sm font-semibold text-[#6132DA] transition hover:text-[#4D25B5]"><ArrowLeft size={16} /> Booking details</Link>
         <header className="flex flex-col gap-4 border border-[#e6e8e4] bg-white p-5 sm:flex-row sm:items-center sm:justify-between sm:p-6"><div><p className="text-xs font-bold uppercase tracking-[0.16em] text-[#8060D9]">Customer handover</p><h1 className="mt-1 text-2xl font-semibold text-[#252a29] sm:text-3xl">Pickup checklist</h1></div><span className="font-mono text-sm font-semibold text-[#414846]">{booking.bookingNumber}</span></header>
         {error && <div role="alert" className="border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-800">{error}</div>}

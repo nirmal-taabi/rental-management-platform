@@ -124,16 +124,16 @@ function ProductListPage() {
   const handlePageChange = (nextPage) => setPage(nextPage);
 
   return (
-    <main className="min-h-full bg-[#f8f9f6] px-4 py-7 text-[#252a29] sm:px-6 lg:px-8">
-      <div className="mx-auto max-w-[1440px]">
+    <main className="min-h-full bg-[#f8f9f6] px-4 py-5 text-[#252a29] sm:px-6 sm:py-7 lg:px-8">
+      <div className="mx-auto max-w-[1600px]">
         <header className="mb-6 flex flex-wrap items-end justify-between gap-4 border-b border-[#e8eae7] pb-5">
           <div>
             <h1 className="text-3xl font-semibold text-[#252a29]">Products</h1>
             <p className="mt-1 text-sm text-[#59615e]">Manage rental designs, pricing, and product images.</p>
           </div>
-          <div className="flex gap-2">
-            <Link to="/settings/categories" className="inline-flex min-h-10 items-center rounded-md border border-[#dfe3df] bg-white px-3.5 text-sm font-medium text-[#414846] transition hover:bg-[#f8f9f6]">Categories</Link>
-            {canManage && <Link to="/products/new" className="inline-flex min-h-10 items-center gap-2 rounded-md bg-[#6132DA] px-4 text-sm font-semibold text-white transition hover:bg-[#4D25B5]"><PackagePlus size={16} /> Add product</Link>}
+          <div className="flex w-full gap-2 sm:w-auto">
+            <Link to="/settings/categories" className="inline-flex min-h-11 flex-1 items-center justify-center rounded-md border border-[#dfe3df] bg-white px-3.5 text-sm font-medium text-[#414846] transition hover:bg-[#f8f9f6] sm:flex-none">Categories</Link>
+            {canManage && <Link to="/products/new" className="inline-flex min-h-11 flex-1 items-center justify-center gap-2 rounded-md bg-[#6132DA] px-4 text-sm font-semibold text-white transition hover:bg-[#4D25B5] sm:flex-none"><PackagePlus size={16} /> Add product</Link>}
           </div>
         </header>
 
@@ -162,7 +162,7 @@ function ProductListPage() {
 
         {error && <div role="alert" className="mb-4 border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-800">{error}</div>}
 
-        <div className="overflow-x-auto border border-[#e6e8e4] bg-white">
+        <div className="hidden overflow-x-auto border border-[#e6e8e4] bg-white md:block">
           <table className="min-w-[900px] w-full divide-y divide-[#e8eae7] text-left text-sm">
             <thead className="bg-[#f8f9f6] text-[#414846]"><tr><th className="px-4 py-3 text-xs font-semibold">Product</th><th className="px-4 py-3 text-xs font-semibold">SKU</th><th className="px-4 py-3 text-xs font-semibold">Category</th><th className="px-4 py-3 text-xs font-semibold">Rental price</th><th className="px-4 py-3 text-xs font-semibold">Deposit</th><th className="px-4 py-3 text-xs font-semibold">Status</th><th className="px-4 py-3 text-xs font-semibold">Actions</th></tr></thead>
             <tbody className="divide-y divide-[#eef0ed]">
@@ -192,10 +192,34 @@ function ProductListPage() {
           </table>
         </div>
 
+        <div className="grid gap-3 md:hidden">
+          {loading && <p className="border border-[#e6e8e4] bg-white px-4 py-10 text-center text-sm text-[#59615e]">Loading products...</p>}
+          {!loading && !products.length && <p className="border border-[#e6e8e4] bg-white px-4 py-10 text-center text-sm text-[#59615e]">No products match these filters.</p>}
+          {!loading && products.map((product) => (
+            <article key={product.id} className="border border-[#e6e8e4] bg-white p-4">
+              <div className="flex items-start justify-between gap-3">
+                <Link to={`/products/${product.id}`} className="min-w-0 text-base font-semibold text-[#252a29] hover:text-[#6132DA]">{product.name}</Link>
+                <span className={`shrink-0 rounded-full px-2.5 py-1 text-[11px] font-semibold ${product.status === 'ACTIVE' ? 'bg-[#edf3ef] text-[#35634c]' : 'bg-[#f1f2ef] text-[#59615e]'}`}>{product.status}</span>
+              </div>
+              <p className="mt-1 font-mono text-xs text-[#59615e]">{product.sku}</p>
+              <div className="mt-4 grid grid-cols-2 gap-3 border-y border-[#eef0ed] py-3">
+                <div><p className="text-xs text-[#747b78]">Rental price</p><p className="mt-1 text-sm font-semibold text-[#252a29]">{money(product.rentalPrice)}</p></div>
+                <div><p className="text-xs text-[#747b78]">Deposit</p><p className="mt-1 text-sm font-semibold text-[#252a29]">{money(product.depositAmount)}</p></div>
+                <div className="col-span-2"><p className="text-xs text-[#747b78]">Category</p><p className="mt-1 text-sm text-[#414846]">{product.categoryName || '—'}</p></div>
+              </div>
+              <div className="mt-3 flex gap-2">
+                <Link to={`/products/${product.id}`} className="inline-flex min-h-10 flex-1 items-center justify-center rounded-md border border-[#dfe3df] px-3 text-sm font-semibold text-[#414846]">View product</Link>
+                {canManage && <Link to={`/products/${product.id}/edit`} className="inline-flex min-h-10 flex-1 items-center justify-center rounded-md bg-[#f1ecfc] px-3 text-sm font-semibold text-[#6132DA]">Edit</Link>}
+                {canManage && <button type="button" onClick={(event) => handleStatus(event, product)} className="inline-flex min-h-10 items-center justify-center rounded-md border border-[#dfe3df] px-3 text-sm font-medium text-[#414846]">{product.status === 'ACTIVE' ? 'Deactivate' : 'Activate'}</button>}
+              </div>
+            </article>
+          ))}
+        </div>
+
         <div className="mt-5 flex flex-col gap-4 border-t border-[#e8eae7] pt-4 sm:flex-row sm:items-center sm:justify-between">
           <div className="flex flex-wrap items-center gap-x-5 gap-y-2 text-xs">
             <p className="text-[#414846]">Showing <span className="font-semibold text-[#252a29]">{firstRecord} to {lastRecord}</span> of <span className="font-semibold text-[#252a29]">{pagination.totalItems || 0}</span> products</p>
-            <label htmlFor="product-page-size" className="inline-flex items-center gap-2 text-[#59615e]">
+            <label htmlFor="product-page-size" className="hidden items-center gap-2 text-[#59615e] sm:inline-flex">
               Rows per page
               <select id="product-page-size" value={pageSize} onChange={(event) => { setPageSize(Number(event.target.value)); setPage(1); }} className="h-8 rounded-sm border border-[#e6e8e4] bg-white px-2 text-xs text-[#414846] outline-none focus:border-[#7046E8] focus:ring-2 focus:ring-[#7046E8]/10">
                 <option value={20}>20</option><option value={50}>50</option><option value={100}>100</option>

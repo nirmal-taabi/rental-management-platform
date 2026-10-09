@@ -178,7 +178,7 @@ function DashboardPage() {
 
   return (
     <main className="min-h-full bg-[#f8f9f6] px-4 py-7 text-[#252a29] sm:px-6 lg:px-8">
-      <div className="mx-auto max-w-[1200px] space-y-5">
+      <div className="mx-auto max-w-[1600px] space-y-5">
       <header className="flex flex-wrap items-end justify-between gap-4 border-b border-[#e8eae7] pb-5">
         <div><p className="text-xs font-bold uppercase tracking-[0.14em] text-[#8060D9]">{shop?.name || 'Rental workspace'}</p><h1 className="mt-1 text-3xl font-semibold">Operations dashboard</h1><p className="mt-1 text-sm text-[#59615e]">Today is {formatDate(today)}. Signed in as {user?.name || 'Team member'}.</p></div>
         <Link to="/reports" className="inline-flex min-h-10 items-center justify-center gap-2 rounded-md border border-[#dfe3df] bg-white px-4 text-sm font-semibold text-[#414846] transition hover:border-[#6132DA] hover:text-[#6132DA]"><Activity size={16} /> Reports</Link>

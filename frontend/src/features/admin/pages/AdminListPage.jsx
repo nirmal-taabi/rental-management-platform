@@ -246,7 +246,7 @@ function AdminListPage({ resource }) {
           <span>{loading ? 'Loading…' : `${pagination.totalItems || 0} records`}</span>
           <span>Page {page} of {totalPages}</span>
         </div>
-        <div className="overflow-x-auto">
+        <div className="hidden overflow-x-auto md:block">
           <table className="w-full min-w-[800px] text-left text-sm">
             <thead><tr className="border-b border-[#eeedf1] bg-[#fbfbfc] text-[11px] font-semibold uppercase tracking-wide text-[#74747e]">{config.columns.map(([label]) => <th key={label} scope="col" className="whitespace-nowrap px-4 py-3">{label}</th>)}</tr></thead>
             <tbody>
@@ -255,6 +255,24 @@ function AdminListPage({ resource }) {
                   : <tr><td colSpan={config.columns.length} className="px-4 py-12 text-center text-sm text-[#74747e]">{error ? 'Unable to display records.' : 'No matching records found.'}</td></tr>}
             </tbody>
           </table>
+        </div>
+        <div className="grid gap-3 p-3 md:hidden">
+          {loading
+            ? <p className="border border-[#eeedf1] bg-white px-4 py-10 text-center text-sm text-[#74747e]">Loading records…</p>
+            : data.length
+              ? data.map((row) => (
+                <article key={row.id} className="border border-[#eeedf1] bg-white p-4">
+                  <div className="grid grid-cols-2 gap-x-3 gap-y-4">
+                    {config.columns.map(([label, render]) => (
+                      <div key={label} className={['Details', 'Shop', 'Account', 'Customer'].includes(label) ? 'col-span-2 min-w-0' : 'min-w-0'}>
+                        <p className="mb-1 text-[10px] font-semibold uppercase tracking-wide text-[#74747e]">{label}</p>
+                        <div className="break-words text-sm text-[#53535d]">{render(row, { onManageStatus: openShopStatus })}</div>
+                      </div>
+                    ))}
+                  </div>
+                </article>
+              ))
+              : <p className="border border-[#eeedf1] bg-white px-4 py-10 text-center text-sm text-[#74747e]">{error ? 'Unable to display records.' : 'No matching records found.'}</p>}
         </div>
         <footer className="flex items-center justify-between border-t border-[#eeedf1] px-4 py-3">
           <p className="text-xs text-[#74747e]">Showing {data.length ? ((page - 1) * 25) + 1 : 0}–{((page - 1) * 25) + data.length} of {pagination.totalItems || 0}</p>

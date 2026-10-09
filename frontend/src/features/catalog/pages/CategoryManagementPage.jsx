@@ -78,7 +78,7 @@ function CategoryManagementPage() {
 
   return (
     <main className="min-h-full bg-[#f8f9f6] px-4 py-7 text-[#252a29] sm:px-6 lg:px-8">
-      <div className="mx-auto max-w-[1200px]">
+      <div className="mx-auto max-w-[1600px]">
         <header className="mb-6 flex flex-wrap items-end justify-between gap-4 border-b border-[#e8eae7] pb-5">
           <div>
             <h1 className="text-2xl font-semibold text-[#252a29]">Category management</h1>
@@ -112,7 +112,7 @@ function CategoryManagementPage() {
           <div className="relative w-full"><Search size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-[#59615e]" /><input id="category-search" type="search" value={search} onChange={(event) => setSearch(event.target.value)} placeholder="Search categories" className="min-h-11 w-full rounded-full border border-[#dfe3df] bg-white pl-10 pr-4 text-sm text-[#252a29] outline-none transition placeholder:text-[#747b78] focus:border-[#7046E8] focus:ring-4 focus:ring-[#7046E8]/10" /></div>
         </div>
 
-        <div className="overflow-x-auto border border-[#e6e8e4] bg-white">
+        <div className="hidden overflow-x-auto border border-[#e6e8e4] bg-white md:block">
           <table className="min-w-full divide-y divide-[#e8eae7] text-left text-sm">
             <thead className="bg-[#f8f9f6] text-[#414846]">
               <tr><th className="px-4 py-3 font-semibold">Category</th><th className="px-4 py-3 font-semibold">Description</th><th className="px-4 py-3 font-semibold">Status</th>{canManage && <th className="px-4 py-3 font-semibold">Actions</th>}</tr>
@@ -130,6 +130,24 @@ function CategoryManagementPage() {
               ))}
             </tbody>
           </table>
+        </div>
+
+        <div className="grid gap-3 md:hidden">
+          {loading && <p className="border border-[#e6e8e4] bg-white px-4 py-10 text-center text-sm text-[#59615e]">Loading categories...</p>}
+          {!loading && !categories.length && <p className="border border-[#e6e8e4] bg-white px-4 py-10 text-center text-sm text-[#59615e]">No categories found.</p>}
+          {!loading && categories.map((category) => (
+            <article key={category.id} className="border border-[#e6e8e4] bg-white p-4">
+              <div className="flex items-start justify-between gap-3">
+                <h2 className="min-w-0 font-semibold text-[#252a29]">{category.name}</h2>
+                <span className={`shrink-0 rounded-full px-2.5 py-1 text-[11px] font-semibold ${category.status === 'ACTIVE' ? 'bg-[#edf3ef] text-[#35634c]' : 'bg-[#f1f2ef] text-[#59615e]'}`}>{category.status}</span>
+              </div>
+              <p className="mt-2 text-sm text-[#59615e]">{category.description || 'No description'}</p>
+              {canManage && <div className="mt-4 flex gap-2 border-t border-[#eef0ed] pt-3">
+                <button type="button" onClick={() => { setEditingId(category.id); setForm({ name: category.name, description: category.description || '' }); setNotice(''); }} className="inline-flex min-h-10 flex-1 items-center justify-center rounded-md border border-[#dfe3df] px-3 text-sm font-semibold text-[#414846]">Edit</button>
+                <button type="button" onClick={() => handleStatus(category)} className="inline-flex min-h-10 flex-1 items-center justify-center rounded-md bg-[#f1ecfc] px-3 text-sm font-semibold text-[#6132DA]">{category.status === 'ACTIVE' ? 'Deactivate' : 'Activate'}</button>
+              </div>}
+            </article>
+          ))}
         </div>
       </div>
     </main>

@@ -122,7 +122,7 @@ function BookingListPage() {
 
   return (
     <main className="min-h-screen bg-[#f8f9f6] px-4 py-7 text-[#252a29] sm:px-6 lg:px-8">
-      <div className="mx-auto max-w-[1440px]">
+      <div className="mx-auto max-w-[1600px]">
         <header className="mb-6 flex flex-wrap items-end justify-between gap-4 border-b border-[#e8eae7] pb-5">
           <div>
             <h1 className="text-3xl font-semibold text-[#252a29]">Bookings</h1>

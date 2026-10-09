@@ -183,15 +183,15 @@ function CustomerListPage() {
 
   return (
     <>
-    <div className="min-h-full bg-[#f8f9f6] px-4 py-7 text-[#252a29] sm:px-6 lg:px-8">
-      <div className="mx-auto max-w-[1440px]">
+    <div className="min-h-full bg-[#f8f9f6] px-4 py-5 text-[#252a29] sm:px-6 sm:py-7 lg:px-8">
+      <div className="mx-auto max-w-[1600px]">
         <div className="mb-6 flex flex-col gap-4 border-b border-[#e8eae7] pb-5 sm:flex-row sm:items-center sm:justify-between">
           <div>
             <h1 className="text-3xl font-semibold text-[#252a29]">Customers</h1>
             <p className="mt-1 text-sm text-[#747b78]">Manage client relationships, bridal booking history, sizing profiles, and security deposits.</p>
           </div>
-          <div className="flex shrink-0 items-center gap-2">
-            <Link to="/customers/drafts" className="inline-flex min-h-10 items-center gap-2 rounded-md border border-[#dfe3df] bg-white px-3.5 text-xs font-medium text-[#414846] transition hover:bg-[#f8f9f6]">
+          <div className="flex w-full flex-wrap gap-2 sm:w-auto sm:shrink-0">
+            <Link to="/customers/drafts" className="inline-flex min-h-10 flex-1 items-center justify-center gap-2 rounded-md border border-[#dfe3df] bg-white px-3.5 text-xs font-medium text-[#414846] transition hover:bg-[#f8f9f6] sm:flex-none">
               <FileText size={15} />
               Drafts
             </Link>
@@ -199,12 +199,12 @@ function CustomerListPage() {
               type="button"
               onClick={handleExport}
               disabled={isExporting}
-              className="inline-flex min-h-10 items-center gap-2 rounded-md bg-[#f1f2ef] px-3.5 text-xs font-medium text-[#414846] transition hover:bg-[#e8eae7] focus:outline-none focus:ring-4 focus:ring-[#6132DA]/15 disabled:cursor-not-allowed disabled:opacity-60"
+              className="inline-flex min-h-10 flex-1 items-center justify-center gap-2 rounded-md bg-[#f1f2ef] px-3.5 text-xs font-medium text-[#414846] transition hover:bg-[#e8eae7] focus:outline-none focus:ring-4 focus:ring-[#6132DA]/15 disabled:cursor-not-allowed disabled:opacity-60 sm:flex-none"
             >
               <Download size={15} />
               {isExporting ? 'Exporting...' : 'Export CSV'}
             </button>
-            <Link to="/customers/new" className="inline-flex min-h-10 items-center gap-2 rounded-md bg-[#6132DA] px-3.5 text-xs font-semibold text-white transition hover:bg-[#4D25B5] focus:outline-none focus:ring-4 focus:ring-[#6132DA]/20">
+            <Link to="/customers/new" className="inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-md bg-[#6132DA] px-3.5 text-xs font-semibold text-white transition hover:bg-[#4D25B5] focus:outline-none focus:ring-4 focus:ring-[#6132DA]/20 sm:min-h-10 sm:w-auto">
               <UserRoundPlus size={15} />
               Add Customer
             </Link>
@@ -212,14 +212,14 @@ function CustomerListPage() {
         </div>
 
         <div className="mb-5 flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
-          <div role="group" aria-label="Quick customer filters" className="flex flex-wrap items-center gap-2">
+          <div role="group" aria-label="Quick customer filters" className="flex max-w-full items-center gap-2 overflow-x-auto pb-1">
             {customerQuickFilters.map((filter) => (
               <button
                 key={filter.id}
                 type="button"
                 aria-pressed={quickFilter === filter.id}
                 onClick={() => handleQuickFilterChange(filter.id)}
-                className={`inline-flex min-h-10 items-center gap-2 rounded-md px-3.5 text-xs font-semibold transition focus:outline-none focus:ring-4 focus:ring-[#6132DA]/15 ${quickFilter === filter.id ? 'bg-[#6132DA] text-white' : 'bg-[#f1f2ef] text-[#414846] hover:bg-[#e8eae7]'}`}
+                className={`inline-flex min-h-10 shrink-0 items-center gap-2 rounded-md px-3.5 text-xs font-semibold transition focus:outline-none focus:ring-4 focus:ring-[#6132DA]/15 ${quickFilter === filter.id ? 'bg-[#6132DA] text-white' : 'bg-[#f1f2ef] text-[#414846] hover:bg-[#e8eae7]'}`}
               >
                 {filter.label}
                 <span className={`tabular-nums ${quickFilter === filter.id ? 'text-white/75' : 'text-[#8b928e]'}`}>
@@ -247,7 +247,7 @@ function CustomerListPage() {
 
         {error && <div role="alert" className="mb-4 border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-800">{error}</div>}
 
-        <div className="overflow-hidden border border-[#e6e8e4] bg-white">
+        <div className="hidden overflow-hidden border border-[#e6e8e4] bg-white md:block">
           <div className="overflow-x-auto">
             <table className="min-w-full divide-y divide-[#e8eae7] text-left text-sm">
               <thead className="bg-[#f8f9f6] text-[#747b78]">
@@ -316,10 +316,33 @@ function CustomerListPage() {
           </div>
         </div>
 
+        <div className="grid gap-3 md:hidden">
+          {loading && <p className="border border-[#e6e8e4] bg-white px-4 py-10 text-center text-sm text-[#59615e]">Loading customers...</p>}
+          {!loading && customers.length === 0 && <p className="border border-[#e6e8e4] bg-white px-4 py-10 text-center text-sm text-[#59615e]">No customers found for this shop.</p>}
+          {!loading && customers.map((customer) => (
+            <article key={customer.id} className="border border-[#e6e8e4] bg-white p-4">
+              <div className="flex items-start justify-between gap-3">
+                <Link to={`/customers/${customer.id}`} className="min-w-0 text-base font-semibold text-[#252a29] hover:text-[#6132DA]">{customer.firstName} {customer.lastName}</Link>
+                <span className={`shrink-0 rounded-full px-2.5 py-1 text-[11px] font-semibold ${customer.status === 'ACTIVE' ? 'bg-[#edf3ef] text-[#4f7965]' : 'bg-[#f1f2ef] text-[#747b78]'}`}>{customer.status}</span>
+              </div>
+              <div className="mt-4 space-y-2 border-y border-[#eef0ed] py-3 text-sm">
+                <p><span className="inline-block w-16 text-xs text-[#747b78]">Phone</span><span className="text-[#414846]">{customer.phone || '—'}</span></p>
+                <p className="break-all"><span className="inline-block w-16 text-xs text-[#747b78]">Email</span><span className="text-[#414846]">{customer.email || '—'}</span></p>
+                <p><span className="inline-block w-16 text-xs text-[#747b78]">Added</span><span className="text-[#414846]">{formatDate(customer.createdAt)}</span></p>
+              </div>
+              <div className="mt-3 flex gap-2">
+                <Link to={`/customers/${customer.id}`} className="inline-flex min-h-10 flex-1 items-center justify-center rounded-md border border-[#dfe3df] px-3 text-sm font-semibold text-[#414846]">View profile</Link>
+                <Link to={`/customers/${customer.id}/edit`} className="inline-flex min-h-10 flex-1 items-center justify-center rounded-md bg-[#f1ecfc] px-3 text-sm font-semibold text-[#6132DA]">Edit</Link>
+                {canToggleStatus && <button type="button" onClick={(event) => handleStatusToggle(event, customer)} className="inline-flex min-h-10 items-center justify-center rounded-md border border-[#dfe3df] px-3 text-xs font-medium text-[#414846]">{customer.status === 'ACTIVE' ? 'Deactivate' : 'Activate'}</button>}
+              </div>
+            </article>
+          ))}
+        </div>
+
         <div className="mt-5 flex flex-col gap-4 border-t border-[#e8eae7] pt-4 sm:flex-row sm:items-center sm:justify-between">
           <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-xs">
             <p className="text-[#414846]">Showing <span className="font-semibold text-[#252a29]">{firstRecord} to {lastRecord}</span> of <span className="font-semibold text-[#252a29]">{pagination.totalItems || 0}</span> customers</p>
-            <label htmlFor="customer-page-size" className="inline-flex items-center gap-2 text-[#747b78]">
+            <label htmlFor="customer-page-size" className="hidden items-center gap-2 text-[#747b78] sm:inline-flex">
               Rows per page
               <select
                 id="customer-page-size"

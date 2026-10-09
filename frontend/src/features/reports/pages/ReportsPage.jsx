@@ -135,7 +135,7 @@ function ReportsPage() {
   }
 
   return (
-    <div className="mx-auto max-w-[1440px] space-y-6 px-4 py-7 text-[#252a29] sm:px-6 sm:py-9 lg:px-10">
+    <div className="mx-auto max-w-[1600px] space-y-6 px-4 py-5 text-[#252a29] sm:px-6 sm:py-7 lg:px-8 xl:px-10 2xl:px-12">
       <header className="flex flex-wrap items-end justify-between gap-4 border-b border-[#e6e8e4] pb-5"><div><p className="text-xs font-semibold uppercase tracking-[0.16em] text-[#8060D9]">Business intelligence</p><h1 className="mt-1 text-3xl font-semibold">Reports</h1><p className="mt-2 text-sm text-[#59615e]">Tenant-scoped summaries from existing bookings, payments, inventory and returns.</p></div><BarChart3 size={21} className="text-[#6132DA]" /></header>
       <section aria-label="Report date range" className="flex flex-col gap-3 sm:flex-row sm:items-end">
         <div><label htmlFor="report-start" className="mb-1.5 block text-xs font-semibold text-[#414846]">Start date</label><input id="report-start" type="date" value={startDate} max={endDate || undefined} onChange={(event) => setStartDate(event.target.value)} className="min-h-10 w-full border border-[#dfe3df] bg-white px-3 text-sm" /></div>

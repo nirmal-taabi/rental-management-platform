@@ -60,6 +60,7 @@ body {
   margin: 0;
   min-width: 320px;
   min-height: 100vh;
+  overflow-x: hidden;
 }
 
 * {
@@ -69,6 +70,20 @@ body {
 button,
 input {
   font: inherit;
+}
+
+@media (max-width: 639px) {
+  main h1,
+  .min-h-full h1 {
+    font-size: 1.5rem !important;
+    line-height: 2rem !important;
+  }
+
+  input,
+  select,
+  textarea {
+    font-size: 16px;
+  }
 }
 
 [class~="text-[#747b78]"] {

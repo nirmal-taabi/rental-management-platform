@@ -129,7 +129,7 @@ function InventoryListPage() {
 
   return (
     <main className="min-h-full bg-[#f8f9f6] px-4 py-7 text-[#252a29] sm:px-6 lg:px-8">
-      <div className="mx-auto max-w-[1440px]">
+      <div className="mx-auto max-w-[1600px]">
         <header className="mb-6 flex flex-wrap items-end justify-between gap-4 border-b border-[#e8eae7] pb-5"><div><h1 className="text-3xl font-semibold text-[#252a29]">Inventory</h1><p className="mt-1 text-sm text-[#59615e]">Manage individual rental pieces and their operational status.</p></div>{canManage && <Link to="/inventory/new" className="inline-flex min-h-10 items-center gap-2 rounded-md bg-[#6132DA] px-4 text-sm font-semibold text-white transition hover:bg-[#4D25B5]"><span aria-hidden="true">+</span> Add inventory</Link>}</header>
 
         <section aria-label="Inventory summary" className="mb-5 grid grid-cols-2 gap-px border border-[#e6e8e4] bg-[#e6e8e4] sm:grid-cols-3 lg:grid-cols-6">{summaryCards.map((card) => <div key={card.key} className="bg-white px-4 py-4"><p className="text-xs font-semibold uppercase tracking-wide text-[#59615e]">{card.label}</p><p className="mt-1 text-2xl font-semibold tabular-nums text-[#252a29]">{summary[card.key] ?? 0}</p></div>)}</section>

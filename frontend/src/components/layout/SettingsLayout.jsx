@@ -12,7 +12,7 @@ function SettingsLayout() {
 
   return (
     <div className="min-h-full bg-[#f8f9f6]">
-      <div className="mx-auto max-w-[1200px] px-4 pt-6 sm:px-6 lg:px-8">
+      <div className="mx-auto max-w-[1600px] px-4 pt-5 sm:px-6 sm:pt-6 lg:px-8 xl:px-10 2xl:px-12">
         <header className="mb-5">
           <h1 className="text-2xl font-semibold text-[#252a29]">Settings</h1>
         </header>

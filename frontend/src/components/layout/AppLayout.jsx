@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { Link, NavLink, Outlet, useNavigate } from 'react-router-dom';
+import { Link, NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import brandLogo from '../../assets/TrackinHubLogo.png';
 import {
@@ -11,6 +11,8 @@ import {
   CreditCard,
   LayoutDashboard,
   LogOut,
+  CircleUserRound,
+  Home,
   Package,
   Plus,
   RotateCcw,
@@ -50,6 +52,7 @@ const navigationGroups = [
 
 function AppLayout({ children }) {
   const navigate = useNavigate();
+  const location = useLocation();
   const { user, shop, roles, availableShops, switchShop, clearSession } = useAuth();
   const canCreateShop = roles.some((role) => ['OWNER', 'ADMIN'].includes(String(role).toUpperCase()));
   const [isShopMenuOpen, setIsShopMenuOpen] = useState(false);
@@ -105,7 +108,7 @@ function AppLayout({ children }) {
 
   return (
     <div className="min-h-screen bg-[#f8f9f6] text-[#252a29]">
-      <aside className="fixed inset-y-0 left-0 z-50 flex w-16 flex-col border-r border-[#e6e8e4] bg-white md:w-[250px]">
+      <aside className="fixed inset-y-0 left-0 z-50 hidden w-[250px] flex-col border-r border-[#e6e8e4] bg-white md:flex">
         <Link to="/dashboard" className="flex h-[72px] shrink-0 items-center justify-center border-b border-[#e6e8e4] bg-white px-2 md:justify-start md:px-5">
           <img src={brandLogo} alt="TrackinHub logo" className="h-9 w-auto max-w-[150px] object-contain" />
         </Link>
@@ -208,11 +211,18 @@ function AppLayout({ children }) {
         </nav>
       </aside>
 
-      <header className="fixed left-16 right-0 top-0 z-40 h-[72px] border-b border-[#e6e8e4] bg-white md:left-[250px]">
-        <div className="flex h-full items-center justify-end gap-3 px-3 sm:px-5">
+      <header className="fixed left-0 right-0 top-0 z-40 h-14 border-b border-[#e6e8e4] bg-white md:left-[250px] md:h-[72px]">
+        <div className="flex h-full items-center justify-between gap-3 px-4 sm:px-5">
+          <Link to="/dashboard" className="inline-flex min-w-0 items-center gap-2 md:hidden">
+            <img src={brandLogo} alt="TrackinHub" className="h-8 w-auto max-w-[128px] object-contain" />
+            <span className="max-w-[120px] truncate border-l border-[#e6e8e4] pl-2 text-xs font-medium text-[#59615e]">{shop?.name || 'Workspace'}</span>
+          </Link>
           <div className="flex shrink-0 items-center gap-2 sm:gap-3">
-            <span className="grid size-8 place-items-center rounded-full bg-[#f8f9f6] text-[10px] font-bold text-[#6132DA]">{initials || 'R'}</span>
-            <div className="hidden sm:block">
+            <Link to="/profile" aria-label="Open profile and settings" className="grid size-9 place-items-center rounded-full bg-[#f1ecfc] text-xs font-bold text-[#6132DA] md:size-8">
+              <span className="md:hidden">{initials || 'R'}</span>
+              <span className="hidden md:inline"><CircleUserRound size={17} /></span>
+            </Link>
+            <div className="hidden md:block">
               <p className="max-w-36 truncate text-[11px] font-semibold text-[#252a29]">{userName}</p>
               <p className="max-w-36 truncate text-[10px] text-[#747b78]">{roles.join(', ') || 'OWNER'}</p>
             </div>
@@ -221,7 +231,7 @@ function AppLayout({ children }) {
               onClick={handleLogout}
               aria-label="Sign out"
               title="Sign out"
-              className="grid size-8 place-items-center rounded-sm text-[#6132DA] transition hover:bg-[#f8f9f6] hover:text-[#4D25B5] focus:outline-none focus:ring-2 focus:ring-[#6132DA]/20"
+              className="hidden size-8 place-items-center rounded-sm text-[#6132DA] transition hover:bg-[#f8f9f6] hover:text-[#4D25B5] focus:outline-none focus:ring-2 focus:ring-[#6132DA]/20 md:grid"
             >
               <LogOut size={16} />
             </button>
@@ -229,9 +239,33 @@ function AppLayout({ children }) {
         </div>
       </header>
 
-      <div className="min-h-screen pl-16 pt-[72px] md:pl-[250px] [&>main]:min-h-[calc(100vh-72px)]">
+      <div className="min-h-screen pb-[calc(5rem+env(safe-area-inset-bottom))] pt-14 md:pb-0 md:pl-[250px] md:pt-[72px] [&>main]:min-h-[calc(100vh-3.5rem)] md:[&>main]:min-h-[calc(100vh-72px)]">
         {children ?? <Outlet />}
       </div>
+      <nav aria-label="Primary mobile navigation" className="fixed inset-x-0 bottom-0 z-[70] grid grid-cols-3 border-t border-[#e6e8e4] bg-white/95 px-2 pt-2 pb-[calc(0.5rem+env(safe-area-inset-bottom))] shadow-[0_-8px_24px_rgba(37,42,41,0.08)] backdrop-blur md:hidden">
+        {[
+          { label: 'Dashboard', to: '/dashboard', icon: Home, end: true },
+          { label: 'Bookings', to: '/bookings', icon: CalendarDays },
+          { label: 'Profile', to: '/profile', icon: CircleUserRound },
+        ].map(({ label, to, icon: Icon, end }) => (
+          <NavLink
+            key={to}
+            to={to}
+            end={end}
+            aria-label={label}
+            className={({ isActive }) => `flex min-h-12 flex-col items-center justify-center gap-1 rounded-xl text-[11px] font-semibold transition ${isActive || (label === 'Profile' && (location.pathname.startsWith('/settings') || location.pathname === '/change-password')) ? 'text-[#6132DA]' : 'text-[#747b78]'}`}
+          >
+            {({ isActive }) => (
+              <>
+                <span className={`grid size-8 place-items-center rounded-xl ${isActive || (label === 'Profile' && (location.pathname.startsWith('/settings') || location.pathname === '/change-password')) ? 'bg-[#f1ecfc]' : ''}`}>
+                  <Icon size={19} strokeWidth={2} />
+                </span>
+                {label}
+              </>
+            )}
+          </NavLink>
+        ))}
+      </nav>
     </div>
   );
 }

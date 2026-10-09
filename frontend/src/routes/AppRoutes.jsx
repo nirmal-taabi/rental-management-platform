@@ -38,6 +38,7 @@ import TeamManagementPage from '../features/shops/pages/TeamManagementPage';
 import ChangePasswordPage from '../features/auth/pages/ChangePasswordPage';
 import ForgotPasswordPage from '../features/auth/pages/ForgotPasswordPage';
 import ResetPasswordPage from '../features/auth/pages/ResetPasswordPage';
+import ProfilePage from '../features/auth/pages/ProfilePage';
 
 function AppRoutes() {
   return (
@@ -60,6 +61,7 @@ function AppRoutes() {
       </Route>
       <Route element={<ProtectedRoute><AppLayout /></ProtectedRoute>}>
         <Route path="/dashboard" element={<DashboardPage />} />
+        <Route path="/profile" element={<ProfilePage />} />
         <Route path="/reports" element={<ReportsPage />} />
         <Route path="/customers" element={<CustomerListPage />} />
         <Route path="/customers/drafts" element={<CustomerDraftsPage />} />
