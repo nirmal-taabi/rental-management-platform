@@ -4,7 +4,12 @@ import { hashPassword, comparePassword } from '../utils/password.js';
 import { signToken, buildAuthCookie } from '../utils/jwt.js';
 import { createShop, generateShopSlug } from '../repositories/shop.repository.js';
 import { createUser, findUserByEmail, findUserById, getSafeUserSummary } from '../repositories/user.repository.js';
-import { createRole, findRoleByShopAndSlug, assignRoleToUser } from '../repositories/role.repository.js';
+import {
+  createRole,
+  findRoleByShopAndSlug,
+  assignRoleToUser,
+  findPlatformRolesForUser,
+} from '../repositories/role.repository.js';
 import { createShopMembership } from '../repositories/userShopMembership.repository.js';
 import { getActiveShopForUser, getShopMembershipsForUser } from './shop.service.js';
 import { CONFLICT, UNAUTHORIZED } from '../constants/httpStatus.js';
@@ -134,7 +139,8 @@ export const loginUser = async ({ email, password }) => {
     throw new AppError('No active shop is available for this account.', UNAUTHORIZED, INVALID_CREDENTIALS);
   }
 
-  const roles = [shop.role];
+  const [platformRoles] = await Promise.all([findPlatformRolesForUser(user.id)]);
+  const roles = [...new Set([shop.role, ...platformRoles])];
   const token = signToken({ id: user.id });
 
   return {
@@ -161,11 +167,12 @@ export const getAuthenticatedUserProfile = async (userId, shopId) => {
     throw new AppError('User not found.', UNAUTHORIZED, 'AUTHENTICATION_ERROR');
   }
 
-  const [shop, shops] = await Promise.all([
+  const [shop, shops, platformRoles] = await Promise.all([
     getActiveShopForUser(existingUser.id, shopId),
     getShopMembershipsForUser(existingUser.id),
+    findPlatformRolesForUser(existingUser.id),
   ]);
-  const roles = [shop.role];
+  const roles = [...new Set([shop.role, ...platformRoles])];
 
   return {
     user: {

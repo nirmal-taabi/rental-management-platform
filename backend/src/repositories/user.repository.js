@@ -40,4 +40,5 @@ export const getSafeUserSummary = (user) => ({
   phone: user.phone,
   status: user.status,
   isOwner: Boolean(user.is_owner),
+  passwordResetRequired: Boolean(user.password_reset_required),
 });

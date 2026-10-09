@@ -52,6 +52,7 @@ CREATE TABLE IF NOT EXISTS users (
     email VARCHAR(150) NOT NULL,
     phone VARCHAR(30) NULL,
     password_hash VARCHAR(255) NOT NULL,
+    password_reset_required SMALLINT NOT NULL DEFAULT 0,
     status VARCHAR(20) NOT NULL DEFAULT 'pending'
         CHECK (status IN ('active', 'inactive', 'pending', 'locked')),
     is_owner SMALLINT NOT NULL DEFAULT 0,
@@ -121,6 +122,19 @@ CREATE INDEX IF NOT EXISTS idx_user_shop_memberships_shop_status
     ON user_shop_memberships (shop_id, status);
 CREATE TRIGGER trg_user_shop_memberships_updated_at BEFORE UPDATE ON user_shop_memberships
     FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
+
+-- ─── platform roles ──────────────────────────────────────────
+-- Platform roles are separate from tenant-specific shop memberships.
+CREATE TABLE IF NOT EXISTS platform_user_roles (
+    user_id BIGINT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    role VARCHAR(32) NOT NULL CHECK (role IN ('SUPER_ADMIN')),
+    granted_by_user_id BIGINT NOT NULL REFERENCES users(id) ON DELETE RESTRICT,
+    reason VARCHAR(500) NOT NULL,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (user_id, role)
+);
+CREATE INDEX IF NOT EXISTS idx_platform_user_roles_role
+    ON platform_user_roles (role);
 
 -- ─── customers ───────────────────────────────────────────────
 CREATE TABLE IF NOT EXISTS customers (

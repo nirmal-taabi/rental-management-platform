@@ -1,5 +1,5 @@
 {
-  "name": "rental-management-backend",
+  "name": "trackinhub-backend",
   "version": "0.1.0",
   "main": "src/server.js",
   "type": "module",

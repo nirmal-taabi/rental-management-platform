@@ -5,4 +5,5 @@ export const authService = {
   login: async (payload) => apiClient.post('/auth/login', payload),
   logout: async () => apiClient.post('/auth/logout'),
   getCurrentUser: async () => apiClient.get('/auth/me'),
+  changePassword: async (payload) => apiClient.post('/auth/change-password', payload),
 };

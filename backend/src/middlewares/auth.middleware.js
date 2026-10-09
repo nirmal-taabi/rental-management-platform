@@ -7,6 +7,7 @@ import {
   findActiveShopMembership,
   findDefaultShopMembership,
 } from '../repositories/userShopMembership.repository.js';
+import { findPlatformRolesForUser } from '../repositories/role.repository.js';
 
 const getMembershipForRequest = async (req, userId, tokenShopId) => {
   const requestedShopId = req.get('X-Shop-Id')?.trim();
@@ -37,7 +38,10 @@ export const authMiddleware = async (req, res, next) => {
       throw new AppError('Account is inactive.', UNAUTHORIZED, 'INACTIVE_USER');
     }
 
-    const membership = await getMembershipForRequest(req, user.id, payload.shopId);
+    const [membership, platformRoles] = await Promise.all([
+      getMembershipForRequest(req, user.id, payload.shopId),
+      findPlatformRolesForUser(user.id),
+    ]);
     if (!membership) {
       throw new AppError('You do not have access to this shop.', FORBIDDEN, 'SHOP_ACCESS_DENIED');
     }
@@ -49,7 +53,9 @@ export const authMiddleware = async (req, res, next) => {
       shopId,
       email: user.email,
       roles: [role],
+      platformRoles,
       shopRole: role,
+      passwordResetRequired: Boolean(user.password_reset_required),
     };
     req.tenant = { shopId, role };
     req.shop = {
@@ -62,6 +68,20 @@ export const authMiddleware = async (req, res, next) => {
       city: membership.city,
       state: membership.state,
     };
+
+    const passwordResetAllowedPaths = [
+      '/api/v1/auth/me',
+      '/api/v1/auth/logout',
+      '/api/v1/auth/change-password',
+    ];
+    const requestPath = req.originalUrl.split('?')[0];
+    if (req.user.passwordResetRequired && !passwordResetAllowedPaths.includes(requestPath)) {
+      throw new AppError(
+        'Change your temporary password before using the workspace.',
+        FORBIDDEN,
+        'PASSWORD_CHANGE_REQUIRED',
+      );
+    }
 
     return next();
   } catch (error) {

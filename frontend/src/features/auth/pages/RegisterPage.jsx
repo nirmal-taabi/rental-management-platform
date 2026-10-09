@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { ArrowRight, Shirt, Store } from 'lucide-react';
+import { ArrowRight, Store } from 'lucide-react';
 import { authService } from '../services/auth.service';
 import { locationService } from '../services/location.service';
+import AuthImagePanel from '../components/AuthImagePanel';
 
 const initialForm = {
   owner: {
@@ -171,34 +172,7 @@ function RegisterPage() {
   return (
     <main className="min-h-screen bg-white md:h-screen md:overflow-hidden">
       <section className="grid min-h-screen w-full overflow-hidden bg-white md:h-screen md:min-h-0 md:grid-cols-2">
-        <aside className="relative order-2 isolate flex min-h-[280px] flex-col justify-between overflow-hidden bg-[#30184D] px-7 py-7 text-white sm:px-10 sm:py-9 md:order-1 md:h-screen md:min-h-0 md:px-12 md:py-11">
-          <img
-            src="https://images.unsplash.com/photo-1490481651871-ab68de25d43d?auto=format&fit=crop&w=1800&q=85"
-            alt="Carefully selected garments in a fashion boutique"
-            className="absolute inset-0 -z-20 h-full w-full object-cover object-center"
-          />
-          <div className="absolute inset-0 -z-10 bg-[linear-gradient(160deg,rgba(27,16,40,0.74)_0%,rgba(67,34,105,0.28)_48%,rgba(32,19,50,0.72)_100%)]" />
-
-          <div className="flex items-center gap-3">
-            <span className="grid size-10 place-items-center border border-white/35 bg-white/10 backdrop-blur-sm"><Shirt size={19} strokeWidth={1.7} /></span>
-            <div>
-              <p className="text-sm font-semibold">TrackinHub</p>
-              <p className="mt-0.5 text-[11px] uppercase tracking-[0.16em] text-white/70">Clothing, in good company</p>
-            </div>
-          </div>
-
-          <div className="max-w-lg py-12 md:py-0">
-            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-white/75">A considered way to rent</p>
-            <h2 className="mt-4 max-w-md text-3xl font-semibold leading-tight sm:text-4xl lg:text-5xl">Make room for every occasion.</h2>
-            <p className="mt-4 max-w-sm text-sm leading-6 text-white/80">Bring your rental shop and its next chapter together.</p>
-          </div>
-
-          <div className="flex items-center justify-between gap-4 text-xs text-white/70">
-            <span>Made for rental wardrobes</span>
-            <span className="h-px w-16 bg-white/50" />
-            <span>India</span>
-          </div>
-        </aside>
+        <AuthImagePanel />
 
         <section className="order-1 flex min-w-0 items-start justify-center px-6 py-10 sm:px-10 md:order-2 md:h-screen md:min-h-0 md:overflow-y-auto md:overscroll-contain md:px-12 md:py-12 lg:px-16">
           <div className="w-full max-w-[560px]">
@@ -295,7 +269,7 @@ function RegisterPage() {
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-full bg-[#6132DA] px-5 text-sm font-semibold text-white transition hover:bg-[#4D25B5] focus:outline-none focus:ring-4 focus:ring-[#6132DA]/20 disabled:cursor-not-allowed disabled:opacity-60"
+                className="inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-full !bg-[#6132DA] px-5 text-sm font-semibold !text-white transition hover:!bg-[#4D25B5] focus:outline-none focus:ring-4 focus:ring-[#6132DA]/20 disabled:cursor-not-allowed disabled:opacity-60"
               >
                 {isSubmitting ? 'Creating account...' : 'Register shop'}
                 {!isSubmitting && <ArrowRight size={16} />}

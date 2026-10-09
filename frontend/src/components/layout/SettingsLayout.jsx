@@ -1,12 +1,15 @@
 import { NavLink, Outlet } from 'react-router-dom';
-import { Store, Tags } from 'lucide-react';
-
-const settingsTabs = [
-  { label: 'Categories', to: '/settings/categories', icon: Tags },
-  { label: 'Shops & Branches', to: '/settings/shops', icon: Store },
-];
+import { Store, Tags, Users } from 'lucide-react';
+import { useAuth } from '../../features/auth/context/AuthContext';
 
 function SettingsLayout() {
+  const { shop } = useAuth();
+  const settingsTabs = [
+    { label: 'Categories', to: '/settings/categories', icon: Tags },
+    { label: 'Shops & Branches', to: '/settings/shops', icon: Store },
+    ...(shop?.role === 'OWNER' ? [{ label: 'Team members', to: '/settings/team', icon: Users }] : []),
+  ];
+
   return (
     <div className="min-h-full bg-[#f8f9f6]">
       <div className="mx-auto max-w-[1200px] px-4 pt-6 sm:px-6 lg:px-8">

@@ -29,6 +29,14 @@ export const findRolesForUser = async (userId, shopId, connection = pool) => {
   return rows.map((row) => row.name);
 };
 
+export const findPlatformRolesForUser = async (userId, connection = pool) => {
+  const [rows] = await connection.query(
+    'SELECT role FROM platform_user_roles WHERE user_id = ? ORDER BY role',
+    [userId],
+  );
+  return rows.map((row) => row.role);
+};
+
 export const assignRoleToUser = async (shopId, userId, roleId, connection = pool) => {
   // PostgreSQL: ON CONFLICT DO UPDATE instead of ON DUPLICATE KEY UPDATE
   await connection.query(

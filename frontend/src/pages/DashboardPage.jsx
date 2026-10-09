@@ -49,7 +49,7 @@ const formatChange = (comparison) => {
 function Metric({ label, value, detail, icon: Icon, to }) {
   const content = (
     <>
-      <span className="grid size-9 shrink-0 place-items-center bg-[#f8f9f6] text-[#6132DA]"><Icon size={17} /></span>
+      <span className="grid size-10 shrink-0 place-items-center bg-[#f1f2ef] text-[#6132DA]"><Icon size={17} /></span>
       <span className="min-w-0 flex-1">
         <span className="block text-xs font-medium text-[#59615e]">{label}</span>
         <span className="mt-1 block text-2xl font-semibold tabular-nums text-[#252a29]">{value ?? '—'}</span>
@@ -59,7 +59,7 @@ function Metric({ label, value, detail, icon: Icon, to }) {
     </>
   );
   return to
-    ? <Link to={to} className="flex min-h-28 items-start gap-3 border border-[#e6e8e4] bg-white p-4 transition hover:border-[#D8CCF5]">{content}</Link>
+    ? <Link to={to} className="flex min-h-28 items-start gap-3 border border-[#e6e8e4] bg-white p-4 transition hover:border-[#D8CCF5] hover:bg-[#fdfcff]">{content}</Link>
     : <div className="flex min-h-28 items-start gap-3 border border-[#e6e8e4] bg-white p-4">{content}</div>;
 }
 
@@ -177,21 +177,24 @@ function DashboardPage() {
   const today = dateInBusinessZone();
 
   return (
-    <div className="mx-auto max-w-[1440px] space-y-7 px-4 py-7 text-[#252a29] sm:px-6 sm:py-9 lg:px-10">
-      <header className="flex flex-col gap-4 border-b border-[#e6e8e4] pb-5 sm:flex-row sm:items-end sm:justify-between">
-        <div><p className="text-xs font-semibold uppercase tracking-[0.16em] text-[#8060D9]">{shop?.name || 'Rental workspace'}</p><h1 className="mt-1 text-3xl font-semibold">Operations dashboard</h1><p className="mt-2 text-sm text-[#59615e]">Today is {formatDate(today)}. Signed in as {user?.name || 'Team member'}.</p></div>
-        <Link to="/reports" className="inline-flex min-h-10 items-center justify-center gap-2 border border-[#dfe3df] bg-white px-3 text-sm font-semibold text-[#414846] hover:border-[#6132DA]"><Activity size={16} /> Reports</Link>
+    <main className="min-h-full bg-[#f8f9f6] px-4 py-7 text-[#252a29] sm:px-6 lg:px-8">
+      <div className="mx-auto max-w-[1200px] space-y-5">
+      <header className="flex flex-wrap items-end justify-between gap-4 border-b border-[#e8eae7] pb-5">
+        <div><p className="text-xs font-bold uppercase tracking-[0.14em] text-[#8060D9]">{shop?.name || 'Rental workspace'}</p><h1 className="mt-1 text-3xl font-semibold">Operations dashboard</h1><p className="mt-1 text-sm text-[#59615e]">Today is {formatDate(today)}. Signed in as {user?.name || 'Team member'}.</p></div>
+        <Link to="/reports" className="inline-flex min-h-10 items-center justify-center gap-2 rounded-md border border-[#dfe3df] bg-white px-4 text-sm font-semibold text-[#414846] transition hover:border-[#6132DA] hover:text-[#6132DA]"><Activity size={16} /> Reports</Link>
       </header>
 
-      <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
-        <div>
+      <div className="flex flex-col gap-4 border border-[#e6e8e4] bg-white p-4 sm:p-5 xl:flex-row xl:items-end xl:justify-between">
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-end">
+          <div>
           <label htmlFor="dashboard-range" className="mb-1.5 block text-xs font-semibold text-[#414846]">Reporting period</label>
-          <select id="dashboard-range" value={preset} onChange={(event) => setPreset(event.target.value)} className="min-h-10 min-w-48 border border-[#dfe3df] bg-white px-3 text-sm text-[#252a29]">
+          <select id="dashboard-range" value={preset} onChange={(event) => setPreset(event.target.value)} className="min-h-10 min-w-48 rounded-md border border-[#dfe3df] bg-white px-3 text-sm text-[#252a29] outline-none transition focus:border-[#7046E8] focus:ring-2 focus:ring-[#7046E8]/10">
             <option value="today">Today</option><option value="yesterday">Yesterday</option><option value="week">This week</option><option value="month">This month</option><option value="lastMonth">Last month</option><option value="last30">Last 30 days</option><option value="custom">Custom range</option>
           </select>
+          </div>
+          {preset === 'custom' && <div className="grid gap-3 sm:grid-cols-2"><div><label htmlFor="dashboard-start" className="mb-1.5 block text-xs font-semibold text-[#414846]">Start date</label><input id="dashboard-start" type="date" value={customStart} max={customEnd || undefined} onChange={(event) => setCustomStart(event.target.value)} className="min-h-10 w-full rounded-md border border-[#dfe3df] bg-white px-3 text-sm outline-none transition focus:border-[#7046E8] focus:ring-2 focus:ring-[#7046E8]/10" /></div><div><label htmlFor="dashboard-end" className="mb-1.5 block text-xs font-semibold text-[#414846]">End date</label><input id="dashboard-end" type="date" value={customEnd} min={customStart || undefined} onChange={(event) => setCustomEnd(event.target.value)} className="min-h-10 w-full rounded-md border border-[#dfe3df] bg-white px-3 text-sm outline-none transition focus:border-[#7046E8] focus:ring-2 focus:ring-[#7046E8]/10" /></div></div>}
         </div>
-        {preset === 'custom' && <div className="grid gap-3 sm:grid-cols-2"><div><label htmlFor="dashboard-start" className="mb-1.5 block text-xs font-semibold text-[#414846]">Start date</label><input id="dashboard-start" type="date" value={customStart} max={customEnd || undefined} onChange={(event) => setCustomStart(event.target.value)} className="min-h-10 w-full border border-[#dfe3df] bg-white px-3 text-sm" /></div><div><label htmlFor="dashboard-end" className="mb-1.5 block text-xs font-semibold text-[#414846]">End date</label><input id="dashboard-end" type="date" value={customEnd} min={customStart || undefined} onChange={(event) => setCustomEnd(event.target.value)} className="min-h-10 w-full border border-[#dfe3df] bg-white px-3 text-sm" /></div></div>}
-        <nav aria-label="Quick actions" className="flex flex-wrap gap-2">{quickLinks.map(({ label, to, icon: Icon }) => <Link key={to} to={to} className="inline-flex min-h-9 items-center gap-2 border border-[#dfe3df] bg-white px-3 text-xs font-semibold text-[#414846] hover:border-[#6132DA]"><Icon size={14} />{label}</Link>)}</nav>
+        <nav aria-label="Quick actions" className="flex flex-wrap gap-2">{quickLinks.map(({ label, to, icon: Icon }, index) => <Link key={to} to={to} className={`inline-flex min-h-9 items-center gap-2 rounded-md px-3 text-xs font-semibold transition focus:outline-none focus:ring-2 focus:ring-[#6132DA]/20 ${index === 0 ? 'bg-[#6132DA] text-white hover:bg-[#4D25B5]' : 'border border-[#dfe3df] bg-white text-[#414846] hover:border-[#6132DA] hover:text-[#6132DA]'}`}><Icon size={14} />{label}</Link>)}</nav>
       </div>
       {preset === 'custom' && !readyForRange && <p role="status" className="text-sm text-[#59615e]">Choose both dates to load the dashboard.</p>}
 
@@ -204,15 +207,17 @@ function DashboardPage() {
         {canViewFinancials && <Metric label="Outstanding balance" value={formatMoney(summary.payments?.outstanding)} detail={formatChange(summary.comparison?.outstanding)} icon={CreditCard} to="/payments" />}
       </section>
 
-      <section>
-        <div className="mb-3 flex items-end justify-between gap-3"><div><h2 className="text-lg font-semibold">Today’s operations</h2><p className="mt-1 text-sm text-[#59615e]">Pickup and return workload, with the next seven days in view.</p></div><Link to="/bookings" className="text-xs font-semibold text-[#6132DA] underline underline-offset-2">All bookings</Link></div>
+      <Section title="Today’s operations" description="Pickup and return workload, with the next seven days in view." loading={loading.operations} error={errors.operations} onRetry={retry}>
         <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
           <Metric label="Pickups today" value={operations.counts?.pickups_today} icon={CalendarDays} to="/bookings?status=TODAY" />
           <Metric label="Returns due today" value={operations.counts?.returns_today} icon={RotateCcw} to="/bookings?status=ACTIVE" />
           <Metric label="Active rentals" value={operations.counts?.active_rentals} icon={Activity} to="/bookings?status=ACTIVE" />
           <Metric label="Overdue returns" value={operations.counts?.overdue_returns} icon={Clock3} to="/bookings?status=ACTIVE" />
         </div>
-      </section>
+        <div className="mt-4 flex justify-end">
+          <Link to="/bookings" className="text-xs font-semibold text-[#6132DA] underline underline-offset-2">All bookings</Link>
+        </div>
+      </Section>
 
       <section className="grid gap-5 xl:grid-cols-2">
         <Section title="Upcoming pickups" description="Next seven days" loading={loading.operations} error={errors.operations} onRetry={retry}>
@@ -250,7 +255,8 @@ function DashboardPage() {
       <Section title="Recent activity" description="Latest audit events for this shop" loading={loading.activity} error={errors.activity} onRetry={retry}>
         {data.activity?.length ? <ol className="grid gap-3 sm:grid-cols-2">{data.activity.map((event, index) => <li key={`${event.entity_type}-${event.entity_id}-${event.created_at}-${index}`} className="flex items-start gap-3 border-b border-[#eef0ed] pb-3"><Activity size={15} className="mt-0.5 shrink-0 text-[#8060D9]" /><span className="min-w-0"><span className="block text-sm font-medium">{String(event.action).replaceAll('_', ' ')}</span><span className="mt-1 block text-xs text-[#59615e]">{event.entity_type} #{event.entity_id} · {new Date(event.created_at).toLocaleString('en-IN')}</span></span></li>)}</ol> : <p className="text-sm text-[#59615e]">No recorded activity yet.</p>}
       </Section>
-    </div>
+      </div>
+    </main>
   );
 }
 

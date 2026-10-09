@@ -3,6 +3,9 @@ export default {
   content: ['./index.html', './src/**/*.{js,jsx}'],
   theme: {
     extend: {
+      fontFamily: {
+        sans: ['General Sans', 'system-ui', 'sans-serif'],
+      },
       textColor: {
         gray: { 300: '#4b5563', 400: '#4b5563', 500: '#4b5563' },
         slate: { 300: '#475569', 400: '#475569', 500: '#475569' },

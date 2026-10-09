@@ -1,5 +1,13 @@
-const CACHE_NAME = 'rental-management-platform-v1';
-const APP_SHELL = ['/', '/index.html', '/manifest.webmanifest'];
+const CACHE_NAME = 'rental-management-platform-v2';
+const APP_SHELL = [
+  '/',
+  '/index.html',
+  '/manifest.webmanifest',
+  '/fonts/general-sans-400.woff2',
+  '/fonts/general-sans-500.woff2',
+  '/fonts/general-sans-600.woff2',
+  '/fonts/general-sans-700.woff2',
+];
 const isApiRequest = (request) => {
   const url = new URL(request.url);
   return (

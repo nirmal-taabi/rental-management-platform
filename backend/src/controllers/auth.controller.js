@@ -3,6 +3,7 @@ import { clearAuthCookie } from '../utils/jwt.js';
 import { sendSuccess } from '../utils/apiResponse.js';
 import { registerOwner, loginUser, getAuthenticatedUserProfile } from '../services/auth.service.js';
 import { validateRegisterInput, validateLoginInput } from '../validators/auth.validator.js';
+import { changeOwnPassword } from '../services/team.service.js';
 import { BAD_REQUEST, OK, CREATED } from '../constants/httpStatus.js';
 
 export const register = async (req, res, next) => {
@@ -54,4 +55,17 @@ export const logout = (req, res) => {
   res.clearCookie(cookie.name, cookie.options);
 
   return sendSuccess(res, 'Logged out successfully.', {}, OK);
+};
+
+export const changePassword = async (req, res, next) => {
+  try {
+    const result = await changeOwnPassword(
+      req.user.id,
+      req.body,
+      req.user.passwordResetRequired,
+    );
+    return sendSuccess(res, 'Password updated successfully.', result, OK);
+  } catch (error) {
+    return next(error);
+  }
 };

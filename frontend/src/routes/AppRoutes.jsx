@@ -28,6 +28,14 @@ import SettingsLayout from '../components/layout/SettingsLayout';
 import ProtectedRoute from './ProtectedRoute';
 import NotFoundPage from '../pages/NotFoundPage';
 import AppLayout from '../components/layout/AppLayout';
+import SuperAdminRoute from './SuperAdminRoute';
+import AdminLayout from '../features/admin/components/AdminLayout';
+import AdminOverviewPage from '../features/admin/pages/AdminOverviewPage';
+import AdminListPage from '../features/admin/pages/AdminListPage';
+import AdminShopDetailsPage from '../features/admin/pages/AdminShopDetailsPage';
+import AdminReportsPage from '../features/admin/pages/AdminReportsPage';
+import TeamManagementPage from '../features/shops/pages/TeamManagementPage';
+import ChangePasswordPage from '../features/auth/pages/ChangePasswordPage';
 
 function AppRoutes() {
   return (
@@ -35,6 +43,17 @@ function AppRoutes() {
       <Route path="/" element={<Navigate to="/auth/login" replace />} />
       <Route path="/auth/login" element={<LoginPage />} />
       <Route path="/auth/register" element={<RegisterPage />} />
+      <Route path="/change-password" element={<ProtectedRoute><ChangePasswordPage /></ProtectedRoute>} />
+      <Route path="/admin" element={<SuperAdminRoute><AdminLayout /></SuperAdminRoute>}>
+        <Route index element={<Navigate to="overview" replace />} />
+        <Route path="overview" element={<AdminOverviewPage />} />
+        <Route path="shops" element={<AdminListPage resource="shops" />} />
+        <Route path="shops/:shopId" element={<AdminShopDetailsPage />} />
+        <Route path="users" element={<AdminListPage resource="users" />} />
+        <Route path="customers" element={<AdminListPage resource="customers" />} />
+        <Route path="bookings" element={<AdminListPage resource="bookings" />} />
+        <Route path="reports" element={<AdminReportsPage />} />
+      </Route>
       <Route element={<ProtectedRoute><AppLayout /></ProtectedRoute>}>
         <Route path="/dashboard" element={<DashboardPage />} />
         <Route path="/reports" element={<ReportsPage />} />
@@ -51,6 +70,7 @@ function AppRoutes() {
           <Route index element={<Navigate to="categories" replace />} />
           <Route path="categories" element={<CategoryManagementPage />} />
           <Route path="shops" element={<ShopManagementPage />} />
+          <Route path="team" element={<TeamManagementPage />} />
         </Route>
         <Route path="/inventory" element={<InventoryListPage />} />
         <Route path="/inventory/new" element={<InventoryFormPage />} />

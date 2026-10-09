@@ -8,10 +8,16 @@ export const authorizeRoles = (...allowedRoles) => (req, res, next) => {
   }
 
   const userRoles = Array.isArray(req.user.roles) ? req.user.roles : [];
+  const platformRoles = Array.isArray(req.user.platformRoles) ? req.user.platformRoles : [];
   const normalizedUserRoles = userRoles.map((role) => String(role).toUpperCase());
+  const normalizedPlatformRoles = platformRoles.map((role) => String(role).toUpperCase());
   const normalizedAllowedRoles = allowedRoles.map((role) => String(role).toUpperCase());
 
-  const hasAccess = normalizedAllowedRoles.some((role) => normalizedUserRoles.includes(role));
+  const hasAccess = normalizedAllowedRoles.some((role) => (
+    role === 'SUPER_ADMIN'
+      ? normalizedPlatformRoles.includes(role)
+      : normalizedUserRoles.includes(role)
+  ));
   if (!hasAccess) {
     return next(new AppError('You do not have permission to perform this action.', FORBIDDEN, AUTHORIZATION_ERROR));
   }

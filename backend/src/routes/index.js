@@ -15,6 +15,8 @@ import returnRoutes from './return.routes.js';
 import locationRoutes from './location.routes.js';
 import dashboardRoutes from './dashboard.routes.js';
 import reportRoutes from './report.routes.js';
+import adminRoutes from './admin.routes.js';
+import teamRoutes from './team.routes.js';
 
 const router = express.Router();
 
@@ -34,5 +36,7 @@ router.use('/returns', returnRoutes);
 router.use('/locations', locationRoutes);
 router.use('/dashboard', dashboardRoutes);
 router.use('/reports', reportRoutes);
+router.use('/admin', adminRoutes);
+router.use('/team', teamRoutes);
 
 export default router;
