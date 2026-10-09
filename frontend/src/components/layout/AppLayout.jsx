@@ -217,7 +217,7 @@ function AppLayout({ children }) {
             <img src={brandLogo} alt="TrackinHub" className="h-8 w-auto max-w-[128px] object-contain" />
             <span className="max-w-[120px] truncate border-l border-[#e6e8e4] pl-2 text-xs font-medium text-[#59615e]">{shop?.name || 'Workspace'}</span>
           </Link>
-          <div className="flex shrink-0 items-center gap-2 sm:gap-3">
+          <div className="ml-auto flex shrink-0 items-center gap-2 sm:gap-3">
             <Link to="/profile" aria-label="Open profile and settings" className="grid size-9 place-items-center rounded-full bg-[#f1ecfc] text-xs font-bold text-[#6132DA] md:size-8">
               <span className="md:hidden">{initials || 'R'}</span>
               <span className="hidden md:inline"><CircleUserRound size={17} /></span>
