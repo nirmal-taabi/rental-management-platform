@@ -68,7 +68,7 @@ app.use(requestLogger);
 app.get('/', (req, res) => {
   res.json({
     success: true,
-    message: 'Welcome to the Nirmal Rentals API',
+    message: 'Welcome to the TrackinHub API',
   });
 });
 

@@ -3,7 +3,7 @@
 
 INSERT INTO shops (id, name, slug, legal_name, email, phone, address_line1, city, state, postal_code, country, gst_number, currency_code, timezone, status)
 VALUES
-    (1, 'Nirmal Rentals', 'nirmal-rentals', 'Nirmal Rentals Private Limited', 'hello@nirmalrentals.in', '+91-98765-43210', '12 Market Road', 'Delhi', 'Delhi', '110001', 'India', '07ABCDE1234F1Z5', 'INR', 'Asia/Kolkata', 'active')
+    (1, 'TrackinHub', 'trackinhub', 'TrackinHub', 'hello@trackinhub.com', '+91-98765-43210', '12 Market Road', 'Delhi', 'Delhi', '110001', 'India', '07ABCDE1234F1Z5', 'INR', 'Asia/Kolkata', 'active')
 ON DUPLICATE KEY UPDATE
     name = VALUES(name),
     legal_name = VALUES(legal_name),
@@ -28,9 +28,9 @@ ON DUPLICATE KEY UPDATE
 
 INSERT INTO users (id, shop_id, first_name, last_name, email, phone, password_hash, status, is_owner)
 VALUES
-    (1, 1, 'Nirmal', 'Owner', 'owner@nirmalrentals.in', '+91-99999-00001', '$2b$10$replace.with.bcrypt.hash', 'active', 1),
-    (2, 1, 'Aditi', 'Manager', 'manager@nirmalrentals.in', '+91-99999-00002', '$2b$10$replace.with.bcrypt.hash', 'active', 0),
-    (3, 1, 'Rohit', 'Staff', 'staff@nirmalrentals.in', '+91-99999-00003', '$2b$10$replace.with.bcrypt.hash', 'active', 0)
+    (1, 1, 'Nirmal', 'Owner', 'owner@trackinhub.com', '+91-99999-00001', '$2b$10$replace.with.bcrypt.hash', 'active', 1),
+    (2, 1, 'Aditi', 'Manager', 'manager@trackinhub.com', '+91-99999-00002', '$2b$10$replace.with.bcrypt.hash', 'active', 0),
+    (3, 1, 'Rohit', 'Staff', 'staff@trackinhub.com', '+91-99999-00003', '$2b$10$replace.with.bcrypt.hash', 'active', 0)
 ON DUPLICATE KEY UPDATE
     first_name = VALUES(first_name),
     last_name = VALUES(last_name),
@@ -71,9 +71,9 @@ ON DUPLICATE KEY UPDATE
 
 INSERT INTO products (id, shop_id, category_id, sku, name, slug, brand, description, product_type, daily_rental_rate, weekly_rental_rate, monthly_rental_rate, security_deposit, status)
 VALUES
-    (1, 1, 2, 'DS-001', 'Royal Silk Saree', 'royal-silk-saree', 'Nirmal Studio', 'Premium silk saree for wedding events', 'garment', 1200.00, 7000.00, 25000.00, 5000.00, 'active'),
-    (2, 1, 1, 'WW-010', 'Floral Bridal Lehenga', 'floral-bridal-lehenga', 'Nirmal Studio', 'Wedding lehenga with festive styling', 'garment', 1800.00, 9800.00, 32000.00, 9000.00, 'active'),
-    (3, 1, 3, 'AC-120', 'Pearl Jewelry Set', 'pearl-jewelry-set', 'Nirmal Studio', 'Pearl accessory set for occasions', 'accessory', 450.00, 2300.00, 6500.00, 2000.00, 'active')
+    (1, 1, 2, 'DS-001', 'Royal Silk Saree', 'royal-silk-saree', 'TrackinHub Studio', 'Premium silk saree for wedding events', 'garment', 1200.00, 7000.00, 25000.00, 5000.00, 'active'),
+    (2, 1, 1, 'WW-010', 'Floral Bridal Lehenga', 'floral-bridal-lehenga', 'TrackinHub Studio', 'Wedding lehenga with festive styling', 'garment', 1800.00, 9800.00, 32000.00, 9000.00, 'active'),
+    (3, 1, 3, 'AC-120', 'Pearl Jewelry Set', 'pearl-jewelry-set', 'TrackinHub Studio', 'Pearl accessory set for occasions', 'accessory', 450.00, 2300.00, 6500.00, 2000.00, 'active')
 ON DUPLICATE KEY UPDATE
     name = VALUES(name),
     brand = VALUES(brand),

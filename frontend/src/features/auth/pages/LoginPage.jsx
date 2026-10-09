@@ -134,7 +134,7 @@ function LoginPage() {
             </form>
 
             <p className="mt-7 text-center text-sm text-[#717875]">New to the platform? <Link to="/auth/register" className="font-semibold text-[#6132DA] underline decoration-[#D8CCF5] underline-offset-4 hover:text-[#43209B]">Register your shop</Link></p>
-            <p className="mt-12 text-center text-[11px] text-[#a1a6a2]">© {new Date().getFullYear()} Nirmal Rentals</p>
+            <p className="mt-12 text-center text-[11px] text-[#a1a6a2]">© {new Date().getFullYear()} TrackinHub</p>
           </div>
         </section>
       </section>
