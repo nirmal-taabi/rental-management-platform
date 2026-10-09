@@ -36,6 +36,8 @@ import AdminShopDetailsPage from '../features/admin/pages/AdminShopDetailsPage';
 import AdminReportsPage from '../features/admin/pages/AdminReportsPage';
 import TeamManagementPage from '../features/shops/pages/TeamManagementPage';
 import ChangePasswordPage from '../features/auth/pages/ChangePasswordPage';
+import ForgotPasswordPage from '../features/auth/pages/ForgotPasswordPage';
+import ResetPasswordPage from '../features/auth/pages/ResetPasswordPage';
 
 function AppRoutes() {
   return (
@@ -43,6 +45,8 @@ function AppRoutes() {
       <Route path="/" element={<Navigate to="/auth/login" replace />} />
       <Route path="/auth/login" element={<LoginPage />} />
       <Route path="/auth/register" element={<RegisterPage />} />
+      <Route path="/auth/forgot-password" element={<ForgotPasswordPage />} />
+      <Route path="/auth/reset-password" element={<ResetPasswordPage />} />
       <Route path="/change-password" element={<ProtectedRoute><ChangePasswordPage /></ProtectedRoute>} />
       <Route path="/admin" element={<SuperAdminRoute><AdminLayout /></SuperAdminRoute>}>
         <Route index element={<Navigate to="overview" replace />} />

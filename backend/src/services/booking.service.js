@@ -18,7 +18,7 @@ import {
 } from '../repositories/booking.repository.js';
 import { findAvailabilityConflicts, findAvailabilityInventoryItems } from '../repositories/availability.repository.js';
 import { calculateBookingPricing } from './bookingPricing.service.js';
-import { canTransitionBookingStatus } from './bookingStatus.service.js';
+import { canManuallyTransitionBookingStatus } from './bookingStatus.service.js';
 import { getAvailabilitySearchRange, isBusinessDate } from '../utils/availabilityDate.js';
 import { validateBookingInput, validateBookingStatus } from '../validators/booking.validator.js';
 
@@ -277,6 +277,9 @@ export const changeBookingStatusForShop = async (shopId, bookingId, nextStatus, 
   }
   const id = parseBookingId(bookingId);
   const status = String(nextStatus).toUpperCase();
+  if (status === 'COMPLETED') {
+    throw new AppError('Complete this booking by recording the return of all its physical items.', CONFLICT, 'BOOKING_RETURN_REQUIRED');
+  }
   const connection = await pool.getConnection();
   let transactionStarted = false;
   try {
@@ -291,7 +294,7 @@ export const changeBookingStatusForShop = async (shopId, bookingId, nextStatus, 
       throw new AppError('This booking changed during the status update. Reload it and try again.', CONFLICT, 'BOOKING_CHANGED_RETRY');
     }
     const currentStatus = String(previous.status).toUpperCase();
-    if (!canTransitionBookingStatus(currentStatus, status)) {
+    if (!canManuallyTransitionBookingStatus(currentStatus, status)) {
       throw new AppError(`Cannot transition booking from ${currentStatus} to ${status}.`, CONFLICT, 'BOOKING_STATUS_TRANSITION_INVALID');
     }
     if (status === 'ACTIVE' && !previous.picked_up_at) {

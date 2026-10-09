@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
-import { ArrowLeft, CalendarDays, ChevronDown, Clock3, Pencil, Phone, UserRound } from 'lucide-react';
+import { ArrowLeft, CalendarDays, Check, Clock3, Pencil, Phone, UserRound } from 'lucide-react';
 import { useAuth } from '../../auth/context/AuthContext.jsx';
 import ConfirmationDialog from '../../../components/common/ConfirmationDialog';
 import { paymentService } from '../../payments/services/payment.service';
@@ -9,8 +9,32 @@ import RecordPaymentModal from '../../payments/components/RecordPaymentModal.jsx
 import { returnService } from '../../returns/services/return.service';
 import ReturnStatusBadge from '../../returns/components/ReturnStatusBadge.jsx';
 import BookingStatusBadge from '../components/BookingStatusBadge.jsx';
-import { bookingTransitions } from '../utils/bookingStatus';
+import { bookingStatuses, bookingTransitions } from '../utils/bookingStatus';
 import { bookingService } from '../services/booking.service';
+
+const bookingProgressStatuses = bookingStatuses.filter((status) => status !== 'CANCELLED');
+
+const transitionLabels = {
+  PENDING: 'Submit booking',
+  CONFIRMED: 'Confirm booking',
+  READY: 'Mark ready for pickup',
+  ACTIVE: 'Mark as picked up',
+  COMPLETED: 'Complete booking',
+};
+
+const inventoryStatusTone = (status) => ({
+  AVAILABLE: 'bg-emerald-50 text-emerald-800',
+  RESERVED: 'bg-sky-50 text-sky-800',
+  RENTED: 'bg-violet-50 text-violet-800',
+  RETURNED: 'bg-teal-50 text-teal-800',
+  INSPECTION: 'bg-amber-50 text-amber-800',
+  CLEANING: 'bg-amber-50 text-amber-800',
+  ALTERATION: 'bg-amber-50 text-amber-800',
+  REPAIR: 'bg-orange-50 text-orange-800',
+  DAMAGED: 'bg-rose-50 text-rose-800',
+  LOST: 'bg-rose-50 text-rose-800',
+  RETIRED: 'bg-stone-100 text-stone-700',
+}[String(status || '').toUpperCase()] || 'bg-stone-100 text-stone-700');
 
 const formatDate = (value) => value
   ? new Intl.DateTimeFormat('en-IN', { day: '2-digit', month: 'long', year: 'numeric', timeZone: 'UTC' }).format(new Date(`${value.slice(0, 10)}T00:00:00Z`))
@@ -148,6 +172,8 @@ function BookingDetailsPage() {
   const canEdit = ['DRAFT', 'PENDING', 'CONFIRMED'].includes(booking.status);
   const canCancel = canEdit && roles.some((role) => ['OWNER', 'ADMIN'].includes(String(role).toUpperCase()));
   const availableTransitions = (bookingTransitions[booking.status] || []).filter((status) => status !== 'CANCELLED');
+  const nextStatus = ['READY', 'ACTIVE'].includes(booking.status) ? null : availableTransitions[0];
+  const currentProgressIndex = bookingProgressStatuses.indexOf(booking.status);
   const calendarMonths = getCalendarMonths(booking.rentalStartDate, booking.rentalEndDate);
   const pickupStatus = booking.pickedUpAt ? 'COMPLETED' : booking.status === 'READY' ? 'READY' : 'NOT READY';
   const returnStatus = booking.status === 'COMPLETED' ? 'COMPLETED' : returnHistory.length ? 'PARTIAL' : 'NOT RETURNED';
@@ -169,10 +195,35 @@ function BookingDetailsPage() {
               {canEdit && <Link to={`/bookings/${booking.id}/edit`} className="inline-flex min-h-10 items-center gap-2 rounded-md border border-[#dfe3df] bg-white px-3 text-sm font-semibold text-[#414846] transition hover:border-[#6132DA] hover:text-[#6132DA]"><Pencil size={15} /> Edit</Link>}
               {booking.status === 'READY' && <Link to={`/bookings/${booking.id}/pickup`} className="inline-flex min-h-10 items-center gap-2 rounded-md bg-[#6132DA] px-3 text-sm font-semibold text-white hover:bg-[#4D25B5]">Confirm pickup</Link>}
               {booking.status === 'ACTIVE' && <Link to={`/bookings/${booking.id}/return`} className="inline-flex min-h-10 items-center gap-2 rounded-md bg-[#6132DA] px-3 text-sm font-semibold text-white hover:bg-[#4D25B5]">Process return</Link>}
-              {availableTransitions.length > 0 && <label className="relative"><span className="sr-only">Change booking status</span><select disabled={updating} value="" onChange={(event) => { if (event.target.value) updateStatus(event.target.value); }} className="min-h-10 appearance-none rounded-md border border-[#dfe3df] bg-white py-2 pl-3 pr-9 text-sm font-semibold text-[#414846] outline-none focus:border-[#7046E8] focus:ring-4 focus:ring-[#7046E8]/10"><option value="">Change status</option>{availableTransitions.map((status) => <option key={status} value={status}>{status}</option>)}</select><ChevronDown size={15} className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-[#59615e]" /></label>}
+              {nextStatus && <button type="button" disabled={updating} onClick={() => updateStatus(nextStatus)} className="inline-flex min-h-10 items-center justify-center gap-2 rounded-md bg-[#6132DA] px-4 text-sm font-semibold text-white transition hover:bg-[#4D25B5] disabled:cursor-wait disabled:opacity-60">{updating ? 'Updating...' : transitionLabels[nextStatus] || `Move to ${nextStatus}`}</button>}
               {canCancel && <button type="button" disabled={updating} onClick={() => setCancelConfirmationOpen(true)} className="min-h-10 rounded-md border border-rose-200 bg-white px-3 text-sm font-semibold text-rose-800 hover:bg-rose-50 disabled:opacity-50">Cancel booking</button>}
           </div>
         </header>
+
+        <section aria-label="Booking progress" className="border border-[#e6e8e4] bg-white px-4 py-5 sm:px-6">
+          <div className="mb-4 flex flex-wrap items-center justify-between gap-2">
+            <div>
+              <p className="text-xs font-bold uppercase tracking-[0.14em] text-[#8060D9]">Booking progress</p>
+              <h2 className="mt-1 text-sm font-semibold text-[#252a29]">{booking.status === 'CANCELLED' ? 'This booking was cancelled' : `Current stage: ${booking.status}`}</h2>
+            </div>
+            {booking.status === 'CANCELLED' && <BookingStatusBadge status={booking.status} />}
+          </div>
+          {booking.status !== 'CANCELLED' && <ol className="grid grid-cols-3 gap-y-4 sm:grid-cols-6">
+            {bookingProgressStatuses.map((status, index) => {
+              const isComplete = index < currentProgressIndex;
+              const isCurrent = status === booking.status;
+              return (
+                <li key={status} aria-current={isCurrent ? 'step' : undefined} className="relative flex flex-col items-center px-1 text-center">
+                  {index < bookingProgressStatuses.length - 1 && <span aria-hidden="true" className={`absolute left-1/2 top-4 hidden h-0.5 w-full sm:block ${isComplete ? 'bg-[#6132DA]' : 'bg-[#e6e8e4]'}`} />}
+                  <span className={`relative z-10 grid size-8 place-items-center rounded-full border text-xs font-bold ${isComplete ? 'border-[#6132DA] bg-[#6132DA] text-white' : isCurrent ? 'border-[#6132DA] bg-white text-[#6132DA] ring-4 ring-[#6132DA]/10' : 'border-[#dfe3df] bg-white text-[#747b78]'}`}>
+                    {isComplete ? <Check size={15} aria-hidden="true" /> : index + 1}
+                  </span>
+                  <span className={`mt-2 text-[10px] font-semibold sm:text-xs ${isCurrent ? 'text-[#6132DA]' : isComplete ? 'text-[#414846]' : 'text-[#747b78]'}`}>{status}</span>
+                </li>
+              );
+            })}
+          </ol>}
+        </section>
 
         {error && <div role="alert" className="mb-5 border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-800">{error}</div>}
 
@@ -189,7 +240,7 @@ function BookingDetailsPage() {
 
             <section className="border-y border-stone-300 bg-white">
               <div className="flex items-center justify-between gap-3 border-b border-stone-200 px-5 py-4 sm:px-6"><div><p className="text-xs font-bold uppercase tracking-wide text-[#7956CB]">Physical inventory</p><h2 className="mt-1 text-lg font-semibold">{booking.items?.length || 0} selected pieces</h2></div><span className="text-sm text-stone-500">Date-based availability</span></div>
-              {!booking.items?.length ? <p className="px-5 py-8 text-sm text-stone-500 sm:px-6">No physical items are attached to this booking.</p> : <div className="divide-y divide-stone-200">{booking.items.map((item) => <article key={item.id} className="grid gap-4 px-5 py-5 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-center sm:px-6"><div className="min-w-0"><p className="font-semibold">{item.product?.name}</p><p className="mt-1 font-mono text-xs text-stone-500">{item.product?.sku}</p><div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1 text-sm"><span className="font-mono font-semibold text-[#5522BB]">{item.inventoryItem?.sku || 'Physical item unavailable'}</span><span className="text-stone-500">Size {item.inventoryItem?.size || '—'} · {item.inventoryItem?.color || '—'}</span><span className="text-stone-500">{item.inventoryItem?.condition || '—'}</span></div><p className="mt-2 text-xs text-stone-500">Current inventory status: {item.inventoryItem?.status || 'Unknown'}</p></div><div className="sm:text-right"><p className="font-semibold tabular-nums">{formatMoney(item.totalAmount)}</p><p className="mt-1 text-xs text-stone-500">Rental {formatMoney(item.rentalPrice)} · deposit {formatMoney(item.depositAmount)}</p>{Number(item.discountAmount) > 0 && <p className="mt-1 text-xs text-stone-500">Discount {formatMoney(item.discountAmount)}</p>}</div></article>)}</div>}
+              {!booking.items?.length ? <p className="px-5 py-8 text-sm text-stone-500 sm:px-6">No physical items are attached to this booking.</p> : <div className="divide-y divide-stone-200">{booking.items.map((item) => <article key={item.id} className="grid gap-4 px-5 py-5 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-center sm:px-6"><div className="min-w-0"><div className="flex flex-wrap items-center gap-2"><p className="font-semibold">{item.product?.name}</p><span className={`inline-flex min-h-6 items-center rounded-md px-2 text-[10px] font-bold uppercase tracking-wide ${inventoryStatusTone(item.inventoryItem?.status)}`}>{item.inventoryItem?.status || 'Unknown'}</span></div><p className="mt-1 font-mono text-xs text-stone-500">{item.product?.sku}</p><div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1 text-sm"><span className="font-mono font-semibold text-[#5522BB]">{item.inventoryItem?.sku || 'Physical item unavailable'}</span><span className="text-stone-500">Size {item.inventoryItem?.size || '—'} · {item.inventoryItem?.color || '—'}</span><span className="text-stone-500">{item.inventoryItem?.condition || '—'}</span></div></div><div className="sm:text-right"><p className="font-semibold tabular-nums">{formatMoney(item.totalAmount)}</p><p className="mt-1 text-xs text-stone-500">Rental {formatMoney(item.rentalPrice)} · deposit {formatMoney(item.depositAmount)}</p>{Number(item.discountAmount) > 0 && <p className="mt-1 text-xs text-stone-500">Discount {formatMoney(item.discountAmount)}</p>}</div></article>)}</div>}
             </section>
 
             <section className="border-y border-stone-300 bg-white"><div className="flex flex-wrap items-center justify-between gap-3 border-b border-stone-200 px-5 py-4 sm:px-6"><div><p className="text-xs font-bold uppercase tracking-wide text-[#7956CB]">Return history</p><h2 className="mt-1 text-lg font-semibold">Items received</h2></div><Link to="/returns" className="text-sm font-semibold text-[#5522BB] underline underline-offset-4">All returns</Link></div>{returnHistoryError && <p role="alert" className="m-4 border border-rose-300 bg-rose-50 px-3 py-2 text-sm text-rose-800">{returnHistoryError}</p>}{returnHistoryLoading ? <p className="px-5 py-5 text-sm text-stone-500 sm:px-6">Loading return history...</p> : returnHistory.length ? <div className="divide-y divide-stone-200">{returnHistory.map((entry) => <Link key={entry.id} to={`/returns/${entry.id}`} className="flex flex-wrap items-center justify-between gap-3 px-5 py-3 hover:bg-[#FAF8FF] sm:px-6"><div><p className="font-mono text-sm font-semibold text-[#5522BB]">RT-{String(entry.id).padStart(5, '0')}</p><p className="mt-1 text-xs text-stone-500">{formatDateTime(entry.returnedAt)} · {entry.itemCount || entry.items?.length || 0} item(s)</p></div><div className="flex items-center gap-2"><ReturnStatusBadge status={entry.returnStatus} />{entry.daysLate > 0 && <span className="text-xs text-amber-900">{entry.daysLate}d late</span>}</div></Link>)}</div> : <p className="px-5 py-5 text-sm text-stone-500 sm:px-6">No items have been returned yet.</p>}{booking.status === 'ACTIVE' && <div className="border-t border-stone-200 px-5 py-4 sm:px-6"><Link to={`/bookings/${booking.id}/return`} className="inline-flex min-h-10 items-center bg-[#5522BB] px-4 text-sm font-semibold text-white">Process return</Link></div>}</section>

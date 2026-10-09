@@ -44,7 +44,8 @@ const fieldClassName =
   'mt-1 min-h-11 w-full rounded-md border border-[#dfe3df] bg-white px-3 text-sm text-[#252a29] outline-none transition placeholder:text-[#a1a6a2] focus:border-[#7046E8] focus:ring-2 focus:ring-[#7046E8]/10';
 
 function ShopManagementPage() {
-  const { shop: currentShop, availableShops, refreshShops, reloadSession, switchShop } = useAuth();
+  const { shop: currentShop, availableShops, roles, refreshShops, reloadSession, switchShop } = useAuth();
+  const canCreateShop = roles.some((role) => ['OWNER', 'ADMIN'].includes(String(role).toUpperCase()));
   const [shopForm, setShopForm] = useState(initialShopForm);
   const [editingShop, setEditingShop] = useState(null);
   const [fieldErrors, setFieldErrors] = useState({});
@@ -178,13 +179,15 @@ function ShopManagementPage() {
               Manage the rental shops available to your account.
             </p>
           </div>
-          <button
-            type="button"
-            onClick={openCreateShop}
-            className="inline-flex min-h-10 items-center gap-2 rounded-md bg-[#6132DA] px-4 text-sm font-semibold text-white transition hover:bg-[#4D25B5]"
-          >
-            <Plus size={16} /> Create shop
-          </button>
+          {canCreateShop && (
+            <button
+              type="button"
+              onClick={openCreateShop}
+              className="inline-flex min-h-10 items-center gap-2 rounded-md bg-[#6132DA] px-4 text-sm font-semibold text-white transition hover:bg-[#4D25B5]"
+            >
+              <Plus size={16} /> Create shop
+            </button>
+          )}
         </header>
 
         {error && !isFormOpen && (

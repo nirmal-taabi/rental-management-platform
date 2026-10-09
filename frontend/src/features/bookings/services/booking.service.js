@@ -10,4 +10,5 @@ export const bookingService = {
   checkAvailability: (params) => apiClient.get('/availability', { params }),
   checkBulkAvailability: (payload) => apiClient.post('/availability/check', payload),
   getProductAvailability: (params) => apiClient.get('/availability/products', { params }),
+  getInventoryAvailability: (params) => apiClient.get('/availability/items', { params }),
 };

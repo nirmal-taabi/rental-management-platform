@@ -31,6 +31,25 @@ export const validateProductAvailability = (query = {}) => {
   return errors;
 };
 
+export const validateInventoryAvailability = (query = {}) => {
+  const errors = [];
+  if (!isValidRentalRange(query.startDate, query.endDate)) errors.push({ field: 'dateRange', message: 'Valid startDate and endDate are required, and endDate must not precede startDate.' });
+  if (query.excludeBookingId !== undefined && !isPositiveId(query.excludeBookingId)) errors.push({ field: 'excludeBookingId', message: 'excludeBookingId must be a positive integer.' });
+  if (query.categoryId !== undefined && query.categoryId !== '' && !isPositiveId(query.categoryId)) errors.push({ field: 'categoryId', message: 'categoryId must be a positive integer.' });
+  if (query.search !== undefined && String(query.search).trim().length > 100) errors.push({ field: 'search', message: 'Search must be 100 characters or fewer.' });
+  for (const field of ['size', 'color']) {
+    if (query[field] !== undefined && String(query[field]).trim().length > 50) {
+      errors.push({ field, message: `${field} must be 50 characters or fewer.` });
+    }
+  }
+  for (const field of ['page', 'limit']) {
+    if (query[field] !== undefined && (!isPositiveId(query[field]) || Number(query[field]) > (field === 'page' ? 1000000 : 100))) {
+      errors.push({ field, message: field === 'page' ? 'page must be a positive integer.' : 'limit must be between 1 and 100.' });
+    }
+  }
+  return errors;
+};
+
 export const validateBookingInput = (payload = {}) => {
   const errors = [];
   if (!isPositiveId(payload.customerId)) errors.push({ field: 'customerId', message: 'A valid customer is required.' });

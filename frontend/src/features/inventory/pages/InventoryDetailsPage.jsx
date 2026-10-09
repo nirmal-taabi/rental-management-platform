@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
-import { ArrowLeft, Pencil } from 'lucide-react';
+import { ArrowLeft, Pencil, Plus } from 'lucide-react';
 import { useAuth } from '../../auth/context/AuthContext';
 import InventoryStatusBadge from '../components/InventoryStatusBadge';
 import { inventoryService } from '../services/inventory.service';
@@ -95,7 +95,7 @@ function InventoryDetailsPage() {
         <Link to="/inventory" className="inline-flex items-center gap-2 text-sm font-semibold text-[#6132DA] transition hover:text-[#4D25B5]"><ArrowLeft size={16} /> Inventory</Link>
         <header className="flex flex-col gap-4 border border-[#e6e8e4] bg-white p-5 sm:flex-row sm:items-center sm:justify-between sm:p-6">
           <div><p className="text-xs font-bold uppercase tracking-[0.16em] text-[#8060D9]">Physical item</p><h1 className="mt-1 text-2xl font-semibold text-[#252a29] sm:text-3xl">{item.product.name}</h1><p className="mt-1 font-mono text-sm text-[#414846]">{item.sku}</p></div>
-          <div className="flex flex-wrap items-center gap-2"><InventoryStatusBadge status={item.status} />{roles.some((role) => ['OWNER', 'ADMIN', 'STAFF'].includes(String(role).toUpperCase())) && <Link to={`/inventory/${id}/edit`} className="inline-flex min-h-10 items-center gap-2 rounded-md bg-[#6132DA] px-4 text-sm font-semibold text-white transition hover:bg-[#4D25B5]"><Pencil size={15} /> Edit item</Link>}</div>
+          <div className="flex flex-wrap items-center gap-2"><InventoryStatusBadge status={item.status} />{canManage && <Link to="/inventory/new" className="inline-flex min-h-10 items-center gap-2 rounded-md border border-[#dfe3df] bg-white px-4 text-sm font-semibold text-[#414846] transition hover:border-[#6132DA] hover:text-[#6132DA]"><Plus size={15} /> Add another inventory</Link>}{roles.some((role) => ['OWNER', 'ADMIN', 'STAFF'].includes(String(role).toUpperCase())) && <Link to={`/inventory/${id}/edit`} className="inline-flex min-h-10 items-center gap-2 rounded-md bg-[#6132DA] px-4 text-sm font-semibold text-white transition hover:bg-[#4D25B5]"><Pencil size={15} /> Edit item</Link>}</div>
         </header>
         {error && <div role="alert" className="border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-800">{error}</div>}
 

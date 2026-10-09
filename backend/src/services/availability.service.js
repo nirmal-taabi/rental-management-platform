@@ -7,9 +7,10 @@ import {
   findAvailabilityInventoryItems,
   findEditableBookingForAvailability,
   findAvailabilityProduct,
+  findRentableInventoryForShop,
   findRentableInventoryForProduct,
 } from '../repositories/availability.repository.js';
-import { validateAvailabilityQuery, validateBulkAvailability, validateProductAvailability } from '../validators/booking.validator.js';
+import { validateAvailabilityQuery, validateBulkAvailability, validateInventoryAvailability, validateProductAvailability } from '../validators/booking.validator.js';
 
 const throwValidation = (errors) => {
   if (errors.length) throw new AppError('Invalid availability request.', BAD_REQUEST, 'VALIDATION_ERROR', true, errors);
@@ -108,5 +109,37 @@ export const getProductAvailability = async (shopId, query = {}, connection) => 
       const conflicts = grouped[String(item.id)] || [];
       return { ...mapInventoryItem(item), available: conflicts.length === 0, conflicts };
     }),
+  };
+};
+
+export const getShopInventoryAvailability = async (shopId, query = {}, connection) => {
+  throwValidation(validateInventoryAvailability(query));
+  if (query.excludeBookingId && !await findEditableBookingForAvailability(shopId, Number(query.excludeBookingId), connection)) {
+    throw new AppError('Editable booking not found.', NOT_FOUND, 'BOOKING_NOT_FOUND');
+  }
+  const { rows, totalItems, page, limit } = await findRentableInventoryForShop(shopId, {
+    page: query.page,
+    limit: query.limit,
+    search: String(query.search || '').trim(),
+    categoryId: query.categoryId ? Number(query.categoryId) : null,
+    size: String(query.size || '').trim(),
+    color: String(query.color || '').trim(),
+  }, connection);
+  const conflictRows = await getConflicts(shopId, rows.map((item) => item.id), query.startDate, query.endDate, query.excludeBookingId || null, connection);
+  const grouped = conflictsByItem(conflictRows);
+  const totalPages = Math.max(1, Math.ceil(totalItems / limit));
+  return {
+    items: rows.map((item) => {
+      const conflicts = grouped[String(item.id)] || [];
+      return { ...mapInventoryItem(item), available: conflicts.length === 0, conflicts };
+    }),
+    pagination: {
+      page,
+      limit,
+      totalItems,
+      totalPages,
+      hasNextPage: page < totalPages,
+      hasPreviousPage: page > 1,
+    },
   };
 };

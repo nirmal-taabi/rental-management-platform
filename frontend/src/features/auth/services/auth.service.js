@@ -6,4 +6,6 @@ export const authService = {
   logout: async () => apiClient.post('/auth/logout'),
   getCurrentUser: async () => apiClient.get('/auth/me'),
   changePassword: async (payload) => apiClient.post('/auth/change-password', payload),
+  requestPasswordReset: async (payload) => apiClient.post('/auth/forgot-password', payload),
+  resetPassword: async (payload) => apiClient.post('/auth/reset-password', payload),
 };

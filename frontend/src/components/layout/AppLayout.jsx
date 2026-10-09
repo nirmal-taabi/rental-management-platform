@@ -51,6 +51,7 @@ const navigationGroups = [
 function AppLayout({ children }) {
   const navigate = useNavigate();
   const { user, shop, roles, availableShops, switchShop, clearSession } = useAuth();
+  const canCreateShop = roles.some((role) => ['OWNER', 'ADMIN'].includes(String(role).toUpperCase()));
   const [isShopMenuOpen, setIsShopMenuOpen] = useState(false);
   const shopSwitcherRef = useRef(null);
   const [switchingShopId, setSwitchingShopId] = useState(null);
@@ -159,9 +160,9 @@ function AppLayout({ children }) {
                   })}
                 </div>
                 {shopSwitchError && <p role="alert" className="mx-3 mb-2 border border-rose-200 bg-rose-50 px-2 py-1.5 text-[10px] text-rose-800">{shopSwitchError}</p>}
-                <div className="grid grid-cols-2 gap-1 border-t border-[#e8eae7] p-2">
+                <div className={`grid gap-1 border-t border-[#e8eae7] p-2 ${canCreateShop ? 'grid-cols-2' : 'grid-cols-1'}`}>
                   <Link to="/settings/shops" onClick={() => setIsShopMenuOpen(false)} className="inline-flex min-h-9 items-center justify-center gap-1 rounded-sm px-2 text-[10px] font-semibold text-[#414846] transition hover:bg-[#f8f9f6]"><Settings size={13} /> Manage shops</Link>
-                  <Link to="/settings/shops" onClick={() => setIsShopMenuOpen(false)} className="inline-flex min-h-9 items-center justify-center gap-1 rounded-sm bg-[#6132DA] px-2 text-[10px] font-semibold text-white transition hover:bg-[#4D25B5]"><Plus size={13} /> Create shop</Link>
+                  {canCreateShop && <Link to="/settings/shops" onClick={() => setIsShopMenuOpen(false)} className="inline-flex min-h-9 items-center justify-center gap-1 rounded-sm bg-[#6132DA] px-2 text-[10px] font-semibold text-white transition hover:bg-[#4D25B5]"><Plus size={13} /> Create shop</Link>}
                 </div>
               </div>
             )}

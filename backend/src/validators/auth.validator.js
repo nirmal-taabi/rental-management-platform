@@ -6,16 +6,39 @@ const pushError = (errors, field, message) => {
   errors.push({ field, message });
 };
 
-const validatePassword = (password) => {
-  if (!password || password.length < 8) {
+export const validatePassword = (password) => {
+  if (typeof password !== 'string' || password.length < 8) {
     return 'Password must be at least 8 characters long.';
   }
+  if (Buffer.byteLength(password, 'utf8') > 72) return 'Password must be 72 bytes or fewer.';
 
   if (!/[A-Z]/.test(password) || !/[a-z]/.test(password) || !/[0-9]/.test(password) || !/[^A-Za-z0-9]/.test(password)) {
     return 'Password must include uppercase, lowercase, number, and special character.';
   }
 
   return null;
+};
+
+export const validateForgotPasswordInput = (payload = {}) => {
+  const errors = [];
+  const email = String(payload.email || '').trim();
+  if (!email || email.length > 150 || !EMAIL_REGEX.test(email)) {
+    pushError(errors, 'email', 'A valid email is required.');
+  }
+  return { isValid: errors.length === 0, errors };
+};
+
+export const validateResetPasswordInput = (payload = {}) => {
+  const errors = [];
+  if (!/^[a-f0-9]{64}$/i.test(String(payload.token || ''))) {
+    pushError(errors, 'token', 'A valid password reset link is required.');
+  }
+  const passwordError = validatePassword(String(payload.newPassword || ''));
+  if (passwordError) pushError(errors, 'newPassword', passwordError);
+  if (payload.confirmPassword !== payload.newPassword) {
+    pushError(errors, 'confirmPassword', 'Passwords do not match.');
+  }
+  return { isValid: errors.length === 0, errors };
 };
 
 export const validateRegisterInput = (payload = {}) => {

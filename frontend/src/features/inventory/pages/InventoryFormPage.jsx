@@ -18,6 +18,7 @@ function InventoryFormPage() {
   const canCreate = roles.some((role) => ['OWNER', 'ADMIN'].includes(String(role).toUpperCase()));
   const [form, setForm] = useState(emptyInventory);
   const [product, setProduct] = useState(null);
+  const [skuSuffix, setSkuSuffix] = useState('001');
   const [productSearch, setProductSearch] = useState('');
   const [debouncedSearch, setDebouncedSearch] = useState('');
   const [products, setProducts] = useState([]);
@@ -63,7 +64,8 @@ function InventoryFormPage() {
       return;
     }
     setSaving(true);
-    const payload = { ...form, sku: form.sku.trim(), barcode: form.barcode.trim(), qrCode: form.qrCode.trim(), size: form.size.trim(), color: form.color.trim(), notes: form.notes.trim(), purchaseDate: form.purchaseDate || null };
+    const sku = (isEditing ? form.sku.trim() : `${product.sku}-${skuSuffix.trim()}`).toUpperCase();
+    const payload = { ...form, sku, barcode: form.barcode.trim(), qrCode: form.qrCode.trim(), size: form.size.trim(), color: form.color.trim(), notes: form.notes.trim(), purchaseDate: form.purchaseDate || null };
     try {
       if (isEditing) {
         await inventoryService.updateInventoryItem(id, payload);
@@ -113,12 +115,12 @@ function InventoryFormPage() {
                 {product ? (
                   <div className="flex items-center justify-between gap-3 border border-[#D8CCF5] bg-[#f8f9f6] p-3">
                     <div className="flex min-w-0 items-center gap-3"><div className="h-14 w-14 shrink-0 bg-white">{product.primaryImage && <img crossOrigin="use-credentials" src={resolveImageUrl(product.primaryImage)} alt={product.name} className="h-full w-full object-cover" />}</div><div className="min-w-0"><p className="truncate font-semibold text-[#252a29]">{product.name}</p><p className="font-mono text-sm text-[#414846]">{product.sku}</p><p className="text-xs text-[#59615e]">{product.categoryName || '—'}</p></div></div>
-                    <button type="button" onClick={() => { setProduct(null); setProductSearch(''); setShowProductResults(true); }} className="min-h-9 shrink-0 rounded-md border border-[#dfe3df] bg-white px-3 text-sm font-semibold text-[#414846] transition hover:bg-[#f1f2ef]">Change</button>
+                    <button type="button" onClick={() => { setProduct(null); setSkuSuffix('001'); setProductSearch(''); setShowProductResults(true); }} className="min-h-9 shrink-0 rounded-md border border-[#dfe3df] bg-white px-3 text-sm font-semibold text-[#414846] transition hover:bg-[#f1f2ef]">Change</button>
                   </div>
                 ) : (
                   <>
                     <input id="product-search" role="combobox" aria-expanded={showProductResults} aria-controls="product-options" aria-autocomplete="list" value={productSearch} onFocus={() => setShowProductResults(true)} onChange={(event) => { setProductSearch(event.target.value); setShowProductResults(true); }} placeholder="Search product name or SKU" className={fieldClassName} />
-                    {showProductResults && <div id="product-options" role="listbox" className="absolute z-10 mt-1 max-h-72 w-full overflow-y-auto border border-[#dfe3df] bg-white shadow-lg">{products.map((item) => <button type="button" role="option" aria-selected="false" key={item.id} onClick={() => { setProduct(item); setShowProductResults(false); setProductSearch(''); setError(''); }} className="flex w-full items-center gap-3 border-b border-[#eef0ed] px-3 py-3 text-left transition hover:bg-[#f8f9f6]"><div className="h-12 w-12 shrink-0 bg-[#f1f2ef]">{item.primaryImage && <img crossOrigin="use-credentials" src={resolveImageUrl(item.primaryImage)} alt="" className="h-full w-full object-cover" />}</div><span className="min-w-0"><span className="block truncate font-semibold text-[#252a29]">{item.name}</span><span className="font-mono text-xs text-[#414846]">{item.sku}</span><span className="ml-2 text-xs text-[#59615e]">{item.categoryName || ''}</span></span></button>)}{!products.length && <p className="px-4 py-6 text-center text-sm text-[#59615e]">No active products found.</p>}</div>}
+                    {showProductResults && <div id="product-options" role="listbox" className="absolute z-10 mt-1 max-h-72 w-full overflow-y-auto border border-[#dfe3df] bg-white shadow-lg">{products.map((item) => <button type="button" role="option" aria-selected="false" key={item.id} onClick={() => { setProduct(item); setSkuSuffix('001'); setShowProductResults(false); setProductSearch(''); setError(''); }} className="flex w-full items-center gap-3 border-b border-[#eef0ed] px-3 py-3 text-left transition hover:bg-[#f8f9f6]"><div className="h-12 w-12 shrink-0 bg-[#f1f2ef]">{item.primaryImage && <img crossOrigin="use-credentials" src={resolveImageUrl(item.primaryImage)} alt="" className="h-full w-full object-cover" />}</div><span className="min-w-0"><span className="block truncate font-semibold text-[#252a29]">{item.name}</span><span className="font-mono text-xs text-[#414846]">{item.sku}</span><span className="ml-2 text-xs text-[#59615e]">{item.categoryName || ''}</span></span></button>)}{!products.length && <p className="px-4 py-6 text-center text-sm text-[#59615e]">No active products found.</p>}</div>}
                   </>
                 )}
               </div>
@@ -128,7 +130,18 @@ function InventoryFormPage() {
           <section className="border border-[#e6e8e4] bg-white p-5 sm:p-6">
             <header className="mb-5 flex items-start gap-3 border-b border-[#e8eae7] pb-4"><span className="grid size-9 shrink-0 place-items-center rounded-sm bg-[#f8f9f6] text-xs font-bold text-[#6132DA]">02</span><div><h2 className="text-base font-semibold text-[#252a29]">Physical item details</h2><p className="mt-1 text-xs text-[#59615e]">Identification, size, condition, and purchase record.</p></div></header>
             <div className="grid gap-5 sm:grid-cols-2">
-              <div><label htmlFor="inventory-sku" className={labelClassName}>Inventory SKU *</label><input id="inventory-sku" value={form.sku} onChange={(event) => setForm({ ...form, sku: event.target.value })} maxLength={80} pattern="[A-Za-z0-9][A-Za-z0-9._-]{1,79}" required className={`${fieldClassName} font-mono`} /><p className="mt-1.5 text-xs text-[#59615e]">Unique in your shop. You can enter your own item code.</p></div>
+              <div>
+                <label htmlFor="inventory-sku" className={labelClassName}>Inventory SKU *</label>
+                {isEditing ? (
+                  <input id="inventory-sku" value={form.sku} onChange={(event) => setForm({ ...form, sku: event.target.value })} maxLength={80} pattern="[A-Za-z0-9][A-Za-z0-9._-]{1,79}" required className={`${fieldClassName} font-mono`} />
+                ) : (
+                  <div className="flex min-h-11 w-full overflow-hidden rounded-md border border-[#dfe3df] bg-white font-mono text-sm focus-within:border-[#7046E8] focus-within:ring-4 focus-within:ring-[#7046E8]/10">
+                    <span className="inline-flex shrink-0 items-center bg-[#f8f9f6] px-3.5 text-[#59615e]">{product ? `${product.sku}-` : 'Select a product-'}</span>
+                    <input id="inventory-sku" aria-label="Inventory SKU suffix" value={skuSuffix} onChange={(event) => setSkuSuffix(event.target.value.toUpperCase().replace(/[^A-Z0-9]/g, ''))} maxLength={Math.max(0, 80 - (product?.sku.length || 0) - 1)} pattern="[A-Z0-9]+" required disabled={!product} className="min-w-0 flex-1 bg-transparent px-3 uppercase outline-none disabled:cursor-not-allowed disabled:bg-[#f8f9f6]" />
+                  </div>
+                )}
+                <p className="mt-1.5 text-xs text-[#59615e]">{isEditing ? 'Unique in your shop. You can edit the item code.' : 'Product SKU is added automatically. Edit the final segment, such as 001 or S.'}</p>
+              </div>
               <div><label htmlFor="inventory-barcode" className={labelClassName}>Barcode</label><input id="inventory-barcode" value={form.barcode} onChange={(event) => setForm({ ...form, barcode: event.target.value })} maxLength={100} className={fieldClassName} /></div>
               <div><label htmlFor="inventory-qr" className={labelClassName}>QR reference</label><input id="inventory-qr" value={form.qrCode} onChange={(event) => setForm({ ...form, qrCode: event.target.value })} maxLength={500} className={fieldClassName} /></div>
               <div><label htmlFor="inventory-size" className={labelClassName}>Size</label><input id="inventory-size" value={form.size} onChange={(event) => setForm({ ...form, size: event.target.value })} maxLength={50} className={fieldClassName} /></div>

@@ -3,7 +3,6 @@ import { Link, useNavigate, useParams } from 'react-router-dom';
 import { ArrowLeft, CalendarDays, Check, LoaderCircle, Plus, Search, Trash2 } from 'lucide-react';
 import { customerService } from '../../customers/services/customer.service';
 import { categoryService } from '../../catalog/services/category.service';
-import { productService } from '../../catalog/services/product.service';
 import { bookingService } from '../services/booking.service';
 
 const localToday = () => {
@@ -38,31 +37,44 @@ function BookingWorkspacePage() {
   const navigate = useNavigate();
   const editing = Boolean(id);
   const [customerSearch, setCustomerSearch] = useState('');
+  const [pieceSearch, setPieceSearch] = useState('');
+  const [debouncedPieceSearch, setDebouncedPieceSearch] = useState('');
   const [customers, setCustomers] = useState([]);
   const [customer, setCustomer] = useState(null);
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
-  const [productSearch, setProductSearch] = useState('');
   const [categories, setCategories] = useState([]);
   const [categoryId, setCategoryId] = useState('');
   const [sizeFilter, setSizeFilter] = useState('');
   const [colorFilter, setColorFilter] = useState('');
-  const [products, setProducts] = useState([]);
-  const [selectedProduct, setSelectedProduct] = useState(null);
   const [availablePieces, setAvailablePieces] = useState([]);
+  const [piecePagination, setPiecePagination] = useState({ page: 1, totalPages: 1, totalItems: 0 });
+  const [piecePage, setPiecePage] = useState(1);
   const [selectedItems, setSelectedItems] = useState([]);
   const [discountAmount, setDiscountAmount] = useState('0.00');
   const [taxAmount, setTaxAmount] = useState('0.00');
   const [notes, setNotes] = useState('');
   const [selectedAvailability, setSelectedAvailability] = useState({});
+  const [completedPieceQueryKey, setCompletedPieceQueryKey] = useState('');
+  const [completedSelectedQueryKey, setCompletedSelectedQueryKey] = useState('');
   const [loadingBooking, setLoadingBooking] = useState(editing);
   const [searchingCustomers, setSearchingCustomers] = useState(false);
-  const [searchingProducts, setSearchingProducts] = useState(false);
-  const [checkingPieces, setCheckingPieces] = useState(false);
-  const [checkingSelected, setCheckingSelected] = useState(false);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState('');
   const [availabilityError, setAvailabilityError] = useState('');
+  const validRentalRange = Boolean(startDate && endDate && endDate >= startDate);
+  const pieceQueryKey = JSON.stringify([
+    debouncedPieceSearch,
+    categoryId,
+    sizeFilter,
+    colorFilter,
+    piecePage,
+    startDate,
+    endDate,
+    editing ? id : null,
+  ]);
+  const checkingPieces = validRentalRange
+    && (pieceSearch.trim() !== debouncedPieceSearch || completedPieceQueryKey !== pieceQueryKey);
 
   useEffect(() => {
     if (!editing) return undefined;
@@ -94,6 +106,11 @@ function BookingWorkspacePage() {
   }, []);
 
   useEffect(() => {
+    const timer = setTimeout(() => setDebouncedPieceSearch(pieceSearch.trim()), 300);
+    return () => clearTimeout(timer);
+  }, [pieceSearch]);
+
+  useEffect(() => {
     if (customer) return undefined;
     let active = true;
     const timer = setTimeout(async () => {
@@ -112,65 +129,67 @@ function BookingWorkspacePage() {
 
   useEffect(() => {
     let active = true;
-    const timer = setTimeout(async () => {
-      if (productSearch.trim().length < 2) {
-        setProducts([]);
-        return;
-      }
-      setSearchingProducts(true);
-      try {
-        const response = await productService.getProducts({ page: 1, limit: 8, search: productSearch.trim(), categoryId: categoryId || undefined, status: 'ACTIVE', sortBy: 'name', sortOrder: 'asc' });
-        if (active) setProducts(response.data.data || []);
-      } catch {
-        if (active) setProducts([]);
-      } finally {
-        if (active) setSearchingProducts(false);
-      }
-    }, 350);
-    return () => { active = false; clearTimeout(timer); };
-  }, [productSearch, categoryId]);
-
-  useEffect(() => {
-    let active = true;
-    if (!selectedProduct || !startDate || !endDate || endDate < startDate) {
-      setAvailablePieces([]);
+    if (!validRentalRange) {
       return undefined;
     }
-    setCheckingPieces(true);
-    setAvailabilityError('');
-    bookingService.getProductAvailability({ productId: selectedProduct.id, startDate, endDate, ...(editing ? { excludeBookingId: id } : {}) })
-      .then((response) => { if (active) setAvailablePieces(response.data.data.items || []); })
+    bookingService.getInventoryAvailability({
+      startDate,
+      endDate,
+      page: piecePage,
+      limit: 50,
+      search: debouncedPieceSearch || undefined,
+      categoryId: categoryId || undefined,
+      size: sizeFilter.trim() || undefined,
+      color: colorFilter.trim() || undefined,
+      ...(editing ? { excludeBookingId: id } : {}),
+    })
+      .then((response) => {
+        if (!active) return;
+        setAvailablePieces(response.data.data.items || []);
+        setPiecePagination(response.data.data.pagination || { page: piecePage, totalPages: 1, totalItems: 0 });
+        setAvailabilityError('');
+        setCompletedPieceQueryKey(pieceQueryKey);
+      })
       .catch((requestError) => {
         if (active) {
           setAvailablePieces([]);
+          setPiecePagination({ page: 1, totalPages: 1, totalItems: 0 });
           setAvailabilityError(requestError.response?.data?.message || 'Unable to check date availability.');
+          setCompletedPieceQueryKey(pieceQueryKey);
         }
-      })
-      .finally(() => { if (active) setCheckingPieces(false); });
+      });
     return () => { active = false; };
-  }, [selectedProduct, startDate, endDate, editing, id]);
+  }, [debouncedPieceSearch, categoryId, sizeFilter, colorFilter, piecePage, startDate, endDate, validRentalRange, editing, id, pieceQueryKey]);
 
-  const selectedIds = selectedItems.map((item) => Number(item.inventoryItemId));
+  const selectedIds = useMemo(
+    () => selectedItems.map((item) => Number(item.inventoryItemId)),
+    [selectedItems],
+  );
+  const selectedQueryKey = JSON.stringify([selectedIds, startDate, endDate, editing ? id : null]);
+  const checkingSelected = selectedItems.length > 0
+    && validRentalRange
+    && completedSelectedQueryKey !== selectedQueryKey;
   useEffect(() => {
     let active = true;
-    if (!selectedItems.length || !startDate || !endDate || endDate < startDate) {
-      setSelectedAvailability({});
-      setCheckingSelected(false);
+    if (!selectedItems.length || !validRentalRange) {
       return undefined;
     }
-    setCheckingSelected(true);
-    setAvailabilityError('');
     bookingService.checkBulkAvailability({ inventoryItemIds: selectedIds, startDate, endDate, ...(editing ? { excludeBookingId: id } : {}) })
       .then((response) => {
         if (!active) return;
         setSelectedAvailability(Object.fromEntries((response.data.data.items || []).map((item) => [String(item.inventoryItemId), item])));
+        setAvailabilityError('');
+        setCompletedSelectedQueryKey(selectedQueryKey);
       })
       .catch((requestError) => {
-        if (active) setAvailabilityError(requestError.response?.data?.message || 'Unable to recheck selected item availability.');
-      })
-      .finally(() => { if (active) setCheckingSelected(false); });
+        if (active) {
+          setSelectedAvailability({});
+          setAvailabilityError(requestError.response?.data?.message || 'Unable to recheck selected item availability.');
+          setCompletedSelectedQueryKey(selectedQueryKey);
+        }
+      });
     return () => { active = false; };
-  }, [selectedItems, startDate, endDate, editing, id]);
+  }, [selectedItems.length, selectedIds, startDate, endDate, validRentalRange, editing, id, selectedQueryKey]);
 
   const days = rentalDays(startDate, endDate);
   const pricing = useMemo(() => {
@@ -278,17 +297,54 @@ function BookingWorkspacePage() {
 
             <section className="border-y border-stone-300 bg-white p-5 sm:p-6">
               <div className="mb-5 flex items-center gap-3"><span className="grid size-8 place-items-center rounded-full bg-[#5522BB] text-sm font-bold text-white">3</span><div><h2 className="font-semibold">Physical pieces</h2><p className="text-sm text-stone-500">Availability is checked for the selected dates.</p></div></div>
-              <div className="grid gap-2 sm:grid-cols-[minmax(0,1fr)_190px]"><label className="relative block"><span className="sr-only">Search products</span><Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-stone-400" /><input value={productSearch} onChange={(event) => { setProductSearch(event.target.value); setSelectedProduct(null); setAvailablePieces([]); }} placeholder="Search product name or SKU" className="min-h-11 w-full border border-stone-300 pl-10 pr-3 text-sm focus:border-[#5522BB] focus:outline-none" /></label><select aria-label="Filter products by category" value={categoryId} onChange={(event) => { setCategoryId(event.target.value); setSelectedProduct(null); setAvailablePieces([]); }} className="min-h-11 border border-stone-300 bg-white px-3 text-sm"><option value="">All categories</option>{categories.map((category) => <option key={category.id} value={category.id}>{category.name}</option>)}</select></div>
-              {searchingProducts && <p className="mt-3 text-sm text-stone-500">Searching catalog...</p>}
-              {!selectedProduct && products.length > 0 && <div className="mt-2 divide-y divide-stone-200 border border-stone-300">{products.map((product) => <button type="button" key={product.id} onClick={() => { setSelectedProduct(product); setProductSearch(product.name); setProducts([]); }} className="flex min-h-14 w-full items-center justify-between gap-4 bg-white px-3 py-2 text-left hover:bg-[#FAF8FF]"><span><span className="block font-semibold">{product.name}</span><span className="mt-1 block font-mono text-xs text-stone-500">{product.sku}</span></span><span className="text-sm text-[#5522BB]">Select</span></button>)}</div>}
-              {!selectedProduct && productSearch.trim().length > 1 && !searchingProducts && products.length === 0 && <p className="mt-3 text-sm text-stone-500">No active products found.</p>}
-              {selectedProduct && <div className="mt-4 border border-stone-300">
-                <div className="flex flex-wrap items-center justify-between gap-3 bg-[#F3F0FA] px-4 py-3"><div><p className="font-semibold">{selectedProduct.name}</p><p className="mt-1 font-mono text-xs text-stone-600">{selectedProduct.sku}</p></div><button type="button" onClick={() => { setSelectedProduct(null); setProductSearch(''); }} className="text-sm font-semibold text-[#5522BB] underline underline-offset-4">Change product</button></div>
-                {!startDate || !endDate ? <p className="px-4 py-5 text-sm text-stone-600">Choose rental dates to check physical pieces.</p> : checkingPieces ? <p className="flex items-center gap-2 px-4 py-5 text-sm text-stone-600"><LoaderCircle size={16} className="animate-spin" /> Checking date availability...</p> : !availablePieces.length ? <p className="px-4 py-5 text-sm text-stone-600">No eligible physical pieces are available for this product.</p> : <><div className="grid gap-2 border-b border-stone-200 bg-[#FAF8FF] p-3 sm:grid-cols-2"><input aria-label="Filter physical pieces by size" value={sizeFilter} onChange={(event) => setSizeFilter(event.target.value)} placeholder="Filter size" className="min-h-9 border border-stone-300 bg-white px-3 text-sm" /><input aria-label="Filter physical pieces by color" value={colorFilter} onChange={(event) => setColorFilter(event.target.value)} placeholder="Filter color" className="min-h-9 border border-stone-300 bg-white px-3 text-sm" /></div>{!filteredPieces.length ? <p className="px-4 py-5 text-sm text-stone-600">No physical pieces match those size or color filters.</p> : <div className="divide-y divide-stone-200">{filteredPieces.map((piece) => {
-                  const alreadySelected = selectedIds.includes(Number(piece.inventoryItemId));
-                  return <div key={piece.inventoryItemId} className="flex flex-wrap items-center justify-between gap-3 px-4 py-3"><div className="min-w-0"><p className="font-mono text-sm font-semibold">{piece.sku}</p><p className="mt-1 text-xs text-stone-500">Size {piece.size || '—'} · {piece.color || '—'} · {piece.condition}</p>{!piece.available && <p className="mt-1 text-xs font-medium text-rose-700">Unavailable for these dates{piece.conflicts?.[0]?.rentalEndDate ? ` · booked through ${piece.conflicts[0].rentalEndDate}` : ''}</p>}</div><button type="button" disabled={!piece.available || alreadySelected} onClick={() => addPiece(piece)} className="inline-flex min-h-9 items-center gap-1 border border-stone-300 px-3 text-sm font-semibold text-[#5522BB] hover:border-[#5522BB] disabled:cursor-not-allowed disabled:opacity-45"><Plus size={15} /> {alreadySelected ? 'Added' : piece.available ? 'Add' : 'Unavailable'}</button></div>;
-                })}</div>}</>}
-              </div>}
+              <div className="grid gap-2 sm:grid-cols-[minmax(0,1fr)_190px]">
+                <label className="relative block">
+                  <span className="sr-only">Search physical pieces</span>
+                  <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-stone-400" />
+                  <input
+                    value={pieceSearch}
+                    onChange={(event) => { setPieceSearch(event.target.value); setPiecePage(1); }}
+                    placeholder="Search product or inventory SKU"
+                    className="min-h-11 w-full border border-stone-300 pl-10 pr-3 text-sm focus:border-[#5522BB] focus:outline-none"
+                  />
+                </label>
+                <select aria-label="Filter physical pieces by category" value={categoryId} onChange={(event) => { setCategoryId(event.target.value); setPiecePage(1); }} className="min-h-11 border border-stone-300 bg-white px-3 text-sm">
+                  <option value="">All categories</option>{categories.map((category) => <option key={category.id} value={category.id}>{category.name}</option>)}
+                </select>
+              </div>
+              <div className="mt-3 grid gap-2 border border-stone-200 bg-[#FAF8FF] p-3 sm:grid-cols-2">
+                <input aria-label="Filter physical pieces by size" value={sizeFilter} onChange={(event) => { setSizeFilter(event.target.value); setPiecePage(1); }} placeholder="Filter size" className="min-h-9 border border-stone-300 bg-white px-3 text-sm" />
+                <input aria-label="Filter physical pieces by color" value={colorFilter} onChange={(event) => { setColorFilter(event.target.value); setPiecePage(1); }} placeholder="Filter color" className="min-h-9 border border-stone-300 bg-white px-3 text-sm" />
+              </div>
+              <div className="mt-3 border border-stone-300">
+                {!startDate || !endDate || endDate < startDate
+                  ? <p className="px-4 py-5 text-sm text-stone-600">Choose valid rental dates to display available physical pieces.</p>
+                  : checkingPieces
+                    ? <p className="flex items-center gap-2 px-4 py-5 text-sm text-stone-600"><LoaderCircle size={16} className="animate-spin" /> Loading physical pieces and checking date availability...</p>
+                    : !availablePieces.length
+                      ? <p className="px-4 py-5 text-sm text-stone-600">{debouncedPieceSearch || categoryId ? 'No physical pieces match your search and filters.' : 'No eligible physical pieces found.'}</p>
+                      : !filteredPieces.length
+                        ? <p className="px-4 py-5 text-sm text-stone-600">No physical pieces match those size or color filters.</p>
+                        : <div className="divide-y divide-stone-200">{filteredPieces.map((piece) => {
+                          const alreadySelected = selectedIds.includes(Number(piece.inventoryItemId));
+                          return <div key={piece.inventoryItemId} className="flex flex-wrap items-center justify-between gap-3 px-4 py-3">
+                            <div className="min-w-0">
+                              <p className="font-semibold">{piece.productName}</p>
+                              <p className="mt-1 font-mono text-xs text-stone-500">{piece.sku} · {piece.productSku}</p>
+                              <p className="mt-1 text-xs text-stone-500">Size {piece.size || '—'} · {piece.color || '—'} · {piece.condition}</p>
+                              {!piece.available && <p className="mt-1 text-xs font-medium text-rose-700">Unavailable for these dates{piece.conflicts?.[0]?.rentalEndDate ? ` · booked through ${piece.conflicts[0].rentalEndDate}` : ''}</p>}
+                            </div>
+                            <button type="button" disabled={!piece.available || alreadySelected} onClick={() => addPiece(piece)} className="inline-flex min-h-9 items-center gap-1 border border-stone-300 px-3 text-sm font-semibold text-[#5522BB] hover:border-[#5522BB] disabled:cursor-not-allowed disabled:opacity-45"><Plus size={15} /> {alreadySelected ? 'Added' : piece.available ? 'Add' : 'Unavailable'}</button>
+                          </div>;
+                        })}</div>}
+                {startDate && endDate && piecePagination.totalItems > 0 && <footer className="flex flex-wrap items-center justify-between gap-3 border-t border-stone-200 px-4 py-3">
+                  <p className="text-xs text-stone-500">{piecePagination.totalItems} physical {piecePagination.totalItems === 1 ? 'piece' : 'pieces'} · Page {piecePagination.page} of {piecePagination.totalPages}</p>
+                  <div className="flex gap-2">
+                    <button type="button" disabled={!piecePagination.hasPreviousPage || checkingPieces} onClick={() => setPiecePage((page) => page - 1)} className="min-h-8 border border-stone-300 px-3 text-xs font-semibold disabled:opacity-50">Previous</button>
+                    <button type="button" disabled={!piecePagination.hasNextPage || checkingPieces} onClick={() => setPiecePage((page) => page + 1)} className="min-h-8 border border-stone-300 px-3 text-xs font-semibold disabled:opacity-50">Next</button>
+                  </div>
+                </footer>}
+              </div>
             </section>
 
             <section className="border-y border-stone-300 bg-white p-5 sm:p-6"><label htmlFor="booking-notes" className="block font-semibold">Notes <span className="font-normal text-stone-500">(optional)</span></label><textarea id="booking-notes" value={notes} onChange={(event) => setNotes(event.target.value)} maxLength={5000} rows={3} placeholder="Fitting, pickup or customer notes" className="mt-3 w-full resize-y border border-stone-300 px-3 py-2 text-sm focus:border-[#5522BB] focus:outline-none" /></section>
@@ -296,7 +352,7 @@ function BookingWorkspacePage() {
 
           <aside className="border-y border-stone-300 bg-white p-5 sm:p-6 xl:sticky xl:top-5">
             <div className="flex items-start justify-between gap-3"><div><p className="text-xs font-bold uppercase tracking-[0.16em] text-[#7956CB]">Booking summary</p><h2 className="mt-1 text-xl font-semibold">Selected pieces</h2></div><span className="font-mono text-sm text-stone-500">{selectedItems.length.toString().padStart(2, '0')}</span></div>
-            {!selectedItems.length ? <div className="mt-5 border border-dashed border-stone-300 px-4 py-8 text-center"><p className="text-sm font-semibold">Nothing selected</p><p className="mt-1 text-xs text-stone-500">Choose dates, search a product, then add available pieces.</p></div> : <div className="mt-4 divide-y divide-stone-200">{selectedItems.map((item) => {
+            {!selectedItems.length ? <div className="mt-5 border border-dashed border-stone-300 px-4 py-8 text-center"><p className="text-sm font-semibold">Nothing selected</p><p className="mt-1 text-xs text-stone-500">Choose dates, then add available physical pieces from the list.</p></div> : <div className="mt-4 divide-y divide-stone-200">{selectedItems.map((item) => {
               const availability = selectedAvailability[String(item.inventoryItemId)];
               return <article key={item.inventoryItemId} className="py-4 first:pt-0"><div className="flex items-start justify-between gap-3"><div className="min-w-0"><p className="font-semibold">{item.productName}</p><p className="mt-1 font-mono text-xs text-stone-600">{item.sku}</p><p className="mt-1 text-xs text-stone-500">{item.size || '—'} · {item.color || '—'} · {item.condition}</p><p className={`mt-1 text-xs font-semibold ${availability?.available === false ? 'text-rose-700' : checkingSelected ? 'text-stone-500' : 'text-emerald-700'}`}>{checkingSelected ? 'Checking availability...' : availability?.available === false ? 'Unavailable for these dates' : availability?.available ? 'Available' : 'Waiting for dates'}</p></div><button type="button" aria-label={`Remove ${item.sku}`} onClick={() => setSelectedItems((current) => current.filter((piece) => piece.inventoryItemId !== item.inventoryItemId))} className="grid size-9 shrink-0 place-items-center border border-stone-300 text-stone-600 hover:border-rose-400 hover:text-rose-700"><Trash2 size={16} /></button></div><p className="mt-3 text-right text-sm font-semibold tabular-nums">{formatMoney(Number(item.dailyRentalRate || 0) * days)} <span className="font-normal text-stone-500">rental</span></p></article>;
             })}</div>}

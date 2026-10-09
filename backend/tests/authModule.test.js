@@ -1,7 +1,11 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 
-import { validateRegisterInput } from '../src/validators/auth.validator.js';
+import {
+  validateForgotPasswordInput,
+  validateRegisterInput,
+  validateResetPasswordInput,
+} from '../src/validators/auth.validator.js';
 import { validateShopUpdateInput } from '../src/validators/shop.validator.js';
 import { parseAuthToken, signToken } from '../src/utils/jwt.js';
 
@@ -56,6 +60,33 @@ test('validateRegisterInput rejects invalid email', () => {
 
   assert.equal(result.isValid, false);
   assert.ok(result.errors.some((error) => error.field === 'owner.email'));
+});
+
+test('password recovery validators accept valid input and enforce reset requirements', () => {
+  assert.equal(validateForgotPasswordInput({ email: 'person@example.com' }).isValid, true);
+  assert.equal(validateForgotPasswordInput({ email: 'not-an-email' }).isValid, false);
+
+  assert.equal(validateResetPasswordInput({
+    token: 'a'.repeat(64),
+    newPassword: 'Password@123',
+    confirmPassword: 'Password@123',
+  }).isValid, true);
+  assert.equal(validateResetPasswordInput({
+    token: 'invalid',
+    newPassword: 'Password@123',
+    confirmPassword: 'Different@123',
+  }).isValid, false);
+});
+
+test('validateResetPasswordInput rejects passwords exceeding bcrypt byte limit', () => {
+  const result = validateResetPasswordInput({
+    token: 'a'.repeat(64),
+    newPassword: 'Ä'.repeat(37) + 'Aa1!',
+    confirmPassword: 'Ä'.repeat(37) + 'Aa1!',
+  });
+
+  assert.equal(result.isValid, false);
+  assert.ok(result.errors.some((error) => error.field === 'newPassword' && error.message.includes('72 bytes')));
 });
 
 test('validateShopUpdateInput rejects invalid pincode', () => {

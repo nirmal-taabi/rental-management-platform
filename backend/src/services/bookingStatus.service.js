@@ -4,3 +4,7 @@ export const getAllowedBookingTransitions = (status) => BOOKING_STATUS_TRANSITIO
 
 export const canTransitionBookingStatus = (currentStatus, nextStatus) =>
   getAllowedBookingTransitions(currentStatus).includes(String(nextStatus || '').toUpperCase());
+
+export const canManuallyTransitionBookingStatus = (currentStatus, nextStatus) =>
+  String(nextStatus || '').toUpperCase() !== 'COMPLETED'
+  && canTransitionBookingStatus(currentStatus, nextStatus);

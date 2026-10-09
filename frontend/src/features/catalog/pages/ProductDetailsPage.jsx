@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
-import { ArrowLeft, ArrowUpRight, Pencil } from 'lucide-react';
+import { ArrowLeft, ArrowUpRight, Pencil, Plus } from 'lucide-react';
 import { useAuth } from '../../auth/context/AuthContext';
 import { inventoryService } from '../../inventory/services/inventory.service';
 import { productService } from '../services/product.service';
@@ -61,6 +61,7 @@ function ProductDetailsPage() {
               <p className="mt-1 font-mono text-xs text-[#59615e]">{product.sku}{product.categoryName ? ` · ${product.categoryName}` : ''}</p>
           </div>
           {canManage && <div className="flex flex-wrap gap-2">
+            <Link to="/products/new" className="inline-flex min-h-10 items-center gap-2 rounded-md border border-[#dfe3df] bg-white px-4 text-sm font-semibold text-[#414846] transition hover:border-[#6132DA] hover:text-[#6132DA]"><Plus size={15} /> Add another product</Link>
             <Link to={`/products/${id}/edit`} className="inline-flex min-h-10 items-center gap-2 rounded-md bg-[#6132DA] px-4 text-sm font-semibold text-white transition hover:bg-[#4D25B5]"><Pencil size={15} /> Edit product</Link>
             <button type="button" onClick={toggleStatus} className="inline-flex min-h-10 items-center rounded-md border border-[#dfe3df] bg-white px-4 text-sm font-medium text-[#414846] transition hover:bg-[#f1f2ef]">{product.status === 'ACTIVE' ? 'Deactivate' : 'Activate'}</button>
           </div>}

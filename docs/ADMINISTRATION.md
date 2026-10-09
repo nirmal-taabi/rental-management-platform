@@ -58,6 +58,21 @@ creation and access changes are written to that shop's audit log. Apply
 `030_add_password_reset_required.sql` before enabling this feature (or recreate
 the database from `database/schema/supabase_schema.sql`).
 
+## Password recovery
+
+Apply `031_create_password_reset_tokens.sql` before enabling password recovery
+(or recreate the database from `database/schema/supabase_schema.sql`). Configure
+the backend with an SMTP provider using `SMTP_HOST`, `SMTP_PORT`, `SMTP_SECURE`,
+`SMTP_USER`, `SMTP_PASSWORD`, and `SMTP_FROM`. `SMTP_FROM` is the sender address
+shown in recovery emails. Set `CLIENT_URL` to the public TrackinHub frontend URL
+so reset links return to the correct deployment; production must not use a
+localhost URL.
+
+The public forgot-password endpoint responds with the same message whether or
+not an active account exists. Recovery links expire after 30 minutes, are
+single-use, and are stored as hashes. The forgot-password and reset-password
+endpoints have separate IP-based rate limits.
+
 ## Data boundaries
 
 Platform account users (owners and staff) are records in `users`; rental end

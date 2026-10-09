@@ -98,7 +98,7 @@ function LoginPage() {
               </div>
 
               <div className="flex justify-end">
-                <button type="button" disabled className="text-xs font-medium text-[#8060D9] opacity-65 disabled:cursor-not-allowed">Forgot password?</button>
+                <Link to="/auth/forgot-password" className="text-xs font-medium text-[#8060D9] hover:text-[#43209B]">Forgot password?</Link>
               </div>
 
               {submitError && <div role="alert" className="border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-800">{submitError}</div>}
